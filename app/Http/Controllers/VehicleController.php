@@ -128,7 +128,7 @@ class VehicleController extends Controller
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
-            $vehicle = Vehicle::where($searchBy, $value)
+            $vehicle = Vehicle::where("vehicles.active", 1)->where($searchBy, $value)
                 ->join('brands', 'vehicles.brand_id', '=', 'brands.id')
                 ->join('models', 'vehicles.model_id', '=', 'models.id')
                 ->join('vehicle_status', 'vehicles.vehicle_status_id', '=', 'vehicle_status.id')
