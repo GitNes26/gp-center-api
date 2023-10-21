@@ -19,7 +19,6 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['https://gpcenter.gomezconnect.com/'],
 
     'allowed_origins_patterns' => [],
 
