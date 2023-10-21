@@ -23,7 +23,13 @@ return new class extends Migration
             $table->foreignId('vehicle_status_id')->constrained('vehicle_status', 'id');
             $table->text('description')->nullable();
             // $table->string('plates')->comment('placas asignadas al carro');
-            $table->string('img_path')->nullable();
+            $table->string('img_preview_path')->nullable();
+            $table->string('img_front_path')->nullable();
+            $table->string('img_rigth_path')->nullable();
+            $table->string('img_back_path')->nullable();
+            $table->string('img_left_path')->nullable();
+            $table->string("insurance_policy");
+            $table->string("insurance_policy_path");
             $table->boolean('active')->default(true);
             $table->timestamps();
             $table->dateTime('deleted_at')->nullable();
