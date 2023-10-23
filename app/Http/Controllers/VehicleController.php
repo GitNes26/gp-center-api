@@ -88,37 +88,22 @@ class VehicleController extends Controller
                 'description' => $request->description,
                 'insurance_policy' => $request->insurance_policy,
             ]);
+           
 
-
-            $img_preview = "";
-            if ($request->hasFile('img_preview')) {
-                $image_preview = $request->file('img_preview');
-                $img_preview = "hay imagen";
-            }
-            $dir_path = "GPCenter/vehicles";
-            $dir = public_path($dir_path);
-            if ($img_preview != "") {
-                $instance = new UserController();
-                $dir = "$dir_path/$new_vehicle->id";
-                $img_preview = $instance->ImgUpload($image_preview, $dir, $dir, "$new_vehicle->id-preview");
-            } else $img_preview = "$dir_path/sinAuto.png";
-
-            $img_insurance_policy = "";
-            if ($request->hasFile('img_insurance_policy')) {
-                $image_insurance_policy = $request->file('img_insurance_policy');
-                $img_insurance_policy = "hay imagen";
-            }
-            $dir_path = "GPCenter/vehicles";
-            $dir = public_path($dir_path);
-            if ($img_insurance_policy != "") {
-                $instance = new UserController();
-                $dir = "$dir_path/$new_vehicle->id";
-                $img_insurance_policy = $instance->ImgUpload($image_insurance_policy, $dir, $dir, "$new_vehicle->id-insurance_policy");
-            } else $img_insurance_policy = "$dir_path/sinPoliza.png";
+            $img_insurance_policy = $this->ImageUp($request, 'img_insurance_policy',$new_vehicle->id,'insurance_policy', true, "sinPoliza.png");
+            $img_preview = $this->ImageUp($request, 'img_preview',$new_vehicle->id,'preview', true, "sinAuto.png");
+            $img_right = $this->ImageUp($request, 'img_right',$new_vehicle->id,'right', false, "noRight.png");
+            $img_back = $this->ImageUp($request, 'img_back',$new_vehicle->id,'back', false, "noBack.png");
+            $img_left = $this->ImageUp($request, 'img_left',$new_vehicle->id,'left', false, "noLeft.png");
+            $img_front = $this->ImageUp($request, 'img_front',$new_vehicle->id,'front', false, "noFront.png");
 
             $vehicle = Vehicle::find($new_vehicle->id);                
             if ($img_insurance_policy != "") $vehicle->img_insurance_policy = $img_insurance_policy;
             if ($img_preview != "") $vehicle->img_preview = $img_preview;
+            if ($img_right != "") $vehicle->img_right = $img_right;
+            if ($img_back != "") $vehicle->img_back = $img_back;
+            if ($img_left != "") $vehicle->img_left = $img_left;
+            if ($img_front != "") $vehicle->img_front = $img_front;
             $vehicle->save();            
 
             $vehiclesPlatesController = new VehiclePlatesController();
@@ -220,41 +205,12 @@ class VehicleController extends Controller
                 return response()->json($response);
             }
 
-            function ImageUp(){
-
-            };
-            $dir_path = "GPCenter/vehicles";
-            $dir = public_path($dir_path);
-            $img_preview = "";
-            if ($request->hasFile('img_preview')) {
-                $image_preview = $request->file('img_preview');
-                $instance = new UserController();
-                $dir_path = "$dir_path/$request->id";
-                $dir = "$dir/$request->id";
-                $img_preview = $instance->ImgUpload($image_preview, $dir, $dir_path, "$request->id-preview");
-            }
-            // $dir_path = "GPCenter/vehicles";
-            // $dir = public_path($dir_path);
-            // $img_right = "";
-            // if ($request->hasFile('img_right')) {
-            //     $image = $request->file('img_right');
-            //     $img_right = "hay imagen";
-            //     $instance = new UserController();
-            //     $dir_path = "$dir_path/$request->id";
-            //     $dir = "$dir/$request->id";
-            //     $img_right = $instance->ImgUpload($image, $dir, $dir_path, "$request->id-right");
-
-
-            $dir_path = "GPCenter/vehicles";
-            $dir = public_path($dir_path);
-            $img_insurance_policy = "";
-            if ($request->hasFile('img_insurance_policy')) {
-                $image_insurance_policy = $request->file('img_insurance_policy');
-                $instance = new UserController();
-                $dir_path = "$dir_path/$request->id";
-                $dir = "$dir/$request->id";
-                $img_insurance_policy = $instance->ImgUpload($image_insurance_policy, $dir, $dir_path, "$request->id-insurance_policy");
-            }
+            $img_insurance_policy = $this->ImageUp($request, 'img_insurance_policy',$request->id,'insurance_policy', false, "sinPoliza.png");
+            $img_preview = $this->ImageUp($request, 'img_preview',$request->id,'preview', false, "sinAuto.png");
+            $img_right = $this->ImageUp($request, 'img_right',$request->id,'right', false, "noRight.png");
+            $img_back = $this->ImageUp($request, 'img_back',$request->id,'back', false, "noBack.png");
+            $img_left = $this->ImageUp($request, 'img_left',$request->id,'left', false, "noLeft.png");
+            $img_front = $this->ImageUp($request, 'img_front',$request->id,'front', false, "noFront.png");
                 
             $vehicle = Vehicle::find($request->id);
             // if (!$vehicle) $vehicle = new Vehicle();
@@ -269,26 +225,14 @@ class VehicleController extends Controller
             $vehicle->insurance_policy = $request->insurance_policy;
             if ($img_insurance_policy != "") $vehicle->img_insurance_policy = $img_insurance_policy;
             if ($img_preview != "") $vehicle->img_preview = $img_preview;
-            // $img_right != "" ?? $vehicle->img_right = "akakakakakakakakaka";
+            if ($img_right != "") $vehicle->img_right = $img_right;
+            if ($img_back != "") $vehicle->img_back = $img_back;
+            if ($img_left != "") $vehicle->img_left = $img_left;
+            if ($img_front != "") $vehicle->img_front = $img_front;
 
             $vehicle->save();
 
-            // }
 
-            // if ($request->hasFile('img_right')) {
-            //     $image = $request->file('img_right');
-            //     $img_right = "hay imagen";
-            //     $instance = new UserController();
-            //     $dir_path = "$dir_path/$request->id";
-            //     $dir = "$dir/$request->id";
-            //     $img_right = $instance->ImgUpload($image, $dir, $dir_path, "$request->id-right");
-
-            //     $vehicle = Vehicle::find($request->id)
-            //         ->update([
-            //             'img_right' => "akakakakakakakakaka"
-            //         ]);
-            // }
-            // dd($request);
             $vehiclesPlatesController = new VehiclePlatesController();
             $vehiclesPlatesController->createByVehicle($request, 0, $request->changePlates == 1 ? true : false);
 
@@ -362,5 +306,22 @@ class VehicleController extends Controller
         $duplicate = $checkAvailable->checkAvailableData('vehicles', 'stock_number', $stock_number, 'El número de inventario', 'stock_number', $id, null);
         if ($duplicate["result"] == true) return $duplicate;
         return array("result" => false);
+    }
+
+
+    private function ImageUp($request, $requestFile, $id, $posFix, $create, $nameFake) {
+        $dir_path = "GPCenter/vehicles";
+        $dir = public_path($dir_path);
+        $img_name = "";
+        if ($request->hasFile($requestFile)) {
+            $img_file = $request->file($requestFile);
+            $instance = new UserController();
+            $dir_path = "$dir_path/$id";
+            $dir = "$dir/$id";
+            $img_name = $instance->ImgUpload($img_file, $dir, $dir_path, "$id-$posFix");
+        } else {
+            if ($create) $img_name = "$dir_path/$nameFake";
+        }
+        return $img_name;
     }
 }
