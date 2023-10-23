@@ -213,7 +213,6 @@ class VehicleController extends Controller
             $img_front = $this->ImageUp($request, 'img_front',$request->id,'front', false, "noFront.png");
                 
             $vehicle = Vehicle::find($request->id);
-            // if (!$vehicle) $vehicle = new Vehicle();
                 
             $vehicle->stock_number = $request->stock_number;
             $vehicle->brand_id = $request->brand_id;
