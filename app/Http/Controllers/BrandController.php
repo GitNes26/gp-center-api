@@ -70,26 +70,17 @@ class BrandController extends Controller
                 return response()->json($response);
             }
 
-            $img_path = "";
-            if ($request->hasFile('img_path')) {
-                $image = $request->file('img_path');
-                $img_path = "hay imagen";
-            }
 
             $new_brand = Brand::create([
                 'brand' => $request->brand,
             ]);
 
-            $dir_path = "GPCenter/brands";
-            $dir = public_path($dir_path);
-            if ($img_path != "") {
-                $instance = new UserController();
-                $img_path = $instance->ImgUpload($image, $dir, $dir_path, "$new_brand->id");
-            } else $img_path = "$dir_path/sinImagen.jpg";
-            Brand::find($new_brand->id)
-                ->update([
-                    'img_path' => "$img_path"
-                ]);
+            $img_path = $this->ImageUp($request, "img_path", $new_brand->id, true);
+
+            $brand = Brand::find($new_brand->id);
+            if ($img_path != "") $brand->img_path = $img_path;
+            $brand->save();
+                
 
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'peticion satisfactoria | marca registrada.';
@@ -138,27 +129,12 @@ class BrandController extends Controller
                 return response()->json($response);
             }
 
-            $dir_path = "GPCenter/brands";
-            $dir = public_path($dir_path);
-            $img_path = "";
-            if ($request->hasFile('img_path')) {
-                $image = $request->file('img_path');
-                $img_path = "hay imagen";
-                $instance = new UserController();
-                $img_path = $instance->ImgUpload($image, $dir, $dir_path, "$request->id");
-            }
-            if ($img_path != "") {
-                $brand = Brand::find($request->id)
-                    ->update([
-                        'brand' => $request->brand,
-                        'img_path' => "$img_path"
-                    ]);
-            } else {
-                $brand = Brand::find($request->id)
-                    ->update([
-                        'brand' => $request->brand,
-                    ]);
-            }
+            $img_path = $this->ImageUp($request, "img_path", $request->id, true);
+
+            $brand = Brand::find($request->id);
+            $brand->brand = $request->brand;
+            if ($img_path != "") $brand->img_path = $img_path;
+            $brand->save();
 
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'peticion satisfactoria | marca actualizada.';
@@ -209,5 +185,19 @@ class BrandController extends Controller
         $duplicate = $checkAvailable->checkAvailableData('brands', 'brand', $brand, 'La marca', 'brand', $id, null);
         if ($duplicate["result"] == true) return $duplicate;
         return array("result" => false);
+    }
+
+    private function ImageUp($request, $requestFile, $id, $create) {
+        $dir_path = "GPCenter/brands";
+        $dir = public_path($dir_path);
+        $img_name = "";
+        if ($request->hasFile($requestFile)) {
+            $img_file = $request->file($requestFile);
+            $instance = new UserController();
+            $img_name = $instance->ImgUpload($img_file, $dir, $dir_path, "$id");
+        } else {
+            if ($create) $img_name = "$dir_path/noBrand.png";
+        }
+        return $img_name;
     }
 }
