@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('img_left')->nullable();
             $table->string('img_front')->nullable();
             $table->string("insurance_policy");
-            $table->string("img_insurance_policy");
+            $table->string("img_insurance_policy")->nullable();
             $table->boolean('active')->default(true);
             $table->timestamps();
             $table->dateTime('deleted_at')->nullable();

@@ -80,8 +80,14 @@ class VehicleController extends Controller
 
             $img_preview = "";
             if ($request->hasFile('img_preview')) {
-                $image = $request->file('img_preview');
+                $image_preview = $request->file('img_preview');
                 $img_preview = "hay imagen";
+            }
+
+            $img_insurance_policy = "";
+            if ($request->hasFile('img_insurance_policy')) {
+                $image_insurance_policy = $request->file('img_insurance_policy');
+                $img_insurance_policy = "hay imagen";
             }
 
             $new_vehicle = Vehicle::create([
@@ -92,8 +98,7 @@ class VehicleController extends Controller
                 'registration_date' => $request->registration_date,
                 'vehicle_status_id' => $request->vehicle_status_id,
                 'description' => $request->description,
-                'insurance_policy' => "request->insurance_policy",
-                'img_insurance_policy' => "sinPoliza",
+                'insurance_policy' => $request->insurance_policy,
             ]);
 
             $dir_path = "GPCenter/vehicles";
@@ -101,12 +106,24 @@ class VehicleController extends Controller
             if ($img_preview != "") {
                 $instance = new UserController();
                 $dir = "$dir_path/$new_vehicle->id";
-                $img_preview = $instance->ImgUpload($image, $dir, $dir, "$new_vehicle->id-preview");
+                $img_preview = $instance->ImgUpload($image_preview, $dir, $dir, "$new_vehicle->id-preview");
             } else $img_preview = "$dir_path/sinAuto.png";
+
+            $dir_path = "GPCenter/vehicles";
+            $dir = public_path($dir_path);
+            if ($img_insurance_policy != "") {
+                $instance = new UserController();
+                $dir = "$dir_path/$new_vehicle->id";
+                $img_insurance_policy = $instance->ImgUpload($image_insurance_policy, $dir, $dir, "$new_vehicle->id-insurance_policy");
+            } else $img_insurance_policy = "$dir_path/sinPoliza.png";
             Vehicle::find($new_vehicle->id)
                 ->update([
-                    'img_preview' => "$img_preview"
+                    'img_preview' => "$img_preview",
+                    'img_insurance_policy' => "$img_insurance_policy",
+
                 ]);
+
+            
 
             $vehiclesPlatesController = new VehiclePlatesController();
             $vehiclesPlatesController->createByVehicle($request, $new_vehicle->id, false);
@@ -211,25 +228,38 @@ class VehicleController extends Controller
             $dir = public_path($dir_path);
             $img_preview = "";
             if ($request->hasFile('img_preview')) {
-                $image = $request->file('img_preview');
+                $image_preview = $request->file('img_preview');
                 $img_preview = "hay imagen";
                 $instance = new UserController();
                 $dir_path = "$dir_path/$request->id";
                 $dir = "$dir/$request->id";
-                $img_preview = $instance->ImgUpload($image, $dir, $dir_path,"$request->id-preview");
+                $img_preview = $instance->ImgUpload($image_preview, $dir, $dir_path, "$request->id-preview");
             }
+            // $dir_path = "GPCenter/vehicles";
+            // $dir = public_path($dir_path);
+            // $img_right = "";
+            // if ($request->hasFile('img_right')) {
+            //     $image = $request->file('img_right');
+            //     $img_right = "hay imagen";
+            //     $instance = new UserController();
+            //     $dir_path = "$dir_path/$request->id";
+            //     $dir = "$dir/$request->id";
+            //     $img_right = $instance->ImgUpload($image, $dir, $dir_path, "$request->id-right");
+
+
             $dir_path = "GPCenter/vehicles";
             $dir = public_path($dir_path);
-            $img_right = "";
-            if ($request->hasFile('img_right')) {
-                $image = $request->file('img_right');
-                $img_right = "hay imagen";
+            $img_insurance_policy = "";
+            if ($request->hasFile('img_insurance_policy')) {
+                $image_insurance_policy = $request->file('img_insurance_policy');
+                $img_insurance_policy = "hay imagen";
                 $instance = new UserController();
                 $dir_path = "$dir_path/$request->id";
                 $dir = "$dir/$request->id";
-                $img_right = $instance->ImgUpload($image, $dir, $dir_path, "$request->id-right");
-
+                $img_insurance_policy = $instance->ImgUpload($image_insurance_policy, $dir, $dir_path, "$request->id-insurance_policy");
             }
+
+            // }
             // if ($img_preview != "") {
             //     $vehicle = Vehicle::find($request->id)
             //         ->update([
@@ -245,21 +275,24 @@ class VehicleController extends Controller
             //             'img_insurance_policy' => "sinPoliza",
             //         ]);
             // // } else {
-                $vehicle = Vehicle::find($request->id)
-                    ->update([
-                        'stock_number' => $request->stock_number,
-                        'brand_id' => $request->brand_id,
-                        'model_id' => $request->model_id,
-                        'year' => $request->year,
-                        'registration_date' => $request->registration_date,
-                        'vehicle_status_id' => $request->vehicle_status_id,
-                        'description' => $request->description,
-                        'insurance_policy' => "$request->insurance_policy",
-                        'img_insurance_policy' => "sinPoliza",
-                        // $img_preview != "" ?? 'img_preview' => "$img_preview",
-                        // $img_right != "" ?? 'img_right' => "akakakakakakakakaka"
+                
+            $vehicle = Vehicle::find($request->id);
+            // if (!$vehicle) $vehicle = new Vehicle();
+                
+            $vehicle->stock_number = $request->stock_number;
+            $vehicle->brand_id = $request->brand_id;
+            $vehicle->model_id = $request->model_id;
+            $vehicle->year = $request->year;
+            $vehicle->registration_date = $request->registration_date;
+            $vehicle->vehicle_status_id = $request->vehicle_status_id;
+            $vehicle->description = $request->description;
+            $vehicle->insurance_policy = $request->insurance_policy;
+            if ($img_insurance_policy != "") $vehicle->img_insurance_policy = $img_insurance_policy;
+            if ($img_preview != "") $vehicle->img_preview = $img_preview;
+            // $img_right != "" ?? $vehicle->img_right = "akakakakakakakakaka";
 
-                    ]);
+            $vehicle->save();
+
             // }
 
             // if ($request->hasFile('img_right')) {
