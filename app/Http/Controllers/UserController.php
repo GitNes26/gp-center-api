@@ -372,7 +372,7 @@ class UserController extends Controller
    }
 
 
-   public function ImgUpload($image, $dir, $imgName) {
+   public function ImgUpload($image, $destination, $dir, $imgName) {
     try {
         $type = "JPG";
         $permissions = 0777;
@@ -392,8 +392,8 @@ class UserController extends Controller
             $type = "PNG";
         }
         $imgName = "$imgName.$type";
-        $image->move($dir, $imgName);
-        return $imgName;
+        $image->move($destination, $imgName);
+        return "$dir/$imgName";
     } catch (\Error $err) {
         error_log("error en imgUpload(): ". $err->getMessage());
     }

@@ -70,23 +70,25 @@ class BrandController extends Controller
                 return response()->json($response);
             }
 
-            $imgName = "";
-            if ($request->hasFile('imgFile')) {
-                $image = $request->file('imgFile');
-                // $imgName = time() . '.' . $image->getClientOriginalExtension();
-                $dir = public_path('GPCenter/brands');
-                $imgName = "hay imagen";
+            $img_path = "";
+            if ($request->hasFile('img_path')) {
+                $image = $request->file('img_path');
+                $img_path = "hay imagen";
             }
+
             $new_brand = Brand::create([
                 'brand' => $request->brand,
             ]);
-            if ($imgName != "") {
+
+            $dir_path = "GPCenter/brands";
+            $dir = public_path($dir_path);
+            if ($img_path != "") {
                 $instance = new UserController();
-                $imgName = $instance->ImgUpload($image, $dir, $new_brand->id);
-            } else $imgName = "sinImagen.jpg";
+                $img_path = $instance->ImgUpload($image, $dir, $dir_path, "$new_brand->id");
+            } else $img_path = "$dir_path/sinImagen.jpg";
             Brand::find($new_brand->id)
                 ->update([
-                    'img_path' => "GPCenter/brands/$imgName"
+                    'img_path' => "$img_path"
                 ]);
 
             $response->data = ObjResponse::CorrectResponse();
@@ -136,20 +138,20 @@ class BrandController extends Controller
                 return response()->json($response);
             }
 
-            $imgName = "";
-            if ($request->hasFile('imgFile')) {
-                $image = $request->file('imgFile');
-                // $imgName = time() . '.' . $image->getClientOriginalExtension();
-                $dir = public_path('GPCenter/brands');
-                $imgName = "$request->id";
+            $dir_path = "GPCenter/brands";
+            $dir = public_path($dir_path);
+            $img_path = "";
+            if ($request->hasFile('img_path')) {
+                $image = $request->file('img_path');
+                $img_path = "hay imagen";
                 $instance = new UserController();
-                $imgName = $instance->ImgUpload($image, $dir, $imgName);
+                $img_path = $instance->ImgUpload($image, $dir, $dir_path, "$request->id");
             }
-            if ($imgName != "") {
+            if ($img_path != "") {
                 $brand = Brand::find($request->id)
                     ->update([
                         'brand' => $request->brand,
-                        'img_path' => "GPCenter/brands/$imgName"
+                        'img_path' => "$img_path"
                     ]);
             } else {
                 $brand = Brand::find($request->id)

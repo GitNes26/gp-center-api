@@ -78,12 +78,10 @@ class VehicleController extends Controller
                 return response()->json($response);
             }
 
-            $imgName = "";
-            if ($request->hasFile('imgFile')) {
-                $image = $request->file('imgFile');
-                // $imgName = time() . '.' . $image->getClientOriginalExtension();
-                $dir = public_path('GPCenter/vehicles');
-                $imgName = "hay imagen";
+            $img_preview = "";
+            if ($request->hasFile('img_preview')) {
+                $image = $request->file('img_preview');
+                $img_preview = "hay imagen";
             }
 
             $new_vehicle = Vehicle::create([
@@ -94,15 +92,20 @@ class VehicleController extends Controller
                 'registration_date' => $request->registration_date,
                 'vehicle_status_id' => $request->vehicle_status_id,
                 'description' => $request->description,
+                'insurance_policy' => "request->insurance_policy",
+                'img_insurance_policy' => "sinPoliza",
             ]);
 
-            if ($imgName != "") {
+            $dir_path = "GPCenter/vehicles";
+            $dir = public_path($dir_path);
+            if ($img_preview != "") {
                 $instance = new UserController();
-                $imgName = $instance->ImgUpload($image, $dir, $new_vehicle->id);
-            } else $imgName = "sinAuto.png";
+                $dir = "$dir_path/$new_vehicle->id";
+                $img_preview = $instance->ImgUpload($image, $dir, $dir, "$new_vehicle->id-preview");
+            } else $img_preview = "$dir_path/sinAuto.png";
             Vehicle::find($new_vehicle->id)
                 ->update([
-                    'img_path' => "GPCenter/vehicles/$imgName"
+                    'img_preview' => "$img_preview"
                 ]);
 
             $vehiclesPlatesController = new VehiclePlatesController();
@@ -204,40 +207,74 @@ class VehicleController extends Controller
                 return response()->json($response);
             }
 
-            $imgName = "";
-            if ($request->hasFile('imgFile')) {
-                $image = $request->file('imgFile');
-                // $imgName = time() . '.' . $image->getClientOriginalExtension();
-                $dir = public_path('GPCenter/vehicles');
-                $imgName = "$request->id";
+            $dir_path = "GPCenter/vehicles";
+            $dir = public_path($dir_path);
+            $img_preview = "";
+            if ($request->hasFile('img_preview')) {
+                $image = $request->file('img_preview');
+                $img_preview = "hay imagen";
                 $instance = new UserController();
-                $imgName = $instance->ImgUpload($image, $dir, $imgName);
+                $dir_path = "$dir_path/$request->id";
+                $dir = "$dir/$request->id";
+                $img_preview = $instance->ImgUpload($image, $dir, $dir_path,"$request->id-preview");
             }
+            $dir_path = "GPCenter/vehicles";
+            $dir = public_path($dir_path);
+            $img_right = "";
+            if ($request->hasFile('img_right')) {
+                $image = $request->file('img_right');
+                $img_right = "hay imagen";
+                $instance = new UserController();
+                $dir_path = "$dir_path/$request->id";
+                $dir = "$dir/$request->id";
+                $img_right = $instance->ImgUpload($image, $dir, $dir_path, "$request->id-right");
 
-            if ($imgName != "") {
-                $vehicle = Vehicle::find($request->id)
-                    ->update([
-                        'stock_number' => $request->stock_number,
-                        'brand_id' => $request->brand_id,
-                        'model_id' => $request->model_id,
-                        'year' => $request->year,
-                        'registration_date' => $request->registration_date,
-                        'vehicle_status_id' => $request->vehicle_status_id,
-                        'description' => $request->description,
-                        'img_path' => "GPCenter/vehicles/$imgName"
-                    ]);
-            } else {
-                $vehicle = Vehicle::find($request->id)
-                    ->update([
-                        'stock_number' => $request->stock_number,
-                        'brand_id' => $request->brand_id,
-                        'model_id' => $request->model_id,
-                        'year' => $request->year,
-                        'registration_date' => $request->registration_date,
-                        'vehicle_status_id' => $request->vehicle_status_id,
-                        'description' => $request->description,
-                    ]);
             }
+            // if ($img_preview != "") {
+            //     $vehicle = Vehicle::find($request->id)
+            //         ->update([
+            //             'stock_number' => $request->stock_number,
+            //             'brand_id' => $request->brand_id,
+            //             'model_id' => $request->model_id,
+            //             'year' => $request->year,
+            //             'registration_date' => $request->registration_date,
+            //             'vehicle_status_id' => $request->vehicle_status_id,
+            //             'description' => $request->description,
+            //             'img_preview' => "$img_preview",
+            //             'insurance_policy' => "$request->insurance_policy",
+            //             'img_insurance_policy' => "sinPoliza",
+            //         ]);
+            // // } else {
+                $vehicle = Vehicle::find($request->id)
+                    ->update([
+                        'stock_number' => $request->stock_number,
+                        'brand_id' => $request->brand_id,
+                        'model_id' => $request->model_id,
+                        'year' => $request->year,
+                        'registration_date' => $request->registration_date,
+                        'vehicle_status_id' => $request->vehicle_status_id,
+                        'description' => $request->description,
+                        'insurance_policy' => "$request->insurance_policy",
+                        'img_insurance_policy' => "sinPoliza",
+                        // $img_preview != "" ?? 'img_preview' => "$img_preview",
+                        // $img_right != "" ?? 'img_right' => "akakakakakakakakaka"
+
+                    ]);
+            // }
+
+            // if ($request->hasFile('img_right')) {
+            //     $image = $request->file('img_right');
+            //     $img_right = "hay imagen";
+            //     $instance = new UserController();
+            //     $dir_path = "$dir_path/$request->id";
+            //     $dir = "$dir/$request->id";
+            //     $img_right = $instance->ImgUpload($image, $dir, $dir_path, "$request->id-right");
+
+            //     $vehicle = Vehicle::find($request->id)
+            //         ->update([
+            //             'img_right' => "akakakakakakakakaka"
+            //         ]);
+            // }
             // dd($request);
             $vehiclesPlatesController = new VehiclePlatesController();
             $vehiclesPlatesController->createByVehicle($request, 0, $request->changePlates == 1 ? true : false);

@@ -28,7 +28,9 @@ class Vehicle extends Model
         'registration_date',
         'description',
         'vehicle_status_id',
-        'img_path',
+        'img_preview',
+        'insurance_policy',
+        'img_insurance_policy',
         'active',
         'deleted_at'
     ];
