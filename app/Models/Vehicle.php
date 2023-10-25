@@ -29,8 +29,11 @@ class Vehicle extends Model
         'description',
         'vehicle_status_id',
         'img_preview',
+        'circulation_card',
+        'img_circulation_card',
         'insurance_policy',
         'img_insurance_policy',
+        'violated',
         'active',
         'deleted_at'
     ];
