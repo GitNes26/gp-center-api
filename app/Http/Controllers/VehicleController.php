@@ -92,13 +92,13 @@ class VehicleController extends Controller
             ]);
 
 
-            $img_preview = $this->ImageUp($request, 'img_preview',$new_vehicle->id,'preview', true, "sinAuto.png");
-            $img_right = $this->ImageUp($request, 'img_right',$new_vehicle->id,'right', false, "noRight.png");
-            $img_back = $this->ImageUp($request, 'img_back',$new_vehicle->id,'back', false, "noBack.png");
-            $img_left = $this->ImageUp($request, 'img_left',$new_vehicle->id,'left', false, "noLeft.png");
-            $img_front = $this->ImageUp($request, 'img_front',$new_vehicle->id,'front', false, "noFront.png");
-            $img_circulation_card = $this->ImageUp($request, 'img_circulation_card',$new_vehicle->id,'circulation_card', true, "sinTarjeta.png");
-            $img_insurance_policy = $this->ImageUp($request, 'img_insurance_policy',$new_vehicle->id,'insurance_policy', true, "sinPoliza.png");
+            $img_preview = $this->ImageUp($request, 'img_preview', $new_vehicle->id, 'preview', true, "sinAuto.png");
+            $img_right = $this->ImageUp($request, 'img_right', $new_vehicle->id, 'right', false, "noRight.png");
+            $img_back = $this->ImageUp($request, 'img_back', $new_vehicle->id, 'back', false, "noBack.png");
+            $img_left = $this->ImageUp($request, 'img_left', $new_vehicle->id, 'left', false, "noLeft.png");
+            $img_front = $this->ImageUp($request, 'img_front', $new_vehicle->id, 'front', false, "noFront.png");
+            $img_circulation_card = $this->ImageUp($request, 'img_circulation_card', $new_vehicle->id, 'circulation_card', true, "sinTarjeta.png");
+            $img_insurance_policy = $this->ImageUp($request, 'img_insurance_policy', $new_vehicle->id, 'insurance_policy', true, "sinPoliza.png");
 
             $vehicle = Vehicle::find($new_vehicle->id);
             if ($img_preview != "") $vehicle->img_preview = $img_preview;
@@ -209,13 +209,13 @@ class VehicleController extends Controller
                 return response()->json($response);
             }
 
-            $img_preview = $this->ImageUp($request, 'img_preview',$request->id,'preview', false, "sinAuto.png");
-            $img_right = $this->ImageUp($request, 'img_right',$request->id,'right', false, "noRight.png");
-            $img_back = $this->ImageUp($request, 'img_back',$request->id,'back', false, "noBack.png");
-            $img_left = $this->ImageUp($request, 'img_left',$request->id,'left', false, "noLeft.png");
-            $img_front = $this->ImageUp($request, 'img_front',$request->id,'front', false, "noFront.png");
-            $img_circulation_card = $this->ImageUp($request, 'img_circulation_card',$request->id,'circulation_card', false, "sinTarjeta.png");
-            $img_insurance_policy = $this->ImageUp($request, 'img_insurance_policy',$request->id,'insurance_policy', false, "sinPoliza.png");
+            $img_preview = $this->ImageUp($request, 'img_preview', $request->id, 'preview', false, "sinAuto.png");
+            $img_right = $this->ImageUp($request, 'img_right', $request->id, 'right', false, "noRight.png");
+            $img_back = $this->ImageUp($request, 'img_back', $request->id, 'back', false, "noBack.png");
+            $img_left = $this->ImageUp($request, 'img_left', $request->id, 'left', false, "noLeft.png");
+            $img_front = $this->ImageUp($request, 'img_front', $request->id, 'front', false, "noFront.png");
+            $img_circulation_card = $this->ImageUp($request, 'img_circulation_card', $request->id, 'circulation_card', false, "sinTarjeta.png");
+            $img_insurance_policy = $this->ImageUp($request, 'img_insurance_policy', $request->id, 'insurance_policy', false, "sinPoliza.png");
 
             $vehicle = Vehicle::find($request->id);
 
@@ -228,7 +228,7 @@ class VehicleController extends Controller
             $vehicle->description = $request->description;
             $vehicle->circulation_card = $request->circulation_card;
             $vehicle->insurance_policy = $request->insurance_policy;
-                // violated
+            // violated
             if ($img_preview != "") $vehicle->img_preview = $img_preview;
             if ($img_right != "") $vehicle->img_right = $img_right;
             if ($img_back != "") $vehicle->img_back = $img_back;
@@ -316,7 +316,8 @@ class VehicleController extends Controller
     }
 
 
-    private function ImageUp($request, $requestFile, $id, $posFix, $create, $nameFake) {
+    private function ImageUp($request, $requestFile, $id, $posFix, $create, $nameFake)
+    {
         $dir_path = "GPCenter/vehicles";
         $dir = public_path($dir_path);
         $img_name = "";
