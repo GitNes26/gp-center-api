@@ -21,7 +21,7 @@ Route::post('/signup', [UserController::class, 'signup']);
 
 // Route::middleware('auth:sanctum')->group(function () {
     // Route::get('/getUser/{token}', [UserController::class,'getUser']); //cerrar sesión (eliminar los tokens creados)
-    Route::post('/logout/{id}', [UserController::class, 'logout']); //cerrar sesión (eliminar los tokens creados)
+    Route::delete('/logout/{id}', [UserController::class, 'logout']); //cerrar sesión (eliminar los tokens creados)
 
     Route::controller(UserController::class)->group(function () {
     Route::get('/users', 'index');
@@ -29,7 +29,7 @@ Route::post('/signup', [UserController::class, 'signup']);
     Route::get('/users/{id}', 'show');
     Route::post('/users', 'create');
     Route::put('/users/{id?}', 'update');
-    Route::post('/users/delete/{id}', 'destroy');
+    Route::post('/users/destroy/{id}', 'destroy');
     });
 
     Route::controller(RoleController::class)->group(function () {
@@ -38,7 +38,7 @@ Route::post('/signup', [UserController::class, 'signup']);
     Route::get('/roles/{id}', 'show');
     Route::post('/roles', 'create');
     Route::put('/roles/{id?}', 'update');
-    Route::post('/roles/delete/{id}', 'destroy');
+    Route::post('/roles/destroy/{id}', 'destroy');
     });
 
     Route::controller(DepartmentController::class)->group(function () {
@@ -47,7 +47,7 @@ Route::post('/signup', [UserController::class, 'signup']);
     Route::get('/departments/{id}', 'show');
     Route::post('/departments', 'create');
     Route::put('/departments/{id?}', 'update');
-    Route::post('/departments/delete/{id}', 'destroy');
+    Route::post('/departments/destroy/{id}', 'destroy');
     });
 
     Route::controller(BrandController::class)->group(function () {
@@ -57,7 +57,7 @@ Route::post('/signup', [UserController::class, 'signup']);
     Route::post('/brands', 'create');
     Route::post('/brands/{id}', 'update');
     //    Route::put('/brands/{id?}', 'update');
-    Route::post('/brands/delete/{id}', 'destroy');
+    Route::post('/brands/destroy/{id}', 'destroy');
     });
 
     Route::controller(ModelController::class)->group(function () {
@@ -66,7 +66,7 @@ Route::post('/signup', [UserController::class, 'signup']);
     Route::get('/models/{id}', 'show');
     Route::post('/models', 'create');
     Route::put('/models/{id?}', 'update');
-    Route::post('/models/delete/{id}', 'destroy');
+    Route::post('/models/destroy/{id}', 'destroy');
     });
 
     Route::controller(VehicleStatusController::class)->group(function () {
@@ -75,7 +75,7 @@ Route::post('/signup', [UserController::class, 'signup']);
     Route::get('/vehicleStatus/{id}', 'show');
     Route::post('/vehicleStatus', 'create');
     Route::put('/vehicleStatus/{id?}', 'update');
-    Route::post('/vehicleStatus/delete/{id}', 'destroy');
+    Route::post('/vehicleStatus/destroy/{id}', 'destroy');
     });
 
     Route::controller(VehicleController::class)->group(function () {
@@ -86,7 +86,7 @@ Route::post('/signup', [UserController::class, 'signup']);
     Route::post('/vehicles', 'create');
     Route::post('/vehicles/{id}', 'update');
     //    Route::put('/vehicles/{id?}', 'update');
-    Route::post('/vehicles/delete/{id}', 'destroy');
+    Route::post('/vehicles/destroy/{id}', 'destroy');
     });
     Route::controller(VehiclePlatesController::class)->group(function () {
     Route::get('/vehiclesPlates', 'index');
@@ -94,7 +94,7 @@ Route::post('/signup', [UserController::class, 'signup']);
     Route::get('/vehiclesPlates/{id}', 'show');
     Route::post('/vehiclesPlates', 'create');
     Route::put('/vehiclesPlates/{id?}', 'update');
-    Route::post('/vehiclesPlates/delete/{id}', 'destroy');
+    Route::post('/vehiclesPlates/destroy/{id}', 'destroy');
 
     Route::get('/vehiclesPlates/history/{vehicle_id}', 'history');
     });
@@ -108,7 +108,7 @@ Route::post('/signup', [UserController::class, 'signup']);
         Route::post('/services', 'create');
         // Route::post('/services/{id}', 'update'); // por si quiero subir una imagen
         Route::put('/services/{id?}', 'update');
-        Route::post('/services/delete/{id}', 'destroy');
+        Route::post('/services/destroy/{id}', 'destroy');
 
         Route::post('/services/{id?}', 'update');
 

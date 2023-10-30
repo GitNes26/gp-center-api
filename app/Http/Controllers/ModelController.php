@@ -23,7 +23,7 @@ class ModelController extends Controller
         try {
             $list = mModel::where('models.active', true)
                 ->join('brands', 'models.brand_id','=','brands.id')
-                ->select('models.*','brands.brand')
+                ->select('models.*','brands.brand','brands.img_path')
                 ->orderBy('models.id', 'asc')->get();
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'Peticion satisfactoria | Lista de modelos.';
@@ -93,7 +93,7 @@ class ModelController extends Controller
         try {
             $model = mModel::where('models.id',$request->id)
                 ->join('brands', 'models.brand_id','=','brands.id')
-                ->select('models.*','brands.brand')
+                ->select('models.*','brands.brand','brands.img_path')
                 ->first();
 
             $response->data = ObjResponse::CorrectResponse();
