@@ -21,14 +21,14 @@ Route::post('/signup', [UserController::class, 'signup']);
 
 // Route::middleware('auth:sanctum')->group(function () {
     // Route::get('/getUser/{token}', [UserController::class,'getUser']); //cerrar sesión (eliminar los tokens creados)
-    Route::delete('/logout/{id}', [UserController::class, 'logout']); //cerrar sesión (eliminar los tokens creados)
+    Route::post('/logout/{id}', [UserController::class, 'logout']); //cerrar sesión (eliminar los tokens creados)
 
     Route::controller(UserController::class)->group(function () {
     Route::get('/users', 'index');
     Route::get('/users/selectIndex', 'selectIndex');
     Route::get('/users/{id}', 'show');
     Route::post('/users', 'create');
-    Route::put('/users/{id?}', 'update');
+    Route::post('/users/update/{id?}', 'update');
     Route::post('/users/destroy/{id}', 'destroy');
     });
 
@@ -37,7 +37,7 @@ Route::post('/signup', [UserController::class, 'signup']);
     Route::get('/roles/selectIndex', 'selectIndex');
     Route::get('/roles/{id}', 'show');
     Route::post('/roles', 'create');
-    Route::put('/roles/{id?}', 'update');
+    Route::post('/roles/update/{id?}', 'update');
     Route::post('/roles/destroy/{id}', 'destroy');
     });
 
@@ -46,7 +46,7 @@ Route::post('/signup', [UserController::class, 'signup']);
     Route::get('/departments/selectIndex', 'selectIndex');
     Route::get('/departments/{id}', 'show');
     Route::post('/departments', 'create');
-    Route::put('/departments/{id?}', 'update');
+    Route::post('/departments/update/{id?}', 'update');
     Route::post('/departments/destroy/{id}', 'destroy');
     });
 
@@ -55,8 +55,8 @@ Route::post('/signup', [UserController::class, 'signup']);
     Route::get('/brands/selectIndex', 'selectIndex');
     Route::get('/brands/{id}', 'show');
     Route::post('/brands', 'create');
-    Route::post('/brands/{id}', 'update');
-    //    Route::put('/brands/{id?}', 'update');
+    Route::post('/brands/update/{id}', 'update');
+    //    Route::post('/brands/{id?}', 'update');
     Route::post('/brands/destroy/{id}', 'destroy');
     });
 
@@ -65,7 +65,7 @@ Route::post('/signup', [UserController::class, 'signup']);
     Route::get('/models/brand/{brand_id}', 'selectIndex');
     Route::get('/models/{id}', 'show');
     Route::post('/models', 'create');
-    Route::put('/models/{id?}', 'update');
+    Route::post('/models/update/{id?}', 'update');
     Route::post('/models/destroy/{id}', 'destroy');
     });
 
@@ -74,7 +74,7 @@ Route::post('/signup', [UserController::class, 'signup']);
     Route::get('/vehicleStatus/selectIndex', 'selectIndex');
     Route::get('/vehicleStatus/{id}', 'show');
     Route::post('/vehicleStatus', 'create');
-    Route::put('/vehicleStatus/{id?}', 'update');
+    Route::post('/vehicleStatus/update/{id?}', 'update');
     Route::post('/vehicleStatus/destroy/{id}', 'destroy');
     });
 
@@ -84,8 +84,8 @@ Route::post('/signup', [UserController::class, 'signup']);
     Route::get('/vehicles/{id}', 'show');
     Route::get('/vehicles/{searchBy?}/{value}', 'showBy');
     Route::post('/vehicles', 'create');
-    Route::post('/vehicles/{id}', 'update');
-    //    Route::put('/vehicles/{id?}', 'update');
+    Route::post('/vehicles/update/{id}', 'update');
+    //    Route::post('/vehicles/{id?}', 'update');
     Route::post('/vehicles/destroy/{id}', 'destroy');
     });
     Route::controller(VehiclePlatesController::class)->group(function () {
@@ -93,7 +93,7 @@ Route::post('/signup', [UserController::class, 'signup']);
     Route::get('/vehiclesPlates/selectIndex', 'selectIndex');
     Route::get('/vehiclesPlates/{id}', 'show');
     Route::post('/vehiclesPlates', 'create');
-    Route::put('/vehiclesPlates/{id?}', 'update');
+    Route::post('/vehiclesPlates/update/{id?}', 'update');
     Route::post('/vehiclesPlates/destroy/{id}', 'destroy');
 
     Route::get('/vehiclesPlates/history/{vehicle_id}', 'history');
@@ -107,7 +107,7 @@ Route::post('/signup', [UserController::class, 'signup']);
         Route::get('/services/{searchBy?}/{value}', 'showBy');
         Route::post('/services', 'create');
         // Route::post('/services/{id}', 'update'); // por si quiero subir una imagen
-        Route::put('/services/{id?}', 'update');
+        Route::post('/services/update/{id?}', 'update');
         Route::post('/services/destroy/{id}', 'destroy');
 
         Route::post('/services/{id?}', 'update');
