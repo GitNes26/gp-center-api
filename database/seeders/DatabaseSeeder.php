@@ -18,8 +18,8 @@ class DatabaseSeeder extends Seeder
             MenuSeeder::class,
             RoleSeeder::class,
             DepartamentSeeder::class,
-            BrandSeeder::class,
-            ModelSeeder::class,
+            // BrandSeeder::class,
+            // ModelSeeder::class,
             VehicleStatusSeeder::class,
             UserSeeder::class,
         ]);
