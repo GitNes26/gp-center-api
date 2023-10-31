@@ -46,11 +46,11 @@ class UserController extends Controller
             'alert_icon' => 'error',
          ]);
       }
-      $token = $user->createToken($user->email, ['user'])->plainTextToken;
+      $token = $user->createToken($user->email)->plainTextToken;
       $response->data = ObjResponse::CorrectResponse();
       $response->data["message"] = 'peticion satisfactoria | usuario logeado.';
       $response->data["result"]["token"] = $token;
-      $response->data["result"]["user"]["id"] = $user->id;
+      $response->data["result"]["user"]= $user;
       return response()->json($response, $response->data["status_code"]);
    }
 
@@ -62,7 +62,8 @@ class UserController extends Controller
    public function logout(int $id, Response $response)
    {
       try {
-         DB::table('personal_access_tokens')->where('tokenable_id', $id)->delete();
+        //  DB::table('personal_access_tokens')->where('tokenable_id', $id)->delete();
+        auth()->user()->tokens()->delete();
 
          $response->data = ObjResponse::CorrectResponse();
          $response->data["message"] = 'peticion satisfactoria | sesión cerrada.';
