@@ -11,18 +11,26 @@
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
-
 ## MIS COMANDOS
 
-* Correr migraciones
+-  Correr migraciones
 
-  ```
-  php artisan migrate:fresh
-  php artisan migrate:fresh --path=database/migrations/GPCenter --database=mysql_gp_center
-  ```
-* Correr seeders
+   ```
+   php artisan migrate:fresh
+   php artisan migrate:fresh --path=database/migrations/GPCenter --database=mysql_gp_center
+   ```
 
-  ```
-  php artisan db:seed
-  php artisan db:seed --class=DatabaseGPCenterSeeder
-  ```
+-  Correr seeders
+
+   ```
+   php artisan db:seed
+   php artisan db:seed --class=DatabaseGPCenterSeeder
+   ```
+
+-  Limpiar Cache
+
+   ```
+   php artisan config:clear
+   php artisan config:cache
+   php artisan cache:clear
+   ```

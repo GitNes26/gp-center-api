@@ -80,7 +80,7 @@ class BrandController extends Controller
             $brand = Brand::find($new_brand->id);
             if ($img_path != "") $brand->img_path = $img_path;
             $brand->save();
-                
+
 
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'peticion satisfactoria | marca registrada.';
@@ -187,7 +187,8 @@ class BrandController extends Controller
         return array("result" => false);
     }
 
-    private function ImageUp($request, $requestFile, $id, $create) {
+    private function ImageUp($request, $requestFile, $id, $create)
+    {
         $dir_path = "GPCenter/brands";
         $dir = public_path($dir_path);
         $img_name = "";

@@ -28,6 +28,8 @@ return new class extends Migration
             $table->string('img_back')->nullable();
             $table->string('img_left')->nullable();
             $table->string('img_front')->nullable();
+            $table->string("circulation_card");
+            $table->string("img_circulation_card")->nullable();
             $table->string("insurance_policy");
             $table->string("img_insurance_policy")->nullable();
             $table->boolean("violated")->nullable()->comment("el vehículo esta infraccionado");

@@ -3,17 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\mModel;
+use App\Models\MovementLog;
 use App\Models\ObjResponse;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
-class ModelController extends Controller
+class MovementLogController extends Controller
 {
     /**
-     * Mostrar lista de modelos activas.
+     * Mostrar lista de registro de movimientos activas.
      *
      * @return \Illuminate\Http\Response $response
      */
@@ -21,12 +21,12 @@ class ModelController extends Controller
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
-            $list = mModel::where('models.active', true)
-                ->join('brands', 'models.brand_id','=','brands.id')
-                ->select('models.*','brands.brand','brands.img_path')
-                ->orderBy('models.id', 'asc')->get();
+            $list = MovementLog::where('movement_logs.active', true)
+                ->join('users', 'movement_logs.user_id','=','users.id')
+                ->select('movement_logs.*','users.username','users.email')
+                ->orderBy('movement_logs.id', 'asc')->get();
             $response->data = ObjResponse::CorrectResponse();
-            $response->data["message"] = 'Peticion satisfactoria | Lista de modelos.';
+            $response->data["message"] = 'Peticion satisfactoria | Lista de registro de movimientos.';
             $response->data["result"] = $list;
         } catch (\Exception $ex) {
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
@@ -44,11 +44,12 @@ class ModelController extends Controller
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
-            $list = mModel::where('models.active', true)->where('models.brand_id', $request->brand_id)
-                ->select('models.id as id', 'models.model as label')
-                ->orderBy('models.model', 'asc')->get();
+            $list = MovementLog::where('movement_logs.active', true)
+            // ->where('movement_logs.action', $request->action) // quiza implementar despues, como filtro
+                ->select('movement_logs.id as id', 'movement_logs.model as label')
+                ->orderBy('movement_logs.model', 'asc')->get();
             $response->data = ObjResponse::CorrectResponse();
-            $response->data["message"] = 'Peticion satisfactoria | Lista de modelos';
+            $response->data["message"] = 'Peticion satisfactoria | Lista de registro de movimientos';
             $response->data["result"] = $list;
         } catch (\Exception $ex) {
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
@@ -57,37 +58,31 @@ class ModelController extends Controller
     }
 
     /**
-     * Crear modelo.
+     * Crear registro de movimiento.
      *
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response $response
      */
-    public function create(Request $request, Response $response)
+    public function create(Request $request)
     {
-        $response->data = ObjResponse::DefaultResponse();
         try {
-            $duplicate = $this->validateAvailableData($request->model, null);
-            if ($duplicate["result"] == true) {
-                $response->data = $duplicate;
-                return response()->json($response);
-            }
+            $new_movement_log = new MovementLog();
+            $new_movement_log->user_id = $request->user_id;
+            $new_movement_log->action = $request->action;
+            $new_movement_log->table = $request->table;
+            if ($request->column != "") $new_movement_log->column = $request->column;
+            $new_movement_log->id_register = $request->id_register;
+            if ($request->previous_value != "")  $new_movement_log->previous_value = $request->previous_value;
+            if ($request->comments != "") $new_movement_log->comments = $request->comments;
 
-            $new_model = mModel::create([
-                'brand_id' => $request->brand_id,
-                'model' => $request->model,
-                'description' => $request->description,
-            ]);
-            $response->data = ObjResponse::CorrectResponse();
-            $response->data["message"] = 'peticion satisfactoria | modelo registrado.';
-            $response->data["alert_text"] = 'Modelo registrado';
+            $new_movement_log->save();
         } catch (\Exception $ex) {
-            $response->data = ObjResponse::CatchResponse($ex->getMessage());
+            error_log($ex->getMessage());
         }
-        return response()->json($response, $response->data["status_code"]);
     }
 
     /**
-     * Mostrar modelo.
+     * Mostrar registro de movimiento.
      *
      * @param   int $id
      * @param  \Illuminate\Http\Request $request
@@ -97,14 +92,14 @@ class ModelController extends Controller
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
-            $model = mModel::where('models.id',$request->id)
-                ->join('brands', 'models.brand_id','=','brands.id')
-                ->select('models.*','brands.brand','brands.img_path')
+            $movement_log = MovementLog::where('movement_logs.id',$request->id)
+                ->join('users', 'movement_logs.user_id','=','users.id')
+                ->select('movement_logs.*','users.username','users.email')
                 ->first();
 
             $response->data = ObjResponse::CorrectResponse();
-            $response->data["message"] = 'peticion satisfactoria | modelo encontrado.';
-            $response->data["result"] = $model;
+            $response->data["message"] = 'peticion satisfactoria | registro de movimiento encontrado.';
+            $response->data["result"] = $movement_log;
         } catch (\Exception $ex) {
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
         }
@@ -112,7 +107,7 @@ class ModelController extends Controller
     }
 
     /**
-     * Actualizar modelo.
+     * Actualizar registro de movimiento.
      *
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response $response
@@ -127,16 +122,20 @@ class ModelController extends Controller
                 return response()->json($response);
             }
 
-            $model = mModel::find($request->id)
+            $movement_log = MovementLog::find($request->id)
                 ->update([
-                    'brand_id' => $request->brand_id,
-                    'model' => $request->model,
-                    'description' => $request->description,
+                    'user_id' => $request->user_id,
+                    'action' => $request->action,
+                    'table' => $request->table,
+                    'column' => $request->column,
+                    'id_register' => $request->id_register,
+                    'previous_value' => $request->previous_value,
+                    'comments' => $request->comments,
                 ]);
 
             $response->data = ObjResponse::CorrectResponse();
-            $response->data["message"] = 'peticion satisfactoria | modelo actualizado.';
-            $response->data["alert_text"] = 'Modelo actualizado';
+            $response->data["message"] = 'peticion satisfactoria | registro de movimiento actualizado.';
+            $response->data["alert_text"] = 'registro de movimiento actualizado';
         } catch (\Exception $ex) {
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
         }
@@ -144,7 +143,7 @@ class ModelController extends Controller
     }
 
     /**
-     * Eliminar (cambiar estado activo=false) modelo.
+     * Eliminar (cambiar estado activo=false) registro de movimiento.
      *
      * @param  int $id
      * @param  \Illuminate\Http\Request $request
@@ -154,33 +153,18 @@ class ModelController extends Controller
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
-            mModel::find($request->id)
+            MovementLog::find($request->id)
                 ->update([
                     'active' => false,
                     'deleted_at' => date('Y-m-d H:i:s'),
                 ]);
             $response->data = ObjResponse::CorrectResponse();
-            $response->data["message"] = 'peticion satisfactoria | modelo eliminado.';
-            $response->data["alert_text"] = 'Modelo eliminado';
+            $response->data["message"] = 'peticion satisfactoria | registro de movimiento eliminado.';
+            $response->data["alert_text"] = 'registro de movimiento eliminado';
         } catch (\Exception $ex) {
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
         }
         return response()->json($response, $response->data["status_code"]);
     }
 
-    private function validateAvailableData($model, $id)
-    {
-        #este codigo se pone en las funciones de registro y edicion
-        // $duplicate = $this->validateAvailableData($request->username, $request->email, $request->id);
-        // if ($duplicate["result"] == true) {
-        //     $response->data = $duplicate;
-        //     return response()->json($response);
-        // }
-
-        $checkAvailable = new UserController();
-        // #VALIDACION DE DATOS REPETIDOS
-        $duplicate = $checkAvailable->checkAvailableData('models', 'model', $model, 'El modelo', 'model', $id, null);
-        if ($duplicate["result"] == true) return $duplicate;
-        return array("result" => false);
-    }
 }
