@@ -86,6 +86,7 @@ class VehicleController extends Controller
                 'registration_date' => $request->registration_date,
                 'vehicle_status_id' => $request->vehicle_status_id,
                 'description' => $request->description,
+                'serial_number' => $request->serial_number,
                 'circulation_card' => $request->circulation_card,
                 'insurance_policy' => $request->insurance_policy,
                 // violated
@@ -97,6 +98,7 @@ class VehicleController extends Controller
             $img_back = $this->ImageUp($request, 'img_back', $new_vehicle->id, 'back', false, "noBack.png");
             $img_left = $this->ImageUp($request, 'img_left', $new_vehicle->id, 'left', false, "noLeft.png");
             $img_front = $this->ImageUp($request, 'img_front', $new_vehicle->id, 'front', false, "noFront.png");
+            $img_serial_number = $this->ImageUp($request, 'img_serial_number', $new_vehicle->id, 'serial_number', true, "sinNumeroSerie.png");
             $img_circulation_card = $this->ImageUp($request, 'img_circulation_card', $new_vehicle->id, 'circulation_card', true, "sinTarjeta.png");
             $img_insurance_policy = $this->ImageUp($request, 'img_insurance_policy', $new_vehicle->id, 'insurance_policy', true, "sinPoliza.png");
 
@@ -106,6 +108,7 @@ class VehicleController extends Controller
             if ($img_back != "") $vehicle->img_back = $img_back;
             if ($img_left != "") $vehicle->img_left = $img_left;
             if ($img_front != "") $vehicle->img_front = $img_front;
+            if ($img_serial_number != "") $vehicle->img_serial_number = $img_serial_number;
             if ($img_circulation_card != "") $vehicle->img_circulation_card = $img_circulation_card;
             if ($img_insurance_policy != "") $vehicle->img_insurance_policy = $img_insurance_policy;
             $vehicle->save();
@@ -214,6 +217,7 @@ class VehicleController extends Controller
             $img_back = $this->ImageUp($request, 'img_back', $request->id, 'back', false, "noBack.png");
             $img_left = $this->ImageUp($request, 'img_left', $request->id, 'left', false, "noLeft.png");
             $img_front = $this->ImageUp($request, 'img_front', $request->id, 'front', false, "noFront.png");
+            $img_serial_number = $this->ImageUp($request, 'img_serial_number', $request->id, 'serial_number', false, "sinNumeroSerie.png");
             $img_circulation_card = $this->ImageUp($request, 'img_circulation_card', $request->id, 'circulation_card', false, "sinTarjeta.png");
             $img_insurance_policy = $this->ImageUp($request, 'img_insurance_policy', $request->id, 'insurance_policy', false, "sinPoliza.png");
 
@@ -226,6 +230,7 @@ class VehicleController extends Controller
             $vehicle->registration_date = $request->registration_date;
             $vehicle->vehicle_status_id = $request->vehicle_status_id;
             $vehicle->description = $request->description;
+            $vehicle->serial_number = $request->serial_number;
             $vehicle->circulation_card = $request->circulation_card;
             $vehicle->insurance_policy = $request->insurance_policy;
             // violated
@@ -234,6 +239,7 @@ class VehicleController extends Controller
             if ($img_back != "") $vehicle->img_back = $img_back;
             if ($img_left != "") $vehicle->img_left = $img_left;
             if ($img_front != "") $vehicle->img_front = $img_front;
+            if ($img_serial_number != "") $vehicle->img_serial_number = $img_serial_number;
             if ($img_circulation_card != "") $vehicle->img_circulation_card = $img_circulation_card;
             if ($img_insurance_policy != "") $vehicle->img_insurance_policy = $img_insurance_policy;
 
