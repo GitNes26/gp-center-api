@@ -29,6 +29,8 @@ class Vehicle extends Model
         'description',
         'vehicle_status_id',
         'img_preview',
+        'serial_number',
+        'img_serial_number',
         'circulation_card',
         'img_circulation_card',
         'insurance_policy',
