@@ -34,7 +34,10 @@ class UserController extends Controller
          $field => 'required',
          'password' => 'required'
       ]);
-      $user = User::where("$field", "$value")->first();
+      $user = User::where("users.$field", "$value")
+        ->join("roles","users.role_id","=","roles.id")
+        ->select("users.*","roles.role","roles.read")
+        ->first();
 
 
       if (!$user || !Hash::check($request->password, $user->password)) {
