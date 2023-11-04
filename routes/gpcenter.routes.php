@@ -37,7 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::controller(UserController::class)->group(function () {
-        Route::get('/users', 'index');
+        Route::get('/users/{role_id}', 'index');
         Route::get('/users/selectIndex', 'selectIndex');
         Route::get('/users/{id}', 'show');
         Route::post('/users', 'create');
@@ -47,7 +47,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::controller(RoleController::class)->group(function () {
         Route::get('/roles', 'index');
-        Route::get('/roles/selectIndex', 'selectIndex');
+        Route::get('/roles/selectIndex/{role_id}', 'selectIndex');
         Route::get('/roles/{id}', 'show');
         Route::post('/roles', 'create');
         Route::post('/roles/update/{id?}', 'update');
@@ -125,6 +125,4 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::post('/services/{id?}', 'update');
     });
-
-
 });

@@ -38,11 +38,11 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Http\Response $response
      */
-    public function selectIndex(Response $response)
+    public function selectIndex(Int $role_id, Response $response)
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
-            $list = Role::where('active', true)
+            $list = Role::where('active', true)->where("id", ">=", $role_id)
                 ->select('roles.id as id', 'roles.role as label')
                 ->orderBy('roles.id', 'asc')->get();
             $response->data = ObjResponse::CorrectResponse();

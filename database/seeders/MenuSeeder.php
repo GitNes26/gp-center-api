@@ -127,7 +127,7 @@ class MenuSeeder extends Seeder
             DB::table('menus')->insert([ #13
                 'menu' => 'Marcas',
                 'type' => 'item',
-                'belongs_to' => 8,
+                'belongs_to' => 12,
                 'url' => '/admin/cove/marcas',
                 'icon' => 'IconBadgeTm',
                 'order' => 1,
@@ -136,7 +136,7 @@ class MenuSeeder extends Seeder
             DB::table('menus')->insert([ #14
                 'menu' => 'Modelos',
                 'type' => 'item',
-                'belongs_to' => 8,
+                'belongs_to' => 12,
                 'url' => '/admin/cove/modelos',
                 'icon' => 'IconBoxModel2',
                 'order' => 2,
@@ -145,7 +145,7 @@ class MenuSeeder extends Seeder
             DB::table('menus')->insert([ #15
                 'menu' => 'Estatus de Vehíuclo',
                 'type' => 'item',
-                'belongs_to' => 8,
+                'belongs_to' => 12,
                 'url' => '/admin/cove/estatus-vehiculo',
                 'icon' => 'IconStatusChange',
                 'order' => 3,
@@ -154,12 +154,11 @@ class MenuSeeder extends Seeder
             DB::table('menus')->insert([ #15
                 'menu' => 'Vehículos',
                 'type' => 'item',
-                'belongs_to' => 8,
+                'belongs_to' => 12,
                 'url' => '/admin/cove/vehiculos',
                 'icon' => 'IconCar',
                 'order' => 3,
                 'created_at' => now(),
             ]);
-
     }
 }
