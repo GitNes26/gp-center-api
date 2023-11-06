@@ -27,7 +27,7 @@ class RoleSeeder extends Seeder
         DB::table('roles')->insert([
             'role' => 'Administrador',
             'description' => 'Rol dedicado para usuarios que gestionaran el sistema.',
-            'read' => 'todas',
+            'read' => '1,2,3,4,6,12,13,14,15',
             'create' => 'todas',
             'update' => 'todas',
             'delete' => 'todas',
