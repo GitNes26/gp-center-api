@@ -33,4 +33,5 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
    php artisan config:clear
    php artisan config:cache
    php artisan cache:clear
+   php artisan serve
    ```

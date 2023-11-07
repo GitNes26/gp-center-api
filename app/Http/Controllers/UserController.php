@@ -34,24 +34,32 @@ class UserController extends Controller
          $field => 'required',
          'password' => 'required'
       ]);
-      $user = User::where("$field", "$value")->first();
+      $user = User::where("users.$field", "$value")
+         ->join("roles", "users.role_id", "=", "roles.id")
+         ->select("users.*", "roles.role", "roles.read")
+         ->first();
 
 
-      if (!$user || !Hash::check($request->password, $user->password)) {
-
-         throw ValidationException::withMessages([
-            'message' => 'Credenciales incorrectas',
-            'alert_title' => 'Credenciales incorrectas',
-            'alert_text' => 'Credenciales incorrectas',
-            'alert_icon' => 'error',
-         ]);
-      }
-      $token = $user->createToken($user->email)->plainTextToken;
-      $response->data = ObjResponse::CorrectResponse();
-      $response->data["message"] = 'peticion satisfactoria | usuario logeado.';
-      $response->data["result"]["token"] = $token;
-      $response->data["result"]["user"]= $user;
-      return response()->json($response, $response->data["status_code"]);
+        $response->data = ObjResponse::CorrectResponse();
+    if (!$user || !Hash::check($request->password, $user->password)) {
+        // throw ValidationException::withMessages([
+        //    'message' => 'Credenciales incorrectas',
+        //    'alert_title' => 'Credenciales incorrectas',
+        //    'alert_text' => 'Credenciales incorrectas',
+        //    'alert_icon' => 'error',
+        // ]);
+        $response->data["message"] = 'peticion satisfactoria | usuario NO encontrado.';
+        $response->data["result"]["token"] = null;
+        $response->data["result"]["user"] = null;
+        $response->data["alert_icon"] ="error";
+        $response->data["alert_text"] = "Credenciales incorrectas";
+    } else {
+        $token = $user->createToken($user->email)->plainTextToken;
+        $response->data["message"] = 'peticion satisfactoria | usuario logeado.';
+        $response->data["result"]["token"] = $token;
+        $response->data["result"]["user"] = $user;
+        }
+    return response()->json($response, $response->data["status_code"]);
    }
 
    /**
@@ -59,11 +67,11 @@ class UserController extends Controller
     * @param int $id
     * @return \Illuminate\Http\Response $response
     */
-   public function logout(int $id, Response $response)
+   public function logout(Response $response)
    {
       try {
-        //  DB::table('personal_access_tokens')->where('tokenable_id', $id)->delete();
-        auth()->user()->tokens()->delete();
+         //  DB::table('personal_access_tokens')->where('tokenable_id', $id)->delete();
+         auth()->user()->tokens()->delete();
 
          $response->data = ObjResponse::CorrectResponse();
          $response->data["message"] = 'peticion satisfactoria | sesión cerrada.';
@@ -75,11 +83,11 @@ class UserController extends Controller
    }
 
    /**
-   * Registrarse como jugador.
-   *
-   * @param  \Illuminate\Http\Request $request
-   * @return \Illuminate\Http\Response $response
-   */
+    * Registrarse como jugador.
+    *
+    * @param  \Illuminate\Http\Request $request
+    * @return \Illuminate\Http\Response $response
+    */
    public function signup(Request $request, Response $response)
    {
       $response->data = ObjResponse::DefaultResponse();
@@ -121,13 +129,13 @@ class UserController extends Controller
     *
     * @return \Illuminate\Http\Response $response
     */
-   public function index(Response $response)
+   public function index(Int $role_id, Response $response)
    {
       $response->data = ObjResponse::DefaultResponse();
       try {
          // $list = DB::select('SELECT * FROM users where active = 1');
          // User::on('mysql_gp_center')->get();
-         $list = User::where('users.active', true)
+         $list = User::where('users.active', true)->where("role_id", ">=", $role_id)
             ->join('roles', 'users.role_id', '=', 'roles.id')
             ->join('departments', 'users.department_id', '=', 'departments.id')
             ->select('users.*', 'roles.role', 'departments.department', 'departments.description as department_description')
@@ -373,31 +381,31 @@ class UserController extends Controller
    }
 
 
-   public function ImgUpload($image, $destination, $dir, $imgName) {
-    try {
-        $type = "JPG";
-        $permissions = 0777;
+   public function ImgUpload($image, $destination, $dir, $imgName)
+   {
+      try {
+         $type = "JPG";
+         $permissions = 0777;
 
-        if (file_exists("$dir/$imgName.PNG")) {
+         if (file_exists("$dir/$imgName.PNG")) {
             // Establecer permisos
             if (chmod("$dir/$imgName.PNG", $permissions)) {
-                @unlink("$dir/$imgName.PNG");
+               @unlink("$dir/$imgName.PNG");
             }
             $type = "JPG";
-        }
-        elseif (file_exists("$dir/$imgName.JPG")) {
+         } elseif (file_exists("$dir/$imgName.JPG")) {
             // Establecer permisos
             if (chmod("$dir/$imgName.JPG", $permissions)) {
-                @unlink("$dir/$imgName.JPG");
+               @unlink("$dir/$imgName.JPG");
             }
             $type = "PNG";
-        }
-        $imgName = "$imgName.$type";
-        $image->move($destination, $imgName);
-        return "$dir/$imgName";
-    } catch (\Error $err) {
-        error_log("error en imgUpload(): ". $err->getMessage());
-    }
+         }
+         $imgName = "$imgName.$type";
+         $image->move($destination, $imgName);
+         return "$dir/$imgName";
+      } catch (\Error $err) {
+         error_log("error en imgUpload(): " . $err->getMessage());
+      }
    }
 
    private function validateAvailableData($username, $email, $id)
@@ -419,9 +427,9 @@ class UserController extends Controller
          $query = "SELECT count(*) as duplicate FROM $table WHERE $column='$value' AND active=1";
          if ($id != null) $query = "SELECT count(*) as duplicate FROM $table WHERE $column='$value' AND active=1 AND id!=$id";
       }
-    //   echo $query;
+      //   echo $query;
       $result = DB::select($query)[0];
-    //   var_dump($result->duplicate);
+      //   var_dump($result->duplicate);
       if ((int)$result->duplicate > 0) {
          // echo "entro al duplicate";
          $response = array(
