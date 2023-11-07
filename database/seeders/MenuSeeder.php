@@ -162,3 +162,22 @@ class MenuSeeder extends Seeder
             ]);
     }
 }
+
+
+// INSERT INTO menus VALUES
+// (1,'Dashboard','','group',0,null,null,1,0,1,'2023-11-05 01:55:45',null,null),
+// (2,'Buscador','','item',1,'/admin','IconSearch',1,0,1,'2023-11-05 01:55:45',null,null),
+// (3,'Administrativo','Control de usuarios','group',0,null,null,2,0,1,'2023-11-05 01:55:45',null,null),
+// (4,'Usuarios','','item',3,'/admin/usuarios','IconUsers',1,0,1,'2023-11-05 01:55:45',null,null),
+// (5,'Roles','','item',3,'/admin/roles','IconPaperBag',2,0,1,'2023-11-05 01:55:45',null,null),
+// (6,'Departamentos','','item',3,'/admin/departamentos','IconBuildingSkyscraper',3,0,1,'2023-11-05 01:55:45',null,null),
+// (7,'Menus','','item',3,'/admin/menus','IconCategory2',4,0,1,'2023-11-05 01:55:45',null,null),
+// (8,'Taller','Catálogos del Taller','group',0,null,null,3,0,1,'2023-11-05 01:55:45',null,null),
+// (9,'Almacen (Stock)','','item',8,'/admin/taller/almacen','IconCarGarage',1,0,1,'2023-11-05 01:55:45',null,null),
+// (10,'Servicios','','item',8,'/admin/taller/servicios','IconTool',2,0,1,'2023-11-05 01:55:45',null,null),
+// (11,'Requisiones - PENDIENTE','','item',8,'/admin/taller/requisiciones','IconFileInvoice',3,0,1,'2023-11-05 01:55:45',null,null),
+// (12,'CoVe','Control Vehicular','group',0,null,null,4,0,1,'2023-11-05 01:55:45',null,null),
+// (13,'Marcas','','item',12,'/admin/cove/marcas','IconBadgeTm',1,0,1,'2023-11-05 01:55:45',null,null),
+// (14,'Modelos','','item',12,'/admin/cove/modelos','IconBoxModel2',2,0,1,'2023-11-05 01:55:45',null,null),
+// (15,'Estatus de Vehíuclo','','item',12,'/admin/cove/estatus-vehiculo','IconStatusChange',3,0,1,'2023-11-05 01:55:45',null,null),
+// (16,'Vehículos','','item',12,'/admin/cove/vehiculos','IconCar',3,0,1,'2023-11-05 01:55:45',null,null);
