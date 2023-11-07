@@ -22,7 +22,7 @@ Route::post('/signup', [UserController::class, 'signup']);
 
 Route::middleware('auth:sanctum')->group(function () {
     // Route::get('/getUser/{token}', [UserController::class,'getUser']); //cerrar sesión (eliminar los tokens creados)
-    Route::get('/logout/{id}', [UserController::class, 'logout']); //cerrar sesión (eliminar los tokens creados)
+    Route::get('/logout', [UserController::class, 'logout']); //cerrar sesión (eliminar los tokens creados)
 
     Route::controller(MenuController::class)->group(function () {
         Route::get('/menus', 'index');
