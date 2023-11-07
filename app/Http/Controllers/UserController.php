@@ -40,21 +40,26 @@ class UserController extends Controller
          ->first();
 
 
-      if (!$user || !Hash::check($request->password, $user->password)) {
-
-         throw ValidationException::withMessages([
-            'message' => 'Credenciales incorrectas',
-            'alert_title' => 'Credenciales incorrectas',
-            'alert_text' => 'Credenciales incorrectas',
-            'alert_icon' => 'error',
-         ]);
-      }
-      $token = $user->createToken($user->email)->plainTextToken;
-      $response->data = ObjResponse::CorrectResponse();
-      $response->data["message"] = 'peticion satisfactoria | usuario logeado.';
-      $response->data["result"]["token"] = $token;
-      $response->data["result"]["user"] = $user;
-      return response()->json($response, $response->data["status_code"]);
+        $response->data = ObjResponse::CorrectResponse();
+    if (!$user || !Hash::check($request->password, $user->password)) {
+        // throw ValidationException::withMessages([
+        //    'message' => 'Credenciales incorrectas',
+        //    'alert_title' => 'Credenciales incorrectas',
+        //    'alert_text' => 'Credenciales incorrectas',
+        //    'alert_icon' => 'error',
+        // ]);
+        $response->data["message"] = 'peticion satisfactoria | usuario NO encontrado.';
+        $response->data["result"]["token"] = null;
+        $response->data["result"]["user"] = null;
+        $response->data["alert_icon"] ="error";
+        $response->data["alert_text"] = "Credenciales incorrectas";
+    } else {
+        $token = $user->createToken($user->email)->plainTextToken;
+        $response->data["message"] = 'peticion satisfactoria | usuario logeado.';
+        $response->data["result"]["token"] = $token;
+        $response->data["result"]["user"] = $user;
+        }
+    return response()->json($response, $response->data["status_code"]);
    }
 
    /**
