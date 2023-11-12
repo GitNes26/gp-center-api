@@ -18,10 +18,12 @@ return new class extends Migration
         CREATE OR REPLACE VIEW drivers_view AS
         SELECT u.id u_id, u.username, u.email., u.role_id, u.active,
          d.*,
-        r.role, r.read, r.create, r.update, r.delete, r.more_permissions
+        r.role, r.read, r.create, r.update, r.delete, r.more_permissions,
+        dep.department
         FROM drivers d
         INNER JOIN users u ON d.user_id=u.id
         INNER JOIN roles r ON u.role_id=r.id
+        INNER JOIN departments dep ON u.department_id=dep.id
         WHERE u.active=1;
         ");
     }

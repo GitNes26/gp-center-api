@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Director extends Model
+class Driver extends Model
 {
     use HasFactory;
 
@@ -17,6 +17,7 @@ class Director extends Model
     protected $fillable = [
         'id',
         'user_id',
+        'director_id',
         'avatar',
         'name',
         'paternal_last_name',
@@ -46,7 +47,7 @@ class Director extends Model
      * Nombre de la tabla asociada al modelo.
      * @var string
      */
-    protected $table = 'directors';
+    protected $table = 'drivers';
 
     /**
      * LlavePrimaria asociada a la tabla.

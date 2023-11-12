@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Director extends Model
+class DirectorView extends Model
 {
     use HasFactory;
 
@@ -15,6 +15,11 @@ class Director extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'username',
+        'email',
+        'password',
+        'role_id',
+        'active',
         'id',
         'user_id',
         'avatar',
@@ -27,10 +32,17 @@ class Director extends Model
         'img_license',
         'payroll_number',
         'department_id',
+        'department',
         'community_id',
         'street',
         'num_ext',
         'num_int',
+        'role',
+        'read',
+        'create',
+        'update',
+        'delete',
+        'more_permissions'
     ];
 
      /**
@@ -39,6 +51,7 @@ class Director extends Model
      * @var array<int, string>
      */
     protected $hidden = [
+        'password',
         // 'deleted_at',
     ];
 
@@ -46,11 +59,11 @@ class Director extends Model
      * Nombre de la tabla asociada al modelo.
      * @var string
      */
-    protected $table = 'directors';
+    protected $table = 'directors_view';
 
     /**
      * LlavePrimaria asociada a la tabla.
      * @var string
      */
-    protected $primaryKey = 'id';
+    // protected $primaryKey = 'id';
 }
