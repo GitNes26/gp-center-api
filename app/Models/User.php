@@ -22,18 +22,6 @@ class User extends Authenticatable
         'email',
         'password',
         'role_id',
-        'phone',
-        'license_number',
-        'license_due_date',
-        'payroll_number',
-        'department_id',
-        'name',
-        'paternal_last_name',
-        'maternal_last_name',
-        'community_id',
-        'street',
-        'num_ext',
-        'num_int',
         'active',
         'deleted_at'
     ];

@@ -34,13 +34,30 @@ class RoleSeeder extends Seeder
             'created_at' => now(),
         ]);
         DB::table('roles')->insert([
-            'role' => 'Usuario',
-            'description' => 'Rol dedicado para usuarios que harán uso de las unidades.',
+            'role' => 'Encargado de Almacen',
+            'description' => 'Rol dedicado para usuarios que gestionaran el inventario de alamecen.',
+            'read' => '1,2',
+            'create' => 'todas',
+            'update' => 'todas',
+            'delete' => 'todas',
             'created_at' => now(),
         ]);
         DB::table('roles')->insert([
             'role' => 'Mecánico',
             'description' => 'Rol dedicado para mecánicos del taller.',
+            'read' => '1,2',
+            'created_at' => now(),
+        ]);
+        DB::table('roles')->insert([
+            'role' => 'Director',
+            'description' => 'Rol dedicado para usuarios a quienes se les asignaran las unidades y haran uso de ella.',
+            'read' => '1,2',
+            'created_at' => now(),
+        ]);
+        DB::table('roles')->insert([
+            'role' => 'Conductor',
+            'description' => 'Rol dedicado para conductores permitidos por los directores.',
+            'read' => '1,2',
             'created_at' => now(),
         ]);
     }
