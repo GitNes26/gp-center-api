@@ -40,26 +40,26 @@ class UserController extends Controller
          ->first();
 
 
-        $response->data = ObjResponse::CorrectResponse();
-    if (!$user || !Hash::check($request->password, $user->password)) {
-        // throw ValidationException::withMessages([
-        //    'message' => 'Credenciales incorrectas',
-        //    'alert_title' => 'Credenciales incorrectas',
-        //    'alert_text' => 'Credenciales incorrectas',
-        //    'alert_icon' => 'error',
-        // ]);
-        $response->data["message"] = 'peticion satisfactoria | usuario NO encontrado.';
-        $response->data["result"]["token"] = null;
-        $response->data["result"]["user"] = null;
-        $response->data["alert_icon"] ="error";
-        $response->data["alert_text"] = "Credenciales incorrectas";
-    } else {
-        $token = $user->createToken($user->email)->plainTextToken;
-        $response->data["message"] = 'peticion satisfactoria | usuario logeado.';
-        $response->data["result"]["token"] = $token;
-        $response->data["result"]["user"] = $user;
-        }
-    return response()->json($response, $response->data["status_code"]);
+      $response->data = ObjResponse::CorrectResponse();
+      if (!$user || !Hash::check($request->password, $user->password)) {
+         // throw ValidationException::withMessages([
+         //    'message' => 'Credenciales incorrectas',
+         //    'alert_title' => 'Credenciales incorrectas',
+         //    'alert_text' => 'Credenciales incorrectas',
+         //    'alert_icon' => 'error',
+         // ]);
+         $response->data["message"] = 'peticion satisfactoria | usuario NO encontrado.';
+         $response->data["result"]["token"] = null;
+         $response->data["result"]["user"] = null;
+         $response->data["alert_icon"] = "error";
+         $response->data["alert_text"] = "Credenciales incorrectas";
+      } else {
+         $token = $user->createToken($user->email)->plainTextToken;
+         $response->data["message"] = 'peticion satisfactoria | usuario logeado.';
+         $response->data["result"]["token"] = $token;
+         $response->data["result"]["user"] = $user;
+      }
+      return response()->json($response, $response->data["status_code"]);
    }
 
    /**
@@ -387,19 +387,39 @@ class UserController extends Controller
          $type = "JPG";
          $permissions = 0777;
 
-         if (file_exists("$dir/$imgName.PNG")) {
-            // Establecer permisos
-            if (chmod("$dir/$imgName.PNG", $permissions)) {
-               @unlink("$dir/$imgName.PNG");
+         if (stripos("pdf", $image->getClientOriginalExtension()) !== false) {
+            $type = "PDF";
+            if (file_exists("$dir/$imgName.pdf")) {
+               // Establecer permisos
+               if (chmod("$dir/$imgName.pdf", $permissions)) {
+                  @unlink("$dir/$imgName.pdf");
+                  sleep(2);
+               }
+               $type = "PDF";
+            } elseif (file_exists("$dir/$imgName.PDF")) {
+               // Establecer permisos
+               if (chmod("$dir/$imgName.PDF", $permissions)) {
+                  @unlink("$dir/$imgName.PDF");
+                  sleep(2);
+               }
+               $type = "pdf";
             }
-            $type = "JPG";
-         } elseif (file_exists("$dir/$imgName.JPG")) {
-            // Establecer permisos
-            if (chmod("$dir/$imgName.JPG", $permissions)) {
-               @unlink("$dir/$imgName.JPG");
+         } else {
+            if (file_exists("$dir/$imgName.PNG")) {
+               // Establecer permisos
+               if (chmod("$dir/$imgName.PNG", $permissions)) {
+                  @unlink("$dir/$imgName.PNG");
+               }
+               $type = "JPG";
+            } elseif (file_exists("$dir/$imgName.JPG")) {
+               // Establecer permisos
+               if (chmod("$dir/$imgName.JPG", $permissions)) {
+                  @unlink("$dir/$imgName.JPG");
+               }
+               $type = "PNG";
             }
-            $type = "PNG";
          }
+
          $imgName = "$imgName.$type";
          $image->move($destination, $imgName);
          return "$dir/$imgName";
