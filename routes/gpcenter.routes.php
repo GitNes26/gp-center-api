@@ -37,7 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::controller(UserController::class)->group(function () {
-        Route::get('/users/{role_id}', 'index');
+        Route::get('/users/role_id/{role_id}', 'index');
         Route::get('/users/selectIndex', 'selectIndex');
         Route::get('/users/{id}', 'show');
         Route::post('/users', 'create');
