@@ -100,6 +100,7 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role_id' => 3, //usuario normal
+
             'phone' => $request->phone,
             'license_number' => $request->license_number,
             'license_due_date' => $request->license_due_date,
@@ -193,26 +194,22 @@ class UserController extends Controller
             return response()->json($response);
          }
 
-         if ($request->role_id <= 2) {
-            $new_user = User::create([
-               'username' => $request->username,
-               'email' => $request->email,
-               'password' => Hash::make($request->password),
-               'role_id' => $request->role_id,
-               'department_id' => 1, //$request->department_id
-            ]);
-         } elseif ($request->role_id == 4) {
-            $new_user = User::create([
-               'username' => $request->username,
-               'email' => $request->email,
-               'password' => Hash::make($request->password),
-               'role_id' => $request->role_id,
-               'department_id' => 1, //$request->department_id
-               'phone' => $request->phone,
-               'name' => $request->name,
-               'paternal_last_name' => $request->paternal_last_name,
-               'maternal_last_name' => $request->maternal_last_name,
-            ]);
+         $new_user = User::create([
+            'username' => $request->username,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role_id' => $request->role_id,
+         ]);
+
+         if ($request->role_id == 3) {
+            $directorController = new DirectorController();
+            $director = $directorController->createOrUpdate($new_user->id,$request);
+
+            if ($director["result"] == true) {
+                $response->data = $director;
+                return response()->json($response);
+            }
+
          } else {
             $new_user = User::create([
                'username' => $request->username,
