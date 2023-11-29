@@ -16,11 +16,11 @@ return new class extends Migration
     {
         DB::statement("
         CREATE OR REPLACE VIEW mechanics_view AS
-        SELECT u.id u_id, u.username, u.email., u.role_id, u.active,
+        SELECT u.id u_id, u.username, u.email, u.role_id, u.active,
          m.*,
         r.role, r.read, r.create, r.update, r.delete, r.more_permissions
         FROM mechanics m
-        INNER JOIN users u ON d.user_id=u.id
+        INNER JOIN users u ON m.user_id=u.id
         INNER JOIN roles r ON u.role_id=r.id
         WHERE u.active=1;
         ");

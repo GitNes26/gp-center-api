@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('paternal_last_name');
             $table->string('maternal_last_name');
             $table->string('phone');
+            $table->timestamps();
+            $table->dateTime('deleted_at')->nullable();
         });
     }
 

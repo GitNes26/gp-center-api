@@ -30,6 +30,8 @@ return new class extends Migration
             $table->string('street');
             $table->string('num_ext')->default("S/N");
             $table->string('num_int')->nullable()->default("S/N");
+            $table->timestamps();
+            $table->dateTime('deleted_at')->nullable();
         });
     }
 

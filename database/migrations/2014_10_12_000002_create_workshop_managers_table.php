@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('maternal_last_name');
             $table->string('phone');
             $table->string('payroll_number')->default('No Aplica');
+            $table->timestamps();
+            $table->dateTime('deleted_at')->nullable();
         });
     }
 

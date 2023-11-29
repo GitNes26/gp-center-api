@@ -138,8 +138,9 @@ class UserController extends Controller
          // User::on('mysql_gp_center')->get();
          $list = User::where('users.active', true)->where("role_id", ">=", $role_id)
             ->join('roles', 'users.role_id', '=', 'roles.id')
-            ->join('departments', 'users.department_id', '=', 'departments.id')
-            ->select('users.*', 'roles.role', 'departments.department', 'departments.description as department_description')
+            // ->join('departments', 'users.department_id', '=', 'departments.id')
+            ->select('users.*', 'roles.role')
+            // ->select('users.*', 'roles.role', 'departments.department', 'departments.description as department_description')
             ->orderBy('users.id', 'desc')
             ->get();
 
@@ -182,7 +183,7 @@ class UserController extends Controller
     * @param  \Illuminate\Http\Request $request
     * @return \Illuminate\Http\Response $response
     */
-   public function create(Request $request, Response $response)
+   public function create(Request $request, Int $role_id, Response $response)
    {
       $response->data = ObjResponse::DefaultResponse();
       try {
@@ -198,10 +199,14 @@ class UserController extends Controller
             'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role_id' => $request->role_id,
+            'role_id' => $role_id,
          ]);
 
-         if ($request->role_id == 3) {
+         $response->data = ObjResponse::CorrectResponse();
+         $response->data["message"] = 'peticion satisfactoria | usuario registrado.';
+         $response->data["alert_text"] = "Usuario registrado";
+
+         if ($role_id == 5) {
             $directorController = new DirectorController();
             $director = $directorController->createOrUpdate($new_user->id,$request);
 
@@ -210,29 +215,11 @@ class UserController extends Controller
                 return response()->json($response);
             }
 
-         } else {
-            $new_user = User::create([
-               'username' => $request->username,
-               'email' => $request->email,
-               'password' => Hash::make($request->password),
-               'role_id' => $request->role_id,
-               'phone' => $request->phone,
-               'license_number' => $request->license_number,
-               'license_due_date' => $request->license_due_date,
-               'payroll_number' => $request->payroll_number,
-               'department_id' => $request->department_id,
-               'name' => $request->name,
-               'paternal_last_name' => $request->paternal_last_name,
-               'maternal_last_name' => $request->maternal_last_name,
-               'community_id' => $request->community_id,
-               'street' => $request->street,
-               'num_ext' => $request->num_ext,
-               'num_int' => $request->num_int,
-            ]);
+            $response->data["message"] = 'peticion satisfactoria | director registrado.';
+            $response->data["alert_text"] = "Director registrado";
+
          }
-         $response->data = ObjResponse::CorrectResponse();
-         $response->data["message"] = 'peticion satisfactoria | usuario registrado.';
-         $response->data["alert_text"] = "Usuario registrado";
+
       } catch (\Exception $ex) {
          $response->data = ObjResponse::CatchResponse($ex->getMessage());
       }

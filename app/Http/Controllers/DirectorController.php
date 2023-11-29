@@ -68,11 +68,10 @@ class DirectorController extends Controller
    {
       try {
         $director = Director::where('user_id', $request->user_id)->first();
-        $id = $director->id;
-        if (!$director) {
-            $director = new Director();
-            $id = null;
-        }
+
+        $id = null;
+        if ($director) $id = $director->id;
+        else $director = new Director();
 
         $duplicate = $this->validateAvailableData($request->phone, $request->license_number, $id);
         if ($duplicate["result"] == true) {
@@ -88,7 +87,7 @@ class DirectorController extends Controller
         $director->license_due_date = $request->license_due_date;
         $director->img_license = $request->img_license;
         $director->payroll_number = $request->payroll_number;
-        $director->department_id = 3;
+        $director->department_id = $request->department_id;
         $director->community_id = $request->community_id;
         $director->street = $request->street;
         $director->num_ext = $request->num_ext;
@@ -134,10 +133,11 @@ class DirectorController extends Controller
 
    private function validateAvailableData($phone, $license_number, $id)
    {
+      $checkAvailable = new UserController();
       // #VALIDACION DE DATOS REPETIDOS
-      $duplicate = $this->checkAvailableData('directors', 'phone', $phone, 'El número telefónico', 'phone', $id, null);
+      $duplicate = $checkAvailable->checkAvailableData('directors', 'phone', $phone, 'El número telefónico', 'phone', $id, "users");
       if ($duplicate["result"] == true) return $duplicate;
-      $duplicate = $this->checkAvailableData('directors', 'license_number', $license_number, 'El número de licencia', 'license_number', $id, null);
+      $duplicate = $checkAvailable->checkAvailableData('directors', 'license_number', $license_number, 'El número de licencia', 'license_number', $id, "users");
       if ($duplicate["result"] == true) return $duplicate;
       return array("result" => false);
    }

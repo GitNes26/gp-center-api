@@ -24,5 +24,12 @@ class UserSeeder extends Seeder
         // 'department_id' => '1',
             'created_at' => now()
         ]);
+        DB::table('users')->insert([
+            'username' => 'patrimonio',
+            'email' => 'patrimonio@gomezpalacio.gob.mx',
+            'password' => Hash::make('123456'),
+            'role_id' => 2, //Admin
+            'created_at' => now()
+        ]);
     }
 }
