@@ -15,7 +15,13 @@ class MenuSeeder extends Seeder
      */
     public function run()
     {
+        $menuDashboard = 1;
+        $menuAdmin = 3;
+        $menuGarage = 13;
+        $menuCove= 17;
+
         // DASHBOARD
+        $order = 0;
         DB::table('menus')->insert([ #1
             'menu' => 'Dashboard',
             'caption' => '',
@@ -24,17 +30,20 @@ class MenuSeeder extends Seeder
             'order' => 1,
             'created_at' => now(),
         ]);
-            DB::table('menus')->insert([ #2
+            $order=.1;
+            DB::table('menus')->insert([ #2 Buscador
                 'menu' => 'Buscador',
                 'caption' => '',
                 'type' => 'item',
-                'belongs_to' => 1,
+                'belongs_to' => $menuDashboard,
                 'url' => '/admin',
                 'icon' => 'IconSearch',
-                'order' => 1,
+                'order' => $order,
                 'created_at' => now(),
             ]);
+
         // ADMINISTRATIVO
+        $order=0;
         DB::table('menus')->insert([ #3
             'menu' => 'Administrativo',
             'caption' => 'Control de usuarios',
@@ -43,44 +52,100 @@ class MenuSeeder extends Seeder
             'order' => 2,
             'created_at' => now(),
         ]);
-            DB::table('menus')->insert([ #4
-                'menu' => 'Usuarios',
-                'type' => 'item',
-                'belongs_to' => 3,
-                'url' => '/admin/usuarios',
-                'icon' => 'IconUsers',
-                'order' => 1,
-                'created_at' => now(),
-            ]);
-            DB::table('menus')->insert([ #5
-                'menu' => 'Roles',
-                'type' => 'item',
-                'belongs_to' => 3,
-                'url' => '/admin/roles',
-                'icon' => 'IconPaperBag',
-                'order' => 2,
-                'created_at' => now(),
-            ]);
-            DB::table('menus')->insert([ #6
-                'menu' => 'Departamentos',
-                'type' => 'item',
-                'belongs_to' => 3,
-                'url' => '/admin/departamentos',
-                'icon' => 'IconBuildingSkyscraper',
-                'order' => 3,
-                'created_at' => now(),
-            ]);
-            DB::table('menus')->insert([ #7
+            $order=.1;
+            DB::table('menus')->insert([ #4 Menus
                 'menu' => 'Menus',
                 'type' => 'item',
-                'belongs_to' => 3,
+                'belongs_to' => $menuAdmin,
                 'url' => '/admin/menus',
                 'icon' => 'IconCategory2',
-                'order' => 4,
+                'order' => $order,
                 'created_at' => now(),
             ]);
+            $order=.1;
+            DB::table('menus')->insert([ #5 Roles
+                'menu' => 'Roles',
+                'type' => 'item',
+                'belongs_to' => $menuAdmin,
+                'url' => '/admin/roles',
+                'icon' => 'IconPaperBag',
+                'order' => $order,
+                'created_at' => now(),
+            ]);
+            $order=.1;
+            DB::table('menus')->insert([ #6 Departamentos
+                'menu' => 'Departamentos',
+                'type' => 'item',
+                'belongs_to' => $menuAdmin,
+                'url' => '/admin/departamentos',
+                'icon' => 'IconBuildingSkyscraper',
+                'order' => $order,
+                'created_at' => now(),
+            ]);
+            $order=.1;
+            DB::table('menus')->insert([ #7 Usuarios
+                'menu' => 'Usuarios',
+                'type' => 'item',
+                'belongs_to' => $menuAdmin,
+                'url' => '/admin/usuarios',
+                'icon' => 'IconUsers',
+                'order' => $order,
+                'created_at' => now(),
+            ]);
+            $order=.1;
+            DB::table('menus')->insert([ #8 Administradores
+                'menu' => 'Administradores',
+                'type' => 'item',
+                'belongs_to' => $menuAdmin,
+                'url' => '/admin/administradores',
+                'icon' => 'IconUsers',
+                'order' => $order,
+                'created_at' => now(),
+            ]);
+            $order=.1;
+            DB::table('menus')->insert([ #9 Encargado de Almacen
+                'menu' => 'Encargados de Almacen',
+                'type' => 'item',
+                'belongs_to' => $menuAdmin,
+                'url' => '/admin/encargados-de-almacen',
+                'icon' => 'IconUsers',
+                'order' => $order,
+                'created_at' => now(),
+            ]);
+            $order=.1;
+            DB::table('menus')->insert([ #10 Mecánicos
+                'menu' => 'Mecánicos',
+                'type' => 'item',
+                'belongs_to' => $menuAdmin,
+                'url' => '/admin/mecanicos',
+                'icon' => 'IconUsers',
+                'order' => $order,
+                'created_at' => now(),
+            ]);
+            $order=.1;
+            DB::table('menus')->insert([ #11 Directores
+                'menu' => 'Directores',
+                'type' => 'item',
+                'belongs_to' => $menuAdmin,
+                'url' => '/admin/directores',
+                'icon' => 'IconUsers',
+                'order' => $order,
+                'created_at' => now(),
+            ]);
+            $order=.1;
+            DB::table('menus')->insert([ #12 Conductores
+                'menu' => 'Conductores',
+                'type' => 'item',
+                'belongs_to' => $menuAdmin,
+                'url' => '/admin/conductores',
+                'icon' => 'IconUsers',
+                'order' => $order,
+                'created_at' => now(),
+            ]);
+
         // TALLER
-        DB::table('menus')->insert([ #8
+        $order=0;
+        DB::table('menus')->insert([ #13
             'menu' => 'Taller',
             'caption' => 'Catálogos del Taller',
             'type' => 'group',
@@ -88,35 +153,40 @@ class MenuSeeder extends Seeder
             'order' => 3,
             'created_at' => now(),
         ]);
-            DB::table('menus')->insert([ #9
+            $order=.1;
+            DB::table('menus')->insert([ #14 Almacen (Stock)
                 'menu' => 'Almacen (Stock)',
                 'type' => 'item',
-                'belongs_to' => 8,
+                'belongs_to' => $menuGarage,
                 'url' => '/admin/taller/almacen',
                 'icon' => 'IconCarGarage',
-                'order' => 1,
+                'order' => $order,
                 'created_at' => now(),
             ]);
-            DB::table('menus')->insert([ #10
+            $order=.1;
+            DB::table('menus')->insert([ #15 Servicios
                 'menu' => 'Servicios',
                 'type' => 'item',
-                'belongs_to' => 8,
+                'belongs_to' => $menuGarage,
                 'url' => '/admin/taller/servicios',
                 'icon' => 'IconTool',
-                'order' => 2,
+                'order' => $order,
                 'created_at' => now(),
             ]);
-            DB::table('menus')->insert([ #11
-                'menu' => 'Requisiones - PENDIENTE',
+            $order=.1;
+            DB::table('menus')->insert([ #16 Requisiciones
+                'menu' => 'Requisiciones - PENDIENTE',
                 'type' => 'item',
-                'belongs_to' => 8,
+                'belongs_to' => $menuGarage,
                 'url' => '/admin/taller/requisiciones',
                 'icon' => 'IconFileInvoice',
-                'order' => 3,
+                'order' => $order,
                 'created_at' => now(),
             ]);
+
         // CoVe
-        DB::table('menus')->insert([ #12
+        $order=0;
+        DB::table('menus')->insert([ #17
             'menu' => 'CoVe',
             'caption' => 'Control Vehicular',
             'type' => 'group',
@@ -124,40 +194,44 @@ class MenuSeeder extends Seeder
             'order' => 4,
             'created_at' => now(),
         ]);
-            DB::table('menus')->insert([ #13
+            $order=.1;
+            DB::table('menus')->insert([ #18 Marcas
                 'menu' => 'Marcas',
                 'type' => 'item',
-                'belongs_to' => 12,
+                'belongs_to' => $menuCove,
                 'url' => '/admin/cove/marcas',
                 'icon' => 'IconBadgeTm',
-                'order' => 1,
+                'order' => $order,
                 'created_at' => now(),
             ]);
-            DB::table('menus')->insert([ #14
+            $order=.1;
+            DB::table('menus')->insert([ #19 Modelos
                 'menu' => 'Modelos',
                 'type' => 'item',
-                'belongs_to' => 12,
+                'belongs_to' => $menuCove,
                 'url' => '/admin/cove/modelos',
                 'icon' => 'IconBoxModel2',
-                'order' => 2,
+                'order' => $order,
                 'created_at' => now(),
             ]);
-            DB::table('menus')->insert([ #15
-                'menu' => 'Estatus de Vehíuclo',
+            $order=.1;
+            DB::table('menus')->insert([ #20 Estatus de Vehículo
+                'menu' => 'Estatus de Vehículos',
                 'type' => 'item',
-                'belongs_to' => 12,
+                'belongs_to' => $menuCove,
                 'url' => '/admin/cove/estatus-vehiculo',
                 'icon' => 'IconStatusChange',
-                'order' => 3,
+                'order' => $order,
                 'created_at' => now(),
             ]);
-            DB::table('menus')->insert([ #15
+            $order=.1;
+            DB::table('menus')->insert([ #21 Vehículos
                 'menu' => 'Vehículos',
                 'type' => 'item',
-                'belongs_to' => 12,
+                'belongs_to' => $menuCove,
                 'url' => '/admin/cove/vehiculos',
                 'icon' => 'IconCar',
-                'order' => 3,
+                'order' => $order,
                 'created_at' => now(),
             ]);
     }
@@ -179,5 +253,5 @@ class MenuSeeder extends Seeder
 // (12,'CoVe','Control Vehicular','group',0,null,null,4,0,1,'2023-11-05 01:55:45',null,null),
 // (13,'Marcas','','item',12,'/admin/cove/marcas','IconBadgeTm',1,0,1,'2023-11-05 01:55:45',null,null),
 // (14,'Modelos','','item',12,'/admin/cove/modelos','IconBoxModel2',2,0,1,'2023-11-05 01:55:45',null,null),
-// (15,'Estatus de Vehíuclo','','item',12,'/admin/cove/estatus-vehiculo','IconStatusChange',3,0,1,'2023-11-05 01:55:45',null,null),
+// (15,'Estatus de Vehículos','','item',12,'/admin/cove/estatus-vehiculo','IconStatusChange',3,0,1,'2023-11-05 01:55:45',null,null),
 // (16,'Vehículos','','item',12,'/admin/cove/vehiculos','IconCar',3,0,1,'2023-11-05 01:55:45',null,null);

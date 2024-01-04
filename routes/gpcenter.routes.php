@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\BrandController;
+use App\Http\Controllers\DirectorController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ModelController;
 use App\Http\Controllers\ServiceController;
@@ -37,12 +38,26 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::controller(UserController::class)->group(function () {
-        Route::get('/users/{role_id}', 'index');
+        Route::get('/users/role_id/{role_id}', 'index');
+        Route::get('/users/by/role_id/{role_id}', 'indexByRole');
         Route::get('/users/selectIndex', 'selectIndex');
         Route::get('/users/{id}', 'show');
-        Route::post('/users', 'create');
+        // Route::post('/users', 'create');
         Route::post('/users/update/{id?}', 'update');
         Route::post('/users/destroy/{id}', 'destroy');
+        Route::post('/users/destroyMultiple', 'destroyMultiple');
+        Route::get('/users/{id}/DisEnableUser/{active}', 'DisEnableUser');
+
+        Route::post('/users/create/{role_id}', 'create');
+    });
+
+    Route::controller(DirectorController::class)->group(function () {
+        Route::get('/directors', 'index');
+        Route::get('/directors/selectIndex', 'selectIndex');
+        Route::get('/directors/{id}', 'show');
+        Route::post('/directors', 'create');
+        Route::post('/directors/update/{id?}', 'update');
+        Route::post('/directors/destroy/{id}', 'destroy');
     });
 
     Route::controller(RoleController::class)->group(function () {
