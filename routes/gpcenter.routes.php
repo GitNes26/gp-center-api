@@ -73,7 +73,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/departments', 'index');
         Route::get('/departments/selectIndex', 'selectIndex');
         Route::get('/departments/{id}', 'show');
-        Route::post('/departments', 'create');
+        Route::post('/departments/create', 'create');
         Route::post('/departments/update/{id?}', 'update');
         Route::post('/departments/destroy/{id}', 'destroy');
     });
