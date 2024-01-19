@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AssignedVehicleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -55,7 +56,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/directors', 'index');
         Route::get('/directors/selectIndex', 'selectIndex');
         Route::get('/directors/{id}', 'show');
-        Route::post('/directors', 'create');
+        // Route::post('/directors', 'create');
         Route::post('/directors/update/{id?}', 'update');
         Route::post('/directors/destroy/{id}', 'destroy');
     });
@@ -139,5 +140,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/services/destroy/{id}', 'destroy');
 
         Route::post('/services/{id?}', 'update');
+    });
+
+    Route::controller(AssignedVehicleController::class)->group(function () {
+        Route::get('/assignedVehicle', 'index');
+        Route::get('/assignedVehicle/{id}', 'show');
+        Route::post('/assignedVehicle/create', 'createOrUpdate');
+        Route::post('/assignedVehicle/update/{id?}', 'createOrUpdate');
+        Route::post('/assignedVehicle/destroy/{id}', 'destroy');
+
     });
 });
