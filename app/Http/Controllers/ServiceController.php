@@ -87,7 +87,7 @@ class ServiceController extends Controller
             ]);
 
             $vehicleInstance = new VehicleController();
-            $vehicleInstance->updateStatus($request->vehicle_id, 5); //En Taller
+            $vehicleInstance->updateStatus($request->vehicle_id, 5); //En Taller/Servicio
 
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'peticion satisfactoria | servicio registrado.';

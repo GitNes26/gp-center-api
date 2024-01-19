@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users','id');
             $table->foreignId('director_id')->constrained('directors','id');
-            $table->string('avatar');
+            $table->string('avatar')->nullable();
             $table->string('name');
             $table->string('paternal_last_name');
             $table->string('maternal_last_name');
@@ -31,6 +31,8 @@ return new class extends Migration
             $table->string('street');
             $table->string('num_ext')->default("S/N");
             $table->string('num_int')->nullable()->default("S/N");
+            $table->timestamps();
+            $table->dateTime('deleted_at')->nullable();
         });
     }
 

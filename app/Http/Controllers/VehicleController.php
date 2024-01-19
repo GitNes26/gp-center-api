@@ -144,6 +144,16 @@ class VehicleController extends Controller
                     $join->on('vehicle_plates.vehicle_id', '=', 'vehicles.id')
                         ->where('vehicle_plates.expired', '=', 0);
                 })
+                // ->join('assigned_vehicles', function ($join) {
+                //     $join->on('assigned_vehicles.vehicle_id', '=', 'vehicles.id')
+                //     ->where('assigned_vehicles.active', '=', 1)
+                //     ->orderBy('assigned_vehicles.date','desc');
+                // })
+                // ->join('directors_view', function ($join) {
+                //     $join->on('assigned_vehicles.user_id', '=', 'directors_view.user_id')
+                //     ->where('assigned_vehicles.active', '=', 1)
+                //     ->orderBy('assigned_vehicles.date','desc');
+                // })
                 ->select('vehicles.*', 'brands.brand', 'brands.img_path as img_brand', 'models.model', 'vehicle_status.vehicle_status', 'vehicle_status.bg_color', 'vehicle_status.letter_black', 'plates', 'initial_date', 'due_date')
                 ->first();
 
@@ -293,10 +303,9 @@ class VehicleController extends Controller
     public function updateStatus(int $id, int $vehicle_status_id)
     {
         try {
-            $vehicle = Vehicle::find($id)
-                ->update([
-                    'vehicle_status_id' => $vehicle_status_id,
-                ]);
+            $vehicle = Vehicle::find($id);
+            $vehicle->vehicle_status_id = $vehicle_status_id;
+            $vehicle->save();
             return 1;
         } catch (\Exception $ex) {
             error_log($ex->getMessage());

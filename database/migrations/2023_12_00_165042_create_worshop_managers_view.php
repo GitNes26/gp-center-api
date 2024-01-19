@@ -15,12 +15,12 @@ return new class extends Migration
     public function up()
     {
         DB::statement("
-        CREATE OR REPLACE VIEW worshop_managers_view AS
-        SELECT u.id u_id, u.username, u.email., u.role_id, u.active,
+        CREATE OR REPLACE VIEW workshop_managers_view AS
+        SELECT u.id u_id, u.username, u.email, u.role_id, u.active,
         wm.*,
         r.role, r.read, r.create, r.update, r.delete, r.more_permissions
-        FROM worshop_managers wm
-        INNER JOIN users u ON d.user_id=u.id
+        FROM workshop_managers wm
+        INNER JOIN users u ON wm.user_id=u.id
         INNER JOIN roles r ON u.role_id=r.id
         WHERE u.active=1;
         ");
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        DB::statement('DROP VIEW IF EXISTS worshop_managers_view');
+        DB::statement('DROP VIEW IF EXISTS workshop_managers_view');
     }
 };

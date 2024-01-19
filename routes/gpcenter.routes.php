@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AssignedVehicleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -8,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\BrandController;
+use App\Http\Controllers\DirectorController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ModelController;
 use App\Http\Controllers\ServiceController;
@@ -38,11 +40,25 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::controller(UserController::class)->group(function () {
         Route::get('/users/role_id/{role_id}', 'index');
+        Route::get('/users/by/role_id/{role_id}', 'indexByRole');
         Route::get('/users/selectIndex', 'selectIndex');
         Route::get('/users/{id}', 'show');
-        Route::post('/users', 'create');
+        // Route::post('/users', 'create');
         Route::post('/users/update/{id?}', 'update');
         Route::post('/users/destroy/{id}', 'destroy');
+        Route::post('/users/destroyMultiple', 'destroyMultiple');
+        Route::get('/users/{id}/DisEnableUser/{active}', 'DisEnableUser');
+
+        Route::post('/users/create/{role_id}', 'create');
+    });
+
+    Route::controller(DirectorController::class)->group(function () {
+        Route::get('/directors', 'index');
+        Route::get('/directors/selectIndex', 'selectIndex');
+        Route::get('/directors/{id}', 'show');
+        // Route::post('/directors', 'create');
+        Route::post('/directors/update/{id?}', 'update');
+        Route::post('/directors/destroy/{id}', 'destroy');
     });
 
     Route::controller(RoleController::class)->group(function () {
@@ -58,7 +74,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/departments', 'index');
         Route::get('/departments/selectIndex', 'selectIndex');
         Route::get('/departments/{id}', 'show');
-        Route::post('/departments', 'create');
+        Route::post('/departments/create', 'create');
         Route::post('/departments/update/{id?}', 'update');
         Route::post('/departments/destroy/{id}', 'destroy');
     });
@@ -124,5 +140,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/services/destroy/{id}', 'destroy');
 
         Route::post('/services/{id?}', 'update');
+    });
+
+    Route::controller(AssignedVehicleController::class)->group(function () {
+        Route::get('/assignedVehicle', 'index');
+        Route::get('/assignedVehicle/{id}', 'show');
+        Route::post('/assignedVehicle/create', 'createOrUpdate');
+        Route::post('/assignedVehicle/update/{id?}', 'createOrUpdate');
+        Route::post('/assignedVehicle/destroy/{id}', 'destroy');
+
     });
 });
