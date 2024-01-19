@@ -117,7 +117,8 @@ class DirectorController extends Controller
       $response->data = ObjResponse::DefaultResponse();
       try {
          // echo "el id: $request->id";
-         $user = DirectorView::where('user_id', $request->user_id)
+         // $user = DirectorView::where('user_id', $request->user_id)
+         $user = DirectorView::where('id', $request->id)
             ->first();
 
          $response->data = ObjResponse::CorrectResponse();
