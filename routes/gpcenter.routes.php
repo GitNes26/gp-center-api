@@ -10,6 +10,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\DirectorController;
+use App\Http\Controllers\DriverController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ModelController;
 use App\Http\Controllers\ServiceController;
@@ -49,16 +50,26 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/users/destroyMultiple', 'destroyMultiple');
         Route::get('/users/{id}/DisEnableUser/{active}', 'DisEnableUser');
 
-        Route::post('/users/create/{role_id}', 'create');
+        // Route::post('/users/create/{role_id}', 'create');
+        Route::post('/users/create/{role_id}', 'createOrUpdate');
+        Route::post('/users/update/{role_id}', 'createOrUpdate');
     });
 
     Route::controller(DirectorController::class)->group(function () {
         Route::get('/directors', 'index');
         Route::get('/directors/selectIndex', 'selectIndex');
         Route::get('/directors/{id}', 'show');
-        // Route::post('/directors', 'create');
-        Route::post('/directors/update/{id?}', 'update');
-        Route::post('/directors/destroy/{id}', 'destroy');
+        // Route::post('/directors/create', 'createOrUpdate'); #ES POR MEDIO DEL UserController
+        // Route::post('/directors/update/{id?}', 'createOrUpdate');
+        // Route::post('/directors/destroy/{id}', 'destroy');
+    });
+    Route::controller(DriverController::class)->group(function () {
+        Route::get('/drivers', 'index');
+        Route::get('/drivers/selectIndex', 'selectIndex');
+        Route::get('/drivers/{id}', 'show');
+        // Route::post('/drivers/create', 'createOrUpdate'); #ES POR MEDIO DEL UserController
+        // Route::post('/drivers/update/{id?}', 'createOrUpdate');
+        // Route::post('/drivers/destroy/{id}', 'destroy');
     });
 
     Route::controller(RoleController::class)->group(function () {

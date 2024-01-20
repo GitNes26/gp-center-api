@@ -209,6 +209,83 @@ class UserController extends Controller
    }
 
    /**
+    * Crear o Actualziar usuario.
+    *
+    * @param  \Illuminate\Http\Request $request
+    * @return \Illuminate\Http\Response $response
+    */
+    public function createOrUpdate(Request $request, Int $role_id=null, Response $response)
+    {
+        $response->data = ObjResponse::DefaultResponse();
+        try {
+          $token = $request->bearerToken();
+          $id = $request->id > 0 ? $request->id : null;
+          $minus = "usuario";
+          $mayus = "Usuario";
+          $controller = null;
+
+          $duplicate = $this->validateAvailableData($request->username, $request->email, $id);
+          if ($duplicate["result"] == true) {
+             $response->data = $duplicate;
+             return response()->json($response);
+          }
+
+          $user = User::find($id);
+          if (!$user) $user = new User();
+
+          $user->username = $request->username;
+          $user->email = $request->email;
+          if (strlen($request->password) > 0) $user->password = Hash::make($request->password);
+          $user->role_id = $role_id;
+
+          $user->save();
+          $response->data = ObjResponse::CorrectResponse();
+
+          if ($role_id == 1) {
+            $minus = "super admin";
+            $mayus = "Super Admin";
+          }
+          elseif ($role_id == 2) {
+            $minus = "admin";
+            $mayus = "Admin";
+          }
+          elseif ($role_id == 3) {
+            $minus = "encargado de almacén";
+            $mayus = "Encargado de Almacén";
+          }
+          elseif ($role_id == 4) {
+            $minus = "mecánico";
+            $mayus = "Mecánico";
+          }
+          elseif ($role_id == 5) {
+            $minus = "director";
+            $mayus = "Director";
+            $controller = new DirectorController();
+          }
+          elseif ($role_id == 6) {
+            $minus = "conductor";
+            $mayus = "Conductor";
+            $controller = new DriverController();
+          }
+
+          if ($controller) {
+            $obj = $controller->createOrUpdate($user->id,$request);
+
+              if ($obj["result"] == true) {
+                $response->data = $obj;
+                return response()->json($response);
+              }
+          }
+          $response->data["message"] = $id > 0 ? "peticion satisfactoria | $minus editado." : "peticion satisfactoria | $minus registrado.";
+          $response->data["alert_text"] = $id > 0 ? "$mayus editado" : "$mayus registrado";
+
+       } catch (\Exception $ex) {
+          $response->data = ObjResponse::CatchResponse($ex->getMessage());
+       }
+       return response()->json($response, $response->data["status_code"]);
+    }
+
+   /**
     * Crear usuario.
     *
     * @param  \Illuminate\Http\Request $request
