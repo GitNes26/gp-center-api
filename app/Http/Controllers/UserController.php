@@ -219,12 +219,16 @@ class UserController extends Controller
         $response->data = ObjResponse::DefaultResponse();
         try {
           $token = $request->bearerToken();
-          $id = $request->id > 0 ? $request->id : null;
+          $id = (int)$request->user_id > 0 ? (int)$request->user_id : null;
+        //   echo "el user_id: $request->user_id";
           $minus = "usuario";
           $mayus = "Usuario";
           $controller = null;
+          $secondTable = null;
+          if ($request->role_id == 5) $secondTable="directors";
+          if ($request->role_id == 6) $secondTable="drivers";
 
-          $duplicate = $this->validateAvailableData($request->username, $request->email, $id);
+          $duplicate = $this->validateAvailableData($request->username, $request->email, $id, $secondTable);
           if ($duplicate["result"] == true) {
              $response->data = $duplicate;
              return response()->json($response);
@@ -573,12 +577,12 @@ class UserController extends Controller
       }
    }
 
-   private function validateAvailableData($username, $email, $id)
+   private function validateAvailableData($username, $email, $id, $secondTable=null)
    {
       // #VALIDACION DE DATOS REPETIDOS
-      $duplicate = $this->checkAvailableData('users', 'username', $username, 'El nombre de usuario', 'username', $id, null);
+      $duplicate = $this->checkAvailableData('users', 'username', $username, 'El nombre de usuario', 'username', $id, $secondTable);
       if ($duplicate["result"] == true) return $duplicate;
-      $duplicate = $this->checkAvailableData('users', 'email', $email, 'El correo electrónico', 'email', $id, null);
+      $duplicate = $this->checkAvailableData('users', 'email', $email, 'El correo electrónico', 'email', $id, $secondTable);
       if ($duplicate["result"] == true) return $duplicate;
       return array("result" => false);
    }
@@ -586,13 +590,13 @@ class UserController extends Controller
    public function checkAvailableData($table, $column, $value, $propTitle, $input, $id, $secondTable = null)
    {
       if ($secondTable) {
-         $query = "SELECT count(*) as duplicate FROM $table INNER JOIN $secondTable ON user_id=users.id WHERE $column='$value' AND active=1;";
-         if ($id != null) $query = "SELECT count(*) as duplicate FROM $table t INNER JOIN $secondTable ON t.user_id=users.id WHERE t.$column='$value' AND active=1 AND t.id!=$id";
+         $query = "SELECT count(*) as duplicate FROM $table u INNER JOIN $secondTable t2 ON u.user_id=u.id WHERE $column='$value' AND active=1;";
+         if ($id != null) $query = "SELECT count(*) as duplicate FROM $table u INNER JOIN $secondTable t2 ON t2.user_id=u.id WHERE u.$column='$value' AND active=1 AND u.id!=$id";
       } else {
          $query = "SELECT count(*) as duplicate FROM $table WHERE $column='$value' AND active=1";
          if ($id != null) $query = "SELECT count(*) as duplicate FROM $table WHERE $column='$value' AND active=1 AND id!=$id";
       }
-      //   echo $query;
+        // echo $query;
       $result = DB::select($query)[0];
       //   var_dump($result->duplicate);
       if ((int)$result->duplicate > 0) {

@@ -45,7 +45,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/users/selectIndex', 'selectIndex');
         Route::get('/users/{id}', 'show');
         // Route::post('/users', 'create');
-        Route::post('/users/update/{id?}', 'update');
+        // Route::post('/users/update/{id?}', 'update');
         Route::post('/users/destroy/{id}', 'destroy');
         Route::post('/users/destroyMultiple', 'destroyMultiple');
         Route::get('/users/{id}/DisEnableUser/{active}', 'DisEnableUser');
