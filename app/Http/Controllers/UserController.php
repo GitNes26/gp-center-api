@@ -136,7 +136,7 @@ class UserController extends Controller
       try {
          // $list = DB::select('SELECT * FROM users where active = 1');
          // User::on('mysql_gp_center')->get();
-        //  $list = User::where('users.active', true)->where("role_id", ">=", $role_id)
+         //  $list = User::where('users.active', true)->where("role_id", ">=", $role_id)
          $list = User::where("role_id", ">=", $role_id)
             ->join('roles', 'users.role_id', '=', 'roles.id')
             // ->join('departments', 'users.department_id', '=', 'departments.id')
@@ -161,29 +161,29 @@ class UserController extends Controller
     *
     * @return \Illuminate\Http\Response $response
     */
-    public function indexByrole(Int $role_id, Response $response)
-    {
-       $response->data = ObjResponse::DefaultResponse();
-       try {
-          // $list = DB::select('SELECT * FROM users where active = 1');
-          // User::on('mysql_gp_center')->get();
-          $list = User::where('users.active', true)->where("role_id", "=", $role_id)
-             ->join('roles', 'users.role_id', '=', 'roles.id')
-             // ->join('departments', 'users.department_id', '=', 'departments.id')
-             ->select('users.*', 'roles.role')
-             // ->select('users.*', 'roles.role', 'departments.department', 'departments.description as department_description')
-             ->orderBy('users.id', 'desc')
-             ->get();
+   public function indexByrole(Int $role_id, Response $response)
+   {
+      $response->data = ObjResponse::DefaultResponse();
+      try {
+         // $list = DB::select('SELECT * FROM users where active = 1');
+         // User::on('mysql_gp_center')->get();
+         $list = User::where('users.active', true)->where("role_id", "=", $role_id)
+            ->join('roles', 'users.role_id', '=', 'roles.id')
+            // ->join('departments', 'users.department_id', '=', 'departments.id')
+            ->select('users.*', 'roles.role')
+            // ->select('users.*', 'roles.role', 'departments.department', 'departments.description as department_description')
+            ->orderBy('users.id', 'desc')
+            ->get();
 
-          $response->data = ObjResponse::CorrectResponse();
-          $response->data["message"] = 'peticion satisfactoria | lista de usuarios.';
-          $response->data["alert_text"] = "usuarios encontrados";
-          $response->data["result"] = $list;
-       } catch (\Exception $ex) {
-          $response->data = ObjResponse::CatchResponse($ex->getMessage());
-       }
-       return response()->json($response, $response->data["status_code"]);
-    }
+         $response->data = ObjResponse::CorrectResponse();
+         $response->data["message"] = 'peticion satisfactoria | lista de usuarios.';
+         $response->data["alert_text"] = "usuarios encontrados";
+         $response->data["result"] = $list;
+      } catch (\Exception $ex) {
+         $response->data = ObjResponse::CatchResponse($ex->getMessage());
+      }
+      return response()->json($response, $response->data["status_code"]);
+   }
 
    /**
     * Mostrar listado para un selector.
@@ -214,80 +214,74 @@ class UserController extends Controller
     * @param  \Illuminate\Http\Request $request
     * @return \Illuminate\Http\Response $response
     */
-    public function createOrUpdate(Request $request, Int $role_id=null, Response $response)
-    {
-        $response->data = ObjResponse::DefaultResponse();
-        try {
-          $token = $request->bearerToken();
-          $id = (int)$request->user_id > 0 ? (int)$request->user_id : null;
-        //   echo "el user_id: $request->user_id";
-          $minus = "usuario";
-          $mayus = "Usuario";
-          $controller = null;
-          $secondTable = null;
-          if ($request->role_id == 5) $secondTable="directors";
-          if ($request->role_id == 6) $secondTable="drivers";
+   public function createOrUpdate(Request $request, Int $role_id = null, Response $response)
+   {
+      $response->data = ObjResponse::DefaultResponse();
+      try {
+         $token = $request->bearerToken();
+         $id = (int)$request->user_id > 0 ? (int)$request->user_id : null;
+         //   echo "el user_id: $request->user_id";
+         $minus = "usuario";
+         $mayus = "Usuario";
+         $controller = null;
+         $secondTable = null;
+         //  if ($request->role_id == 5) $secondTable="directors";
+         //  if ($request->role_id == 6) $secondTable="drivers";
 
-          $duplicate = $this->validateAvailableData($request->username, $request->email, $id, $secondTable);
-          if ($duplicate["result"] == true) {
-             $response->data = $duplicate;
-             return response()->json($response);
-          }
+         $duplicate = $this->validateAvailableData($request->username, $request->email, $id, $secondTable);
+         if ($duplicate["result"] == true) {
+            $response->data = $duplicate;
+            return response()->json($response);
+         }
 
-          $user = User::find($id);
-          if (!$user) $user = new User();
+         $user = User::find($id);
+         if (!$user) $user = new User();
 
-          $user->username = $request->username;
-          $user->email = $request->email;
-          if (strlen($request->password) > 0) $user->password = Hash::make($request->password);
-          $user->role_id = $role_id;
+         $user->username = $request->username;
+         $user->email = $request->email;
+         if (strlen($request->password) > 0) $user->password = Hash::make($request->password);
+         $user->role_id = $role_id;
 
-          $user->save();
-          $response->data = ObjResponse::CorrectResponse();
+         $user->save();
+         $response->data = ObjResponse::CorrectResponse();
 
-          if ($role_id == 1) {
+         if ($role_id == 1) {
             $minus = "super admin";
             $mayus = "Super Admin";
-          }
-          elseif ($role_id == 2) {
+         } elseif ($role_id == 2) {
             $minus = "admin";
             $mayus = "Admin";
-          }
-          elseif ($role_id == 3) {
+         } elseif ($role_id == 3) {
             $minus = "encargado de almacén";
             $mayus = "Encargado de Almacén";
-          }
-          elseif ($role_id == 4) {
+         } elseif ($role_id == 4) {
             $minus = "mecánico";
             $mayus = "Mecánico";
-          }
-          elseif ($role_id == 5) {
+         } elseif ($role_id == 5) {
             $minus = "director";
             $mayus = "Director";
             $controller = new DirectorController();
-          }
-          elseif ($role_id == 6) {
+         } elseif ($role_id == 6) {
             $minus = "conductor";
             $mayus = "Conductor";
             $controller = new DriverController();
-          }
+         }
 
-          if ($controller) {
-            $obj = $controller->createOrUpdate($user->id,$request);
+         if ($controller) {
+            $obj = $controller->createOrUpdate($user->id, $request);
 
-              if ($obj["result"] == true) {
-                $response->data = $obj;
-                return response()->json($response);
-              }
-          }
-          $response->data["message"] = $id > 0 ? "peticion satisfactoria | $minus editado." : "peticion satisfactoria | $minus registrado.";
-          $response->data["alert_text"] = $id > 0 ? "$mayus editado" : "$mayus registrado";
-
-       } catch (\Exception $ex) {
-          $response->data = ObjResponse::CatchResponse($ex->getMessage());
-       }
-       return response()->json($response, $response->data["status_code"]);
-    }
+            if ($obj["result"] == true) {
+               $response->data = $obj;
+               return response()->json($response);
+            }
+         }
+         $response->data["message"] = $id > 0 ? "peticion satisfactoria | $minus editado." : "peticion satisfactoria | $minus registrado.";
+         $response->data["alert_text"] = $id > 0 ? "$mayus editado" : "$mayus registrado";
+      } catch (\Exception $ex) {
+         $response->data = ObjResponse::CatchResponse($ex->getMessage());
+      }
+      return response()->json($response, $response->data["status_code"]);
+   }
 
    /**
     * Crear usuario.
@@ -320,18 +314,16 @@ class UserController extends Controller
 
          if ($role_id == 5) {
             $directorController = new DirectorController();
-            $director = $directorController->createOrUpdate($new_user->id,$request);
+            $director = $directorController->createOrUpdate($new_user->id, $request);
 
             if ($director["result"] == true) {
-                $response->data = $director;
-                return response()->json($response);
+               $response->data = $director;
+               return response()->json($response);
             }
 
             $response->data["message"] = 'peticion satisfactoria | director registrado.';
             $response->data["alert_text"] = "Director registrado";
-
          }
-
       } catch (\Exception $ex) {
          $response->data = ObjResponse::CatchResponse($ex->getMessage());
       }
@@ -492,9 +484,9 @@ class UserController extends Controller
          // $deleteIds = explode(',', $ids);
          $countDeleted = sizeof($request->ids);
          User::whereIn('id', $request->ids)->update([
-               'active' => false,
-               'deleted_at' => date('Y-m-d H:i:s'),
-            ]);
+            'active' => false,
+            'deleted_at' => date('Y-m-d H:i:s'),
+         ]);
          $response->data = ObjResponse::CorrectResponse();
          $response->data["message"] = $countDeleted == 1 ? 'peticion satisfactoria | usuario eliminado.' : "peticion satisfactoria | usuarios eliminados ($countDeleted).";
          $response->data["alert_text"] = $countDeleted == 1 ? 'Usuario eliminado' : "Usuarios eliminados  ($countDeleted)";
@@ -515,9 +507,9 @@ class UserController extends Controller
       $response->data = ObjResponse::DefaultResponse();
       try {
          User::where('id', $id)
-               ->update([
-                  'active' => (bool)$active
-               ]);
+            ->update([
+               'active' => (bool)$active
+            ]);
 
          $description = $active == "0" ? 'desactivado' : 'reactivado';
          $response->data = ObjResponse::CorrectResponse();
@@ -577,7 +569,7 @@ class UserController extends Controller
       }
    }
 
-   private function validateAvailableData($username, $email, $id, $secondTable=null)
+   private function validateAvailableData($username, $email, $id, $secondTable = null)
    {
       // #VALIDACION DE DATOS REPETIDOS
       $duplicate = $this->checkAvailableData('users', 'username', $username, 'El nombre de usuario', 'username', $id, $secondTable);
@@ -590,13 +582,13 @@ class UserController extends Controller
    public function checkAvailableData($table, $column, $value, $propTitle, $input, $id, $secondTable = null)
    {
       if ($secondTable) {
-         $query = "SELECT count(*) as duplicate FROM $table u INNER JOIN $secondTable t2 ON u.user_id=u.id WHERE $column='$value' AND active=1;";
-         if ($id != null) $query = "SELECT count(*) as duplicate FROM $table u INNER JOIN $secondTable t2 ON t2.user_id=u.id WHERE u.$column='$value' AND active=1 AND u.id!=$id";
+         $query = "SELECT count(*) as duplicate FROM $table t INNER JOIN $secondTable u ON t.user_id=u.id WHERE t.$column='$value' AND u.active=1;";
+         if ($id != null) $query = "SELECT count(*) as duplicate FROM $table t INNER JOIN $secondTable u ON t.user_id=u.id WHERE t.$column='$value' AND u.active=1 AND t.id!=$id";
       } else {
          $query = "SELECT count(*) as duplicate FROM $table WHERE $column='$value' AND active=1";
          if ($id != null) $query = "SELECT count(*) as duplicate FROM $table WHERE $column='$value' AND active=1 AND id!=$id";
       }
-        // echo $query;
+      // echo $query;
       $result = DB::select($query)[0];
       //   var_dump($result->duplicate);
       if ((int)$result->duplicate > 0) {

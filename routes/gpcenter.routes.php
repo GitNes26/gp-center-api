@@ -51,8 +51,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/users/{id}/DisEnableUser/{active}', 'DisEnableUser');
 
         // Route::post('/users/create/{role_id}', 'create');
-        Route::post('/users/create/{role_id}', 'createOrUpdate');
-        Route::post('/users/update/{role_id}', 'createOrUpdate');
+        Route::post('/users/create/role_id/{role_id}', 'createOrUpdate');
+        Route::post('/users/update/role_id/{role_id}', 'createOrUpdate');
     });
 
     Route::controller(DirectorController::class)->group(function () {
