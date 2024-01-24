@@ -81,7 +81,7 @@ class ServiceController extends Controller
                 'contact_name' => $request->contact_name,
                 'contact_phone' => $request->contact_phone,
                 'pre_diagnosis' => $request->pre_diagnosis,
-                'mechanic_id' => $request->mechanic_id,
+                // 'mechanic_id' => $request->mechanic_id,
                 // 'final_diagnosis' => $request->final_diagnosis,
                 // 'evidence_img_path' => $request->evidence_img_path,
             ]);

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Vehicle;
 use App\Models\ObjResponse;
-
+use App\Models\VehicleDetailView;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -136,26 +136,28 @@ class VehicleController extends Controller
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
-            $vehicle = Vehicle::where("vehicles.active", 1)->where($searchBy, $value)
-                ->join('brands', 'vehicles.brand_id', '=', 'brands.id')
-                ->join('models', 'vehicles.model_id', '=', 'models.id')
-                ->join('vehicle_status', 'vehicles.vehicle_status_id', '=', 'vehicle_status.id')
-                ->join('vehicle_plates', function ($join) {
-                    $join->on('vehicle_plates.vehicle_id', '=', 'vehicles.id')
-                        ->where('vehicle_plates.expired', '=', 0);
-                })
-                // ->join('assigned_vehicles', function ($join) {
-                //     $join->on('assigned_vehicles.vehicle_id', '=', 'vehicles.id')
-                //     ->where('assigned_vehicles.active', '=', 1)
-                //     ->orderBy('assigned_vehicles.date','desc');
-                // })
-                // ->join('directors_view', function ($join) {
-                //     $join->on('assigned_vehicles.user_id', '=', 'directors_view.user_id')
-                //     ->where('assigned_vehicles.active', '=', 1)
-                //     ->orderBy('assigned_vehicles.date','desc');
-                // })
-                ->select('vehicles.*', 'brands.brand', 'brands.img_path as img_brand', 'models.model', 'vehicle_status.vehicle_status', 'vehicle_status.bg_color', 'vehicle_status.letter_black', 'plates', 'initial_date', 'due_date')
-                ->first();
+            // $vehicle = Vehicle::where("vehicles.active", 1)->where($searchBy, $value)
+            //     ->join('brands', 'vehicles.brand_id', '=', 'brands.id')
+            //     ->join('models', 'vehicles.model_id', '=', 'models.id')
+            //     ->join('vehicle_status', 'vehicles.vehicle_status_id', '=', 'vehicle_status.id')
+            //     ->join('vehicle_plates', function ($join) {
+            //         $join->on('vehicle_plates.vehicle_id', '=', 'vehicles.id')
+            //             ->where('vehicle_plates.expired', '=', 0);
+            //     })
+            //     // ->join('assigned_vehicles', function ($join) {
+            //     //     $join->on('assigned_vehicles.vehicle_id', '=', 'vehicles.id')
+            //     //     ->where('assigned_vehicles.active', '=', 1)
+            //     //     ->orderBy('assigned_vehicles.date','desc');
+            //     // })
+            //     // ->join('directors_view', function ($join) {
+            //     //     $join->on('assigned_vehicles.user_id', '=', 'directors_view.user_id')
+            //     //     ->where('assigned_vehicles.active', '=', 1)
+            //     //     ->orderBy('assigned_vehicles.date','desc');
+            //     // })
+            //     ->select('vehicles.*', 'brands.brand', 'brands.img_path as img_brand', 'models.model', 'vehicle_status.vehicle_status', 'vehicle_status.bg_color', 'vehicle_status.letter_black', 'plates', 'initial_date', 'due_date')
+            //     ->first();
+            $vehicle = VehicleDetailView::where("active", 1)->where($searchBy, $value)->first();
+
 
             $response->data = ObjResponse::CorrectResponse();
             if ($vehicle) {
@@ -186,16 +188,17 @@ class VehicleController extends Controller
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
-            $vehicle = Vehicle::where('vehicles.id', $request->id)
-                ->join('brands', 'vehicles.brand_id', '=', 'brands.id')
-                ->join('models', 'vehicles.model_id', '=', 'models.id')
-                ->join('vehicle_status', 'vehicles.vehicle_status_id', '=', 'vehicle_status.id')
-                ->join('vehicle_plates', function ($join) {
-                    $join->on('vehicle_plates.vehicle_id', '=', 'vehicles.id')
-                        ->where('vehicle_plates.expired', '=', 0);
-                })
-                ->select('vehicles.*', 'brands.brand', 'models.model', 'vehicle_status.vehicle_status', 'vehicle_status.bg_color', 'vehicle_status.letter_black', 'plates', 'initial_date', 'due_date')
-                ->first();
+            // $vehicle = Vehicle::where('vehicles.id', $request->id)
+            //     ->join('brands', 'vehicles.brand_id', '=', 'brands.id')
+            //     ->join('models', 'vehicles.model_id', '=', 'models.id')
+            //     ->join('vehicle_status', 'vehicles.vehicle_status_id', '=', 'vehicle_status.id')
+            //     ->join('vehicle_plates', function ($join) {
+            //         $join->on('vehicle_plates.vehicle_id', '=', 'vehicles.id')
+            //             ->where('vehicle_plates.expired', '=', 0);
+            //     })
+            //     ->select('vehicles.*', 'brands.brand', 'models.model', 'vehicle_status.vehicle_status', 'vehicle_status.bg_color', 'vehicle_status.letter_black', 'plates', 'initial_date', 'due_date')
+            //     ->first();
+            $vehicle = VehicleDetailView::find($request->id);
 
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'peticion satisfactoria | vehículo encontrado.';
