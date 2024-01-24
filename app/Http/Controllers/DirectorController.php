@@ -67,40 +67,40 @@ class DirectorController extends Controller
    public function createOrUpdate($user_id, $request)
    {
       try {
-        $director = Director::where('user_id', $request->user_id)->first();
+         $director = Director::where('user_id', $request->user_id)->first();
 
-        $id = null;
-        if ($director) $id = $director->id;
-        else $director = new Director();
+         $id = null;
+         if ($director) $id = $director->id;
+         else $director = new Director();
 
-        $duplicate = $this->validateAvailableData($request->phone, $request->license_number, $id);
-        if ($duplicate["result"] == true) {
+         $duplicate = $this->validateAvailableData($request->phone, $request->license_number, $id);
+         if ($duplicate["result"] == true) {
             return $duplicate;
-        }
+         }
 
-        $director->user_id = $user_id;
-        $director->name = $request->name;
-        $director->paternal_last_name = $request->paternal_last_name;
-        $director->maternal_last_name = $request->maternal_last_name;
-        $director->phone = $request->phone;
-        $director->license_number = $request->license_number;
-        $director->license_due_date = $request->license_due_date;
-        $director->img_license = $request->img_license;
-        $director->payroll_number = $request->payroll_number;
-        $director->department_id = $request->department_id;
-        $director->community_id = $request->community_id;
-        $director->street = $request->street;
-        $director->num_ext = $request->num_ext;
-        $director->num_int = $request->num_int;
+         $director->user_id = $user_id;
+         $director->name = $request->name;
+         $director->paternal_last_name = $request->paternal_last_name;
+         $director->maternal_last_name = $request->maternal_last_name;
+         $director->phone = $request->phone;
+         $director->license_number = $request->license_number;
+         $director->license_due_date = $request->license_due_date;
+         $director->img_license = $request->img_license;
+         $director->payroll_number = $request->payroll_number;
+         $director->department_id = $request->department_id;
+         $director->community_id = $request->community_id;
+         $director->street = $request->street;
+         $director->num_ext = $request->num_ext;
+         $director->num_int = $request->num_int;
 
-        $director->save();
+         $director->save();
 
-        $avatar = $this->ImageUp($request, "avatar", $director->id, true);
-        $director->avatar = $avatar;
-        return $director;
+         $avatar = $this->ImageUp($request, "avatar", $director->id, true);
+         $director->avatar = $avatar;
+         return $director;
       } catch (\Exception $ex) {
-        error_log("Hubo un error al crear o actualizar el director ->".$ex->getMessage());
-        echo "Hubo un error al crear o actualizar el director ->".$ex->getMessage();
+         error_log("Hubo un error al crear o actualizar el director ->" . $ex->getMessage());
+         echo "Hubo un error al crear o actualizar el director ->" . $ex->getMessage();
       }
    }
 
@@ -112,14 +112,13 @@ class DirectorController extends Controller
     * @param  \Illuminate\Http\Request $request
     * @return \Illuminate\Http\Response $response
     */
-   public function show(Request $request, Response $response)
+   public function show(Request $request, Int $id, Response $response)
    {
       $response->data = ObjResponse::DefaultResponse();
       try {
          // echo "el id: $request->id";
          // $user = DirectorView::where('user_id', $request->user_id)
-         $user = DirectorView::where('id', $request->id)
-            ->first();
+         $user = DirectorView::find($id);
 
          $response->data = ObjResponse::CorrectResponse();
          $response->data["message"] = 'peticion satisfactoria | director encontrado.';
@@ -146,16 +145,16 @@ class DirectorController extends Controller
 
    private function ImageUp($request, $requestFile, $id, $create)
    {
-       $dir_path = "GPCenter/directors";
-       $dir = public_path($dir_path);
-       $img_name = "";
-       if ($request->hasFile($requestFile)) {
-           $img_file = $request->file($requestFile);
-           $instance = new UserController();
-           $img_name = $instance->ImgUpload($img_file, $dir, $dir_path, "$id");
-       } else {
-           if ($create) $img_name = "$dir_path/noAvatar.png";
-       }
-       return $img_name;
+      $dir_path = "GPCenter/directors";
+      $dir = public_path($dir_path);
+      $img_name = "";
+      if ($request->hasFile($requestFile)) {
+         $img_file = $request->file($requestFile);
+         $instance = new UserController();
+         $img_name = $instance->ImgUpload($img_file, $dir, $dir_path, "$id");
+      } else {
+         if ($create) $img_name = "$dir_path/noAvatar.png";
+      }
+      return $img_name;
    }
 }

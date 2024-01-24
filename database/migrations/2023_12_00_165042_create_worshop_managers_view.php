@@ -17,7 +17,11 @@ return new class extends Migration
         DB::statement("
         CREATE OR REPLACE VIEW workshop_managers_view AS
         SELECT u.id u_id, u.username, u.email, u.role_id, u.active,
-        wm.*,
+        CONCAT(wm.name,
+                ' ',
+                wm.paternal_last_name,
+                ' ',
+                wm.maternal_last_name) AS full_name, wm.*,
         r.role, r.read, r.create, r.update, r.delete, r.more_permissions
         FROM workshop_managers wm
         INNER JOIN users u ON wm.user_id=u.id

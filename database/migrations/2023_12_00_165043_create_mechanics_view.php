@@ -17,7 +17,11 @@ return new class extends Migration
         DB::statement("
         CREATE OR REPLACE VIEW mechanics_view AS
         SELECT u.id u_id, u.username, u.email, u.role_id, u.active,
-         m.*,
+        CONCAT(m.name,
+                ' ',
+                m.paternal_last_name,
+                ' ',
+                m.maternal_last_name) AS full_name, m.*,
         r.role, r.read, r.create, r.update, r.delete, r.more_permissions
         FROM mechanics m
         INNER JOIN users u ON m.user_id=u.id

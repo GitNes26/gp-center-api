@@ -21,6 +21,7 @@ class LoanedVehicle extends Model
      */
     protected $fillable = [
         'id',
+        'assigned_vehicle_id',
         'requesting_user_id',
         'reason',
         'initial_km',

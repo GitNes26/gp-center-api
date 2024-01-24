@@ -17,7 +17,11 @@ return new class extends Migration
         DB::statement("
         CREATE OR REPLACE VIEW directors_view AS
         SELECT u.id u_id, u.username, u.email, u.role_id, u.active,
-        d.*,
+        CONCAT(d.name,
+                ' ',
+                d.paternal_last_name,
+                ' ',
+                d.maternal_last_name) AS full_name, d.*,
         r.role, r.read, r.create, r.update, r.delete, r.more_permissions, dep.department
         FROM directors d
         INNER JOIN users u ON d.user_id=u.id

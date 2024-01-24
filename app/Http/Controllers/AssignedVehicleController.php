@@ -14,32 +14,32 @@ use Illuminate\Support\Facades\DB;
 class AssignedVehicleController extends Controller
 {
     /**
-    * Mostrar lista de asignaciones de vehiculo activas
-    *
-    * @return \Illuminate\Http\Response $response
-    */
-   public function index(Response $response)
-   {
-      $response->data = ObjResponse::DefaultResponse();
-      try {
-         $list = AssignedVehicle::all();
+     * Mostrar lista de asignaciones de vehiculo activas
+     *
+     * @return \Illuminate\Http\Response $response
+     */
+    public function index(Response $response)
+    {
+        $response->data = ObjResponse::DefaultResponse();
+        try {
+            $list = AssignedVehicle::all();
 
-         $response->data = ObjResponse::CorrectResponse();
-         $response->data["message"] = 'peticion satisfactoria | lista de asignaciones de vehiculo.';
-         $response->data["alert_text"] = "asignaciones de vehiculo encontrados";
-         $response->data["result"] = $list;
-      } catch (\Exception $ex) {
-         $response->data = ObjResponse::CatchResponse($ex->getMessage());
-      }
-      return response()->json($response, $response->data["status_code"]);
-   }
+            $response->data = ObjResponse::CorrectResponse();
+            $response->data["message"] = 'peticion satisfactoria | lista de asignaciones de vehiculo.';
+            $response->data["alert_text"] = "asignaciones de vehiculo encontrados";
+            $response->data["result"] = $list;
+        } catch (\Exception $ex) {
+            $response->data = ObjResponse::CatchResponse($ex->getMessage());
+        }
+        return response()->json($response, $response->data["status_code"]);
+    }
 
-   /**
-    * Crear o Actualizar asignacion de vehiculo.
-    *
-    * @return \Illuminate\Http\Response $response
-    */
-    public function createOrUpdate(Request $request, Response $response, Int $id=null)
+    /**
+     * Crear o Actualizar asignacion de vehiculo.
+     *
+     * @return \Illuminate\Http\Response $response
+     */
+    public function createOrUpdate(Request $request, Response $response, Int $id = null)
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
@@ -53,14 +53,14 @@ class AssignedVehicleController extends Controller
             $vehicle = Vehicle::find($request->vehicle_id);
             if ($vehicle->vehicle_status_id === 3) {
                 $response->data["message"] = 'peticion satisfactoria | vehiculo ya asignado.';
-                $response->data["alert_icon"] ="warning";
-                $response->data["alert_text"] ="Asignación no completada - El vehículo ya esta asignado";
+                $response->data["alert_icon"] = "warning";
+                $response->data["alert_text"] = "Asignación no completada - El vehículo ya esta asignado";
                 return response()->json($response, $response->data["status_code"]);
             }
             if ($vehicle->vehicle_status_id === 5) {
                 $response->data["message"] = 'peticion satisfactoria | vehiculo en taller.';
-                $response->data["alert_icon"] ="warning";
-                $response->data["alert_text"] ="Asignación no completada - El vehículo se encuentra en el taller";
+                $response->data["alert_icon"] = "warning";
+                $response->data["alert_text"] = "Asignación no completada - El vehículo se encuentra en el taller";
                 return response()->json($response, $response->data["status_code"]);
             }
 
@@ -69,6 +69,7 @@ class AssignedVehicleController extends Controller
             $assignedVehicle->user_id = $request->user_id;
             $assignedVehicle->vehicle_id = $request->vehicle_id;
             $assignedVehicle->date = $request->date;
+            if ($request->active_assignment) $assignedVehicle->active_assignment = (bool)$request->active_assignment;
 
             $assignedVehicle->save();
 
@@ -83,7 +84,28 @@ class AssignedVehicleController extends Controller
             $response->data["message"] = $id > 0 ? 'peticion satisfactoria | asignacion de vehiculo editada.' : 'peticion satisfactoria | asignacion de vehiculo registrada.';
             $response->data["alert_text"] = $id > 0 ? "Asignación de vehículo editada" : "Asignación de vehículo registrada";
         } catch (\Exception $ex) {
-            error_log("Hubo un error al crear o actualizar el director ->".$ex->getMessage());
+            error_log("Hubo un error al crear o actualizar el director ->" . $ex->getMessage());
+            $response->data = ObjResponse::CatchResponse($ex->getMessage());
+        }
+        return response()->json($response, $response->data["status_code"]);
+    }
+
+    /**
+     * Obtener asignación activa/actual
+     *
+     * @return \Illuminate\Http\Response $response
+     */
+    public function getActiveAssignmentBy(Response $response, String $searchBy, String $value)
+    {
+        $response->data = ObjResponse::DefaultResponse();
+        try {
+            $activeAssignment = AssignedVehicle::where($searchBy, $value)->where('active_assignment', 1)->where('active', 1)->orderBy('id', 'desc')->first();
+
+            $response->data = ObjResponse::CorrectResponse();
+            $response->data["message"] = 'peticion satisfactoria | lista de asignacion de vehiculo activa.';
+            $response->data["alert_text"] = "asignación de vehiculo activa";
+            $response->data["result"] = $activeAssignment;
+        } catch (\Exception $ex) {
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
         }
         return response()->json($response, $response->data["status_code"]);
