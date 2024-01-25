@@ -69,6 +69,7 @@ class AssignedVehicleController extends Controller
             $assignedVehicle->user_id = $request->user_id;
             $assignedVehicle->vehicle_id = $request->vehicle_id;
             $assignedVehicle->date = $request->date;
+            $assignedVehicle->km_assignment = $request->km_assignment;
             if ($request->active_assignment) $assignedVehicle->active_assignment = (bool)$request->active_assignment;
 
             $assignedVehicle->save();
@@ -95,7 +96,7 @@ class AssignedVehicleController extends Controller
      *
      * @return \Illuminate\Http\Response $response
      */
-    public function getActiveAssignmentBy(Response $response, String $searchBy, String $value)
+    public function getActiveAssignmentBy(Response $response, String $searchBy, String $value, Bool $internal = false)
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
@@ -105,8 +106,11 @@ class AssignedVehicleController extends Controller
             $response->data["message"] = 'peticion satisfactoria | lista de asignacion de vehiculo activa.';
             $response->data["alert_text"] = "asignación de vehiculo activa";
             $response->data["result"] = $activeAssignment;
+            if ($internal === true) return $activeAssignment;
         } catch (\Exception $ex) {
+            error_log("Hubo un error al obtener la asignación activa ->" . $ex->getMessage());
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
+            if ($internal === true) return null;
         }
         return response()->json($response, $response->data["status_code"]);
     }

@@ -11,6 +11,7 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\DirectorController;
 use App\Http\Controllers\DriverController;
+use App\Http\Controllers\LoanedVehicleController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ModelController;
 use App\Http\Controllers\ServiceController;
@@ -159,6 +160,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/assignedVehicle/create', 'createOrUpdate');
         Route::post('/assignedVehicle/update/{id?}', 'createOrUpdate');
         Route::post('/assignedVehicle/destroy/{id}', 'destroy');
+    });
 
+    Route::controller(LoanedVehicleController::class)->group(function () {
+        Route::get('/loanedVehicle', 'index');
+        Route::get('/loanedVehicle/{id}', 'show');
+        Route::post('/loanedVehicle/create', 'createOrUpdate');
+        Route::post('/loanedVehicle/update/{id?}', 'createOrUpdate');
+        Route::post('/loanedVehicle/destroy/{id}', 'destroy');
     });
 });

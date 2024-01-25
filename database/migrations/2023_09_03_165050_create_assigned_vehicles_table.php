@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users', 'id');
             $table->foreignId('vehicle_id')->constrained('vehicles', 'id');
             $table->dateTime('date');
+            $table->decimal('km_assignment', 10, 2);
             $table->boolean('active_assignment')->default(true)->comment('asignacion activa');
             $table->boolean('active')->default(true);
             $table->timestamps();

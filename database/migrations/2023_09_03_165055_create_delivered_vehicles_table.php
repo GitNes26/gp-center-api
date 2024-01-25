@@ -16,9 +16,10 @@ return new class extends Migration
         Schema::create('delivered_vehicles', function (Blueprint $table) {
             $table->id();
             $table->integer('accident_folio')->nullable();
-            $table->foreignId('assigned_vehicle_id')->constrained('assigned_vehicles','id');
+            $table->foreignId('assigned_vehicle_id')->constrained('assigned_vehicles', 'id');
             $table->text('reason')->nullable()->comment('motivo por el cual se devuelve la unidad');
             $table->dateTime('date')->nullable();
+            $table->decimal('km_deliver', 10, 2);
             $table->boolean('active')->default(true);
             $table->timestamps();
             $table->dateTime('deleted_at')->nullable();
