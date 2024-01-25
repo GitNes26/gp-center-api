@@ -24,6 +24,7 @@ class DeliveredVehicle extends Model
         'accident_folio',
         'assigned_vehicle_id',
         'reason',
+        'km_deliver',
         'date',
         'active',
         'deleted_at'

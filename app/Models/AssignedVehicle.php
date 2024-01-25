@@ -25,6 +25,7 @@ class AssignedVehicle extends Model
         'vehicle_id',
         'date',
         'active_assignment',
+        'km_assignment',
         'active',
         'deleted_at'
     ];

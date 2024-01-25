@@ -49,15 +49,31 @@ class LoanedVehicleController extends Controller
             //      return $duplicate;
             //  }
 
-            #VERIFICAR QUE EL VEHICULO ESTE DISPONIBLE
-            $response->data = ObjResponse::CorrectResponse();
-            $vehicle = Vehicle::find($request->vehicle_id);
+            #VERIFICAR QUE EL VEHICULO ESTE ASIGNADO
+            $assignedVehicleController = new AssignedVehicleController();
+            $assignedVehicle = $assignedVehicleController->getActiveAssignmentBy($response, 'vehicle_id', $request->vehicle_id, true);
+
+            if (!$assignedVehicle) {
+                $response->data["message"] = 'peticion satisfactoria | prestamo no concluido.';
+                $response->data["alert_icon"] = "warning";
+                $response->data["alert_text"] = "Prestamo no completado - El vehículo no está asignado a ningún director";
+                return response()->json($response, $response->data["status_code"]);
+                // return "no hay asignaciones a este vehiculo";
+            }
+
+            #VERIFICAR QUE EL VEHICULO NO TENGA UN PRESTAMO ACTIVO
+
+
+
+            #VERIFICAR ESTE EN EL ESTATUS CORRECTO = 3-ASIGNADO
+            $vehicle = Vehicle::find($assignedVehicle->vehicle_id);
             if ($vehicle->vehicle_status_id !== 3) {
                 $response->data["message"] = 'peticion satisfactoria | vehiculo no asignado.';
                 $response->data["alert_icon"] = "warning";
-                $response->data["alert_text"] = "Prestamo no completado - El vehículo no está asignado a ningun director";
+                $response->data["alert_text"] = "Prestamo no completado - El vehículo está en un estatus donde no es posible realizar el prestamo.";
                 return response()->json($response, $response->data["status_code"]);
             }
+
 
             $loanedVehicle = LoanedVehicle::find($id);
             if (!$loanedVehicle) $loanedVehicle = new LoanedVehicle();
@@ -77,13 +93,12 @@ class LoanedVehicleController extends Controller
             $vehicleInstance->updateStatus($request->vehicle_id, 4); //Prestado
 
 
+            $response->data = ObjResponse::CorrectResponse();
 
-            //  $avatar = $this->ImageUp($request, "avatar", $loanedVehicle->id, true);
-            //  $loanedVehicle->avatar = $avatar;
             $response->data["message"] = $id > 0 ? 'peticion satisfactoria | prestamo de vehiculo editada.' : 'peticion satisfactoria | prestamo de vehiculo registrada.';
-            $response->data["alert_text"] = $id > 0 ? "Asignación de vehículo editada" : "Asignación de vehículo registrada";
+            $response->data["alert_text"] = $id > 0 ? "Prestamo de vehículo editado" : "Prestamo de vehículo registrado";
         } catch (\Exception $ex) {
-            error_log("Hubo un error al crear o actualizar el director ->" . $ex->getMessage());
+            error_log("Hubo un error al crear o actualizar el prestamo del vehículo ->" . $ex->getMessage());
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
         }
         return response()->json($response, $response->data["status_code"]);
