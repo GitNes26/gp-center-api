@@ -28,19 +28,31 @@ Route::middleware('auth:sanctum')->group(function () {
     // Route::get('/getUser/{token}', [UserController::class,'getUser']); //cerrar sesión (eliminar los tokens creados)
     Route::get('/logout', [UserController::class, 'logout']); //cerrar sesión (eliminar los tokens creados)
 
+    Route::controller(RoleController::class)->group(function () {
+        Route::get('/roles/role_id/{role_id}', 'index');
+        Route::get('/roles/selectIndex/role_id/{role_id}', 'selectIndex');
+        Route::get('/roles/{id}', 'show');
+        Route::post('/roles', 'create');
+        Route::post('/roles/update/{id?}', 'update');
+        Route::post('/roles/destroy/{id}', 'destroy');
+    });
+
     Route::controller(MenuController::class)->group(function () {
         Route::get('/menus', 'index');
         Route::get('/menus/selectIndex', 'selectIndex');
+        Route::get('/menus/headers/selectIndex', 'headersSelectIndex');
         Route::get('/menus/{id}', 'show');
-        Route::post('/menus', 'create');
-        Route::post('/menus/update/{id?}', 'update');
+        Route::post('/menus/create', 'createOrUpdate');
+        Route::post('/menus/update/{id?}', 'createOrUpdate');
         Route::post('/menus/destroy/{id}', 'destroy');
 
         Route::get('/menus/MenusByRole/{pages_read}', 'MenusByRole');
         Route::post('/menus/getIdByUrl', 'getIdByUrl');
-    });
+        Route::get('/menus/{id}/DisEnableMenu/{active}', 'DisEnableMenu');
+     });
 
-    Route::controller(UserController::class)->group(function () {
+
+     Route::controller(UserController::class)->group(function () {
         Route::get('/users/role_id/{role_id}', 'index');
         Route::get('/users/by/role_id/{role_id}', 'indexByRole');
         Route::get('/users/selectIndex', 'selectIndex');
@@ -73,14 +85,6 @@ Route::middleware('auth:sanctum')->group(function () {
         // Route::post('/drivers/destroy/{id}', 'destroy');
     });
 
-    Route::controller(RoleController::class)->group(function () {
-        Route::get('/roles', 'index');
-        Route::get('/roles/selectIndex/{role_id}', 'selectIndex');
-        Route::get('/roles/{id}', 'show');
-        Route::post('/roles', 'create');
-        Route::post('/roles/update/{id?}', 'update');
-        Route::post('/roles/destroy/{id}', 'destroy');
-    });
 
     Route::controller(DepartmentController::class)->group(function () {
         Route::get('/departments', 'index');

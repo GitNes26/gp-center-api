@@ -48,7 +48,19 @@ class AssignedVehicleController extends Controller
             //      return $duplicate;
             //  }
 
-            #VERIFICAR QUE EL VEHICULO ESTE DISPONIBLE
+            #VERIFICAR QUE EL VEHICULO NO ESTE ASIGNADO
+            $activeAssignment = $this->getLastAssignmentBy($response, 'vehicle_id', $request->vehicle_id, true);
+            if ($activeAssignment) {
+                if ($activeAssignment->active_assignment) {
+                    $response->data["message"] = 'peticion satisfactoria | asignacion no concluida.';
+                    $response->data["alert_icon"] = "warning";
+                    $response->data["alert_text"] = "Asignación no completada - El vehículo ya está asignado";
+                    return response()->json($response, $response->data["status_code"]);
+                    // return "no hay asignaciones a este vehiculo";
+                }
+            }
+
+
             $response->data = ObjResponse::CorrectResponse();
             $vehicle = Vehicle::find($request->vehicle_id);
             if ($vehicle->vehicle_status_id === 3) {
@@ -92,23 +104,23 @@ class AssignedVehicleController extends Controller
     }
 
     /**
-     * Obtener asignación activa/actual
+     * Obtener ultima asignación
      *
      * @return \Illuminate\Http\Response $response
      */
-    public function getActiveAssignmentBy(Response $response, String $searchBy, String $value, Bool $internal = false)
+    public function getLastAssignmentBy(Response $response, String $searchBy, String $value, Bool $internal = false)
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
-            $activeAssignment = AssignedVehicle::where($searchBy, $value)->where('active_assignment', 1)->where('active', 1)->orderBy('id', 'desc')->first();
+            $lastAssignment = AssignedVehicle::where($searchBy, $value)->where('active', 1)->orderBy('id', 'desc')->first();
 
             $response->data = ObjResponse::CorrectResponse();
-            $response->data["message"] = 'peticion satisfactoria | lista de asignacion de vehiculo activa.';
-            $response->data["alert_text"] = "asignación de vehiculo activa";
-            $response->data["result"] = $activeAssignment;
-            if ($internal === true) return $activeAssignment;
+            $response->data["message"] = 'peticion satisfactoria | ultima asignacion de vehiculo.';
+            $response->data["alert_text"] = "Última asignación de vehiculo";
+            $response->data["result"] = $lastAssignment;
+            if ($internal === true) return $lastAssignment;
         } catch (\Exception $ex) {
-            error_log("Hubo un error al obtener la asignación activa ->" . $ex->getMessage());
+            error_log("Hubo un error al obtener la ultima asignación ->" . $ex->getMessage());
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
             if ($internal === true) return null;
         }

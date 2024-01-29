@@ -29,7 +29,7 @@ return new class extends Migration
         INNER JOIN users u ON d.user_id=u.id
         INNER JOIN roles r ON u.role_id=r.id
         INNER JOIN departments dep ON d.department_id=dep.id
-        INNER JOIN directors_view dir ON d.id=dir.department_id
+        INNER JOIN directors_view dir ON d.director_id=dir.id   
         WHERE u.active=1;
         ");
     }

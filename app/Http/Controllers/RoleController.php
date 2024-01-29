@@ -18,11 +18,11 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Http\Response $response
      */
-    public function index(Response $response)
+    public function index(Int $role_id, Response $response)
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
-            $list = Role::where('active', true)
+            $list = Role::where('active', true)->where("id", ">=", $role_id)
                 ->orderBy('roles.id', 'asc')->get();
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'Peticion satisfactoria. Lista de roles:';
