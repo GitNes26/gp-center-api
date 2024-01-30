@@ -219,7 +219,9 @@ class UserController extends Controller
       $response->data = ObjResponse::DefaultResponse();
       try {
          $token = $request->bearerToken();
-         $id = (int)$request->user_id > 0 ? (int)$request->user_id : null;
+        //  return $request;
+         if ((int)$role_id < 2) $id = (int)$request->id > 0 ? (int)$request->id : null;
+         else $id = (int)$request->user_id > 0 ? (int)$request->user_id : null;
          //   echo "el user_id: $request->user_id";
          $minus = "usuario";
          $mayus = "Usuario";
