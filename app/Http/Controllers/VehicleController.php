@@ -103,14 +103,22 @@ class VehicleController extends Controller
             $img_insurance_policy = $this->ImageUp($request, 'img_insurance_policy', $new_vehicle->id, 'insurance_policy', true, "sinPoliza.png");
 
             $vehicle = Vehicle::find($new_vehicle->id);
-            if ($img_preview != "") $vehicle->img_preview = $img_preview;
-            if ($img_right != "") $vehicle->img_right = $img_right;
-            if ($img_back != "") $vehicle->img_back = $img_back;
-            if ($img_left != "") $vehicle->img_left = $img_left;
-            if ($img_front != "") $vehicle->img_front = $img_front;
-            if ($img_serial_number != "") $vehicle->img_serial_number = $img_serial_number;
-            if ($img_circulation_card != "") $vehicle->img_circulation_card = $img_circulation_card;
-            if ($img_insurance_policy != "") $vehicle->img_insurance_policy = $img_insurance_policy;
+            if ($request->hasFile('img_preview')) $vehicle->img_preview = $img_preview;
+            if ($request->hasFile('img_right')) $vehicle->img_right = $img_right;
+            if ($request->hasFile('img_back')) $vehicle->img_back = $img_back;
+            if ($request->hasFile('img_left')) $vehicle->img_left = $img_left;
+            if ($request->hasFile('img_front')) $vehicle->img_front = $img_front;
+            if ($request->hasFile('img_serial_number')) $vehicle->img_serial_number = $img_serial_number;
+            if ($request->hasFile('img_circulation_card')) $vehicle->img_circulation_card = $img_circulation_card;
+            if ($request->hasFile('img_insurance_policy')) $vehicle->img_insurance_policy = $img_insurance_policy;
+            // if ($img_preview != "") $vehicle->img_preview = $img_preview;
+            // if ($img_right != "") $vehicle->img_right = $img_right;
+            // if ($img_back != "") $vehicle->img_back = $img_back;
+            // if ($img_left != "") $vehicle->img_left = $img_left;
+            // if ($img_front != "") $vehicle->img_front = $img_front;
+            // if ($img_serial_number != "") $vehicle->img_serial_number = $img_serial_number;
+            // if ($img_circulation_card != "") $vehicle->img_circulation_card = $img_circulation_card;
+            // if ($img_insurance_policy != "") $vehicle->img_insurance_policy = $img_insurance_policy;
             $vehicle->save();
 
             $vehiclesPlatesController = new VehiclePlatesController();
@@ -247,14 +255,22 @@ class VehicleController extends Controller
             $vehicle->circulation_card = $request->circulation_card;
             $vehicle->insurance_policy = $request->insurance_policy;
             // violated
-            if ($img_preview != "") $vehicle->img_preview = $img_preview;
-            if ($img_right != "") $vehicle->img_right = $img_right;
-            if ($img_back != "") $vehicle->img_back = $img_back;
-            if ($img_left != "") $vehicle->img_left = $img_left;
-            if ($img_front != "") $vehicle->img_front = $img_front;
-            if ($img_serial_number != "") $vehicle->img_serial_number = $img_serial_number;
-            if ($img_circulation_card != "") $vehicle->img_circulation_card = $img_circulation_card;
-            if ($img_insurance_policy != "") $vehicle->img_insurance_policy = $img_insurance_policy;
+            if ($request->hasFile('img_preview')) $vehicle->img_preview = $img_preview;
+            if ($request->hasFile('img_right')) $vehicle->img_right = $img_right;
+            if ($request->hasFile('img_back')) $vehicle->img_back = $img_back;
+            if ($request->hasFile('img_left')) $vehicle->img_left = $img_left;
+            if ($request->hasFile('img_front')) $vehicle->img_front = $img_front;
+            if ($request->hasFile('img_serial_number')) $vehicle->img_serial_number = $img_serial_number;
+            if ($request->hasFile('img_circulation_card')) $vehicle->img_circulation_card = $img_circulation_card;
+            if ($request->hasFile('img_insurance_policy')) $vehicle->img_insurance_policy = $img_insurance_policy;
+            // if ($img_preview != "") $vehicle->img_preview = $img_preview;
+            // if ($img_right != "") $vehicle->img_right = $img_right;
+            // if ($img_back != "") $vehicle->img_back = $img_back;
+            // if ($img_left != "") $vehicle->img_left = $img_left;
+            // if ($img_front != "") $vehicle->img_front = $img_front;
+            // if ($img_serial_number != "") $vehicle->img_serial_number = $img_serial_number;
+            // if ($img_circulation_card != "") $vehicle->img_circulation_card = $img_circulation_card;
+            // if ($img_insurance_policy != "") $vehicle->img_insurance_policy = $img_insurance_policy;
 
             $vehicle->save();
 

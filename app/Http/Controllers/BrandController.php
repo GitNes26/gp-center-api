@@ -78,7 +78,8 @@ class BrandController extends Controller
             $img_path = $this->ImageUp($request, "img_path", $new_brand->id, true);
 
             $brand = Brand::find($new_brand->id);
-            if ($img_path != "") $brand->img_path = $img_path;
+            if ($request->hasFile('img_path')) $brand->img_path = $img_path;
+            // if ($img_path != "") $brand->img_path = $img_path;
             $brand->save();
 
 
@@ -133,7 +134,8 @@ class BrandController extends Controller
 
             $brand = Brand::find($request->id);
             $brand->brand = $request->brand;
-            if ($img_path != "") $brand->img_path = $img_path;
+            if ($request->hasFile('img_path')) $brand->img_path = $img_path;
+            // if ($img_path != "") $brand->img_path = $img_path;
             $brand->save();
 
             $response->data = ObjResponse::CorrectResponse();
