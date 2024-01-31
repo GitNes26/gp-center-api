@@ -10,6 +10,7 @@ use App\Models\Vehicle;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class LoanedVehicleController extends Controller
@@ -81,6 +82,23 @@ class LoanedVehicleController extends Controller
                 $response->data["message"] = 'peticion satisfactoria | vehiculo no asignado.';
                 $response->data["alert_icon"] = "warning";
                 $response->data["alert_text"] = "Prestamo no completado - El vehículo está en un estatus donde no es posible realizar el prestamo.";
+                return response()->json($response, $response->data["status_code"]);
+            }
+
+            $userAuth = Auth::user();
+            if ($userAuth->role_id <= 2) {} # no hay problema por ser admins,,, creo
+            else if ($userAuth->role_id == 5) # Verificar que sea el usuario responsable de la unidad
+            {
+                if ($userAuth->id != $assignedVehicleController->user_id) {
+                    $response->data["message"] = 'peticion satisfactoria | prestamo no concluida.';
+                    $response->data["alert_icon"] = "warning";
+                    $response->data["alert_text"] = "Prestamo no completado - Solo el director asignado a la unidad puede prestarlo.";
+                    return response()->json($response, $response->data["status_code"]);
+                }
+            } else {
+                $response->data["message"] = 'peticion satisfactoria | prestamo no concluida.';
+                $response->data["alert_icon"] = "warning";
+                $response->data["alert_text"] = "Prestamo no completado - Solo el director asignado a la unidad puede prestarlo.";
                 return response()->json($response, $response->data["status_code"]);
             }
 

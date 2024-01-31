@@ -8,6 +8,7 @@ use App\Models\User;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -167,7 +168,12 @@ class UserController extends Controller
       try {
          // $list = DB::select('SELECT * FROM users where active = 1');
          // User::on('mysql_gp_center')->get();
-         $list = User::where('users.active', true)->where("role_id", "=", $role_id)
+         $roleAuth = Auth::user()->role_id;
+         $signo = "=";
+         $signo = $role_id == 2 && $roleAuth == 1 ? "<=" : "=";
+
+
+         $list = User::where('users.active', true)->where("role_id", $signo, $role_id)
             ->join('roles', 'users.role_id', '=', 'roles.id')
             // ->join('departments', 'users.department_id', '=', 'departments.id')
             ->select('users.*', 'roles.role')
@@ -220,9 +226,9 @@ class UserController extends Controller
       try {
          $token = $request->bearerToken();
         //  return $request;
-         if ((int)$role_id < 2) $id = (int)$request->id > 0 ? (int)$request->id : null;
+        // return  "role_id:$role_id -- el user_id: $request->user_id -- email:$request->email --  y el id:$request->id";
+         if ((int)$role_id <= 2) $id = (int)$request->id > 0 ? (int)$request->id : null;
          else $id = (int)$request->user_id > 0 ? (int)$request->user_id : null;
-         //   echo "el user_id: $request->user_id";
          $minus = "usuario";
          $mayus = "Usuario";
          $controller = null;
