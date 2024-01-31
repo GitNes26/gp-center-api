@@ -50,10 +50,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/menus/MenusByRole/{pages_read}', 'MenusByRole');
         Route::post('/menus/getIdByUrl', 'getIdByUrl');
         Route::get('/menus/{id}/DisEnableMenu/{active}', 'DisEnableMenu');
-     });
+    });
 
 
-     Route::controller(UserController::class)->group(function () {
+    Route::controller(UserController::class)->group(function () {
         Route::get('/users/role_id/{role_id}', 'index');
         Route::get('/users/by/role_id/{role_id}', 'indexByRole');
         Route::get('/users/selectIndex', 'selectIndex');
@@ -173,6 +173,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/loanedVehicle/create', 'createOrUpdate');
         Route::post('/loanedVehicle/update/{id?}', 'createOrUpdate');
         Route::post('/loanedVehicle/destroy/{id}', 'destroy');
+
+        Route::post('/loanedVehicle/returnLoan', 'returnLoan');
     });
 
     Route::controller(DeliveredVehicleController::class)->group(function () {
