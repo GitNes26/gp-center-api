@@ -30,7 +30,7 @@ class DeliveredVehicleController extends Controller
 
             #VERIFICAR QUE EL VEHICULO ESTE ASIGNADO
             $assignedVehicleController = new AssignedVehicleController();
-            $lastAssignedVehicle = $assignedVehicleController->getLastAssignmentBy($response, 'vehicle_id', $request->vehicle_id, true);
+            $lastAssignedVehicle = $assignedVehicleController->getLastAssignmentBy($response, 'id', $request->assigned_vehicle_id, true);
             if ($lastAssignedVehicle) {
                 if (!$lastAssignedVehicle->active_assignment) {
                     $response->data["message"] = 'peticion satisfactoria | devolucion de unidad no concluido.';
@@ -42,7 +42,8 @@ class DeliveredVehicleController extends Controller
             }
 
             #VERIFICAR QUE EL VEHICULO NO TENGA PRESTAMO ACTIVO
-            $lastLoan = $this->getLastLoanBy($response, 'assigned_vehicle_id', $request->vehicle_id, true);
+            $loanedVehicleController = new LoanedVehicleController();
+            $lastLoan = $loanedVehicleController->getLastLoanBy($response, 'assigned_vehicle_id', $lastAssignedVehicle->vehicle_id, true);
             if ($lastLoan) {
                 if (!$lastLoan->active_assignment) {
                     $response->data["message"] = 'peticion satisfactoria | devolucion de unidad no concluido.';
@@ -64,7 +65,8 @@ class DeliveredVehicleController extends Controller
             }
 
             $userAuth = Auth::user();
-            if ($userAuth->role_id <= 2) {} # no hay problema por ser admins,,, creo
+            if ($userAuth->role_id <= 2) {
+            } # no hay problema por ser admins,,, creo
             else if ($userAuth->role_id == 5) # Verificar que sea el usuario responsable de la unidad
             {
                 if ($userAuth->id != $assignedVehicleController->user_id) {
@@ -80,11 +82,11 @@ class DeliveredVehicleController extends Controller
                 return response()->json($response, $response->data["status_code"]);
             }
 
-
+            $accident_folio = $this->_getLastFolio();
 
             $deliveredVehicle = DeliveredVehicle::find($id);
             if (!$deliveredVehicle) $deliveredVehicle = new DeliveredVehicle();
-            $deliveredVehicle->accident_folio = $request->accident_folio;
+            $deliveredVehicle->accident_folio = (int)$accident_folio + 1;
             $deliveredVehicle->assigned_vehicle_id = $request->assigned_vehicle_id;
             $deliveredVehicle->reason = $request->reason;
             $deliveredVehicle->km_deliver = $request->km_deliver;
@@ -94,7 +96,11 @@ class DeliveredVehicleController extends Controller
 
             #ACTUALIZAR STATUS DEL VEHICULO
             $vehicleInstance = new VehicleController();
-            $vehicleInstance->updateStatus($request->vehicle_id, 2); //DISPONIBLE
+            $vehicleInstance->updateStatus($vehicle->id, 2); //DISPONIBLE
+
+            #ACTUALIZAR PRESTAMO ACTIVO DE LA ASIGNACION
+            $lastAssignedVehicle->active_assignment = 0;
+            $lastAssignedVehicle->save();
 
 
             $response->data = ObjResponse::CorrectResponse();
@@ -106,5 +112,23 @@ class DeliveredVehicleController extends Controller
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
         }
         return response()->json($response, $response->data["status_code"]);
+    }
+
+    /**
+     * Obtener el ultimo folio.
+     *
+     * @return \Illuminate\Http\Int $folio
+     */
+    private function _getLastFolio()
+    {
+        try {
+            $folio = DeliveredVehicle::max('accident_folio');
+            if ($folio == null) return 0;
+            return $folio;
+        } catch (\Exception $ex) {
+            $msg =  "Error obtener el ultimo folio: " . $ex->getMessage();
+            echo "$msg";
+            return $msg;
+        }
     }
 }
