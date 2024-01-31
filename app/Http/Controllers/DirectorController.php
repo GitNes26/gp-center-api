@@ -85,7 +85,6 @@ class DirectorController extends Controller
          $director->phone = $request->phone;
          $director->license_number = $request->license_number;
          $director->license_due_date = $request->license_due_date;
-         $director->img_license = $request->img_license;
          $director->payroll_number = $request->payroll_number;
          $director->department_id = $request->department_id;
          $director->community_id = $request->community_id;
@@ -95,8 +94,13 @@ class DirectorController extends Controller
 
          $director->save();
 
-         $avatar = $this->ImageUp($request, "avatar", $director->id, true);
-         $director->avatar = $avatar;
+         $avatar = $this->ImageUp($request, "avatar", $director->id, "avatar", true, "noAvatar");
+         $img_license = $this->ImageUp($request, "img_license", $director->id, "licencia", true, "noLicense");
+         if ($request->hasFile('avatar')) $director->avatar = $avatar;
+         if ($request->hasFile('img_license')) $director->img_license = $img_license;
+
+         $director->save();
+
          return $director;
       } catch (\Exception $ex) {
          error_log("Hubo un error al crear o actualizar el director ->" . $ex->getMessage());
@@ -143,7 +147,7 @@ class DirectorController extends Controller
    }
 
 
-   private function ImageUp($request, $requestFile, $id, $create)
+   private function ImageUp($request, $requestFile, $id, $poxFix, $create, $nameFake)
    {
       $dir_path = "GPCenter/directors";
       $dir = public_path($dir_path);
@@ -151,9 +155,9 @@ class DirectorController extends Controller
       if ($request->hasFile($requestFile)) {
          $img_file = $request->file($requestFile);
          $instance = new UserController();
-         $img_name = $instance->ImgUpload($img_file, $dir, $dir_path, "$id");
+         $img_name = $instance->ImgUpload($img_file, $dir, $dir_path, "$id-$poxFix");
       } else {
-         if ($create) $img_name = "$dir_path/noAvatar.png";
+         if ($create) $img_name = "$dir_path/$nameFake.png";
       }
       return $img_name;
    }

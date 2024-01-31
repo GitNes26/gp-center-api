@@ -64,6 +64,12 @@ class DepartmentController extends Controller
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
+            $duplicate = $this->validateAvailableData($request->department, null);
+            if ($duplicate["result"] == true) {
+                $response->data = $duplicate;
+                return response()->json($response);
+            }
+
             $new_department = Department::create([
                 'department' => $request->department,
                 'description' => $request->description,
@@ -109,6 +115,12 @@ class DepartmentController extends Controller
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
+            $duplicate = $this->validateAvailableData($request->department, $request->id);
+            if ($duplicate["result"] == true) {
+                $response->data = $duplicate;
+                return response()->json($response);
+            }
+            
             $department = Department::find($request->id)
                 ->update([
                     'department' => $request->department,
@@ -147,5 +159,22 @@ class DepartmentController extends Controller
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
         }
         return response()->json($response, $response->data["status_code"]);
+    }
+
+    private function validateAvailableData($department, $id)
+    {
+        #este codigo se pone en las funciones de registro y edicion
+        /*  $duplicate = $this->validateAvailableData($request->username, $request->email, $request->id);
+            if ($duplicate["result"] == true) {
+                $response->data = $duplicate;
+                return response()->json($response);
+            }
+        */
+
+        $checkAvailable = new UserController();
+        // #VALIDACION DE DATOS REPETIDOS
+        $duplicate = $checkAvailable->checkAvailableData('departments', 'department', $department, 'El departamento', 'department', $id, null);
+        if ($duplicate["result"] == true) return $duplicate;
+        return array("result" => false);
     }
 }

@@ -85,7 +85,6 @@ class DriverController extends Controller
          $driver->phone = $request->phone;
          $driver->license_number = $request->license_number;
          $driver->license_due_date = $request->license_due_date;
-         $driver->img_license = $request->img_license;
          $driver->payroll_number = $request->payroll_number;
          $driver->department_id = $request->department_id;
          $driver->community_id = $request->community_id;
@@ -95,8 +94,12 @@ class DriverController extends Controller
 
          $driver->save();
 
-         $avatar = $this->ImageUp($request, "avatar", $driver->id, true);
-         $driver->avatar = $avatar;
+         $avatar = $this->ImageUp($request, "avatar", $driver->id, "avatar", true, "noAvatar");
+         $img_license = $this->ImageUp($request, "img_license", $driver->id, "licencia", true, "noLicense");
+         if ($request->hasFile('avatar')) $driver->avatar = $avatar;
+         if ($request->hasFile('img_license')) $driver->img_license = $img_license;
+
+         $driver->save();
          return $driver;
       } catch (\Exception $ex) {
          error_log("Hubo un error al crear o actualizar el conductor ->" . $ex->getMessage());
@@ -144,7 +147,7 @@ class DriverController extends Controller
    }
 
 
-   private function ImageUp($request, $requestFile, $id, $create)
+   private function ImageUp($request, $requestFile, $id, $posFix, $create, $nameFake)
    {
       $dir_path = "GPCenter/drivers";
       $dir = public_path($dir_path);
@@ -152,9 +155,9 @@ class DriverController extends Controller
       if ($request->hasFile($requestFile)) {
          $img_file = $request->file($requestFile);
          $instance = new UserController();
-         $img_name = $instance->ImgUpload($img_file, $dir, $dir_path, "$id");
+         $img_name = $instance->ImgUpload($img_file, $dir, $dir_path, "$id-$posFix");
       } else {
-         if ($create) $img_name = "$dir_path/noAvatar.png";
+         if ($create) $img_name = "$dir_path/$nameFake.png";
       }
       return $img_name;
    }
