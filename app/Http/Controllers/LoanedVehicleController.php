@@ -64,7 +64,7 @@ class LoanedVehicleController extends Controller
             }
 
             #VERIFICAR QUE EL VEHICULO NO TENGA PRESTAMO ACTIVO
-            $lastLoan = $this->getLastLoanBy($response, 'assigned_vehicle_id', $request->vehicle_id, true);
+            $lastLoan = $this->getLastLoanBy($response, 'assigned_vehicle_id', $lastAssignedVehicle->id, true);
             if ($lastLoan) {
                 if (!$lastLoan->active_assignment) {
                     $response->data["message"] = 'peticion satisfactoria | prestamo no concluido.';
