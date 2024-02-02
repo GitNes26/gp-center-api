@@ -87,7 +87,8 @@ class LoanedVehicleController extends Controller
 
             $userAuth = Auth::user();
             // return "hasta aqui todo bien";
-            if ($userAuth->role_id <= 2) {} # no hay problema por ser admins,,, creo
+            if ($userAuth->role_id <= 2) {
+            } # no hay problema por ser admins,,, creo
             else if ($userAuth->role_id == 5) # Verificar que sea el usuario responsable de la unidad
             {
                 if ($userAuth->id != $lastAssignedVehicle->user_id) {
@@ -150,7 +151,7 @@ class LoanedVehicleController extends Controller
 
             #VERIFICAR QUE EL VEHICULO ESTE ASIGNADO
             $assignedVehicleController = new AssignedVehicleController();
-            $lastAssignedVehicle = $assignedVehicleController->getLastAssignmentBy($response, 'id', $request->assigned_vehicle_id, true);
+            $lastAssignedVehicle = $assignedVehicleController->getLastAssignmentBy($response, 'vehicle_id', $request->vehicle_id, true);
             if ($lastAssignedVehicle) {
                 if ($lastAssignedVehicle->active_assignment == 0) {
                     $response->data["message"] = 'peticion satisfactoria | devolucion de prestamo no concluido.';
@@ -163,7 +164,7 @@ class LoanedVehicleController extends Controller
 
             #VERIFICAR QUE EL VEHICULO TENGA PRESTAMO ACTIVO
             $lastLoan = $this->getLastLoanBy($response, 'assigned_vehicle_id', $lastAssignedVehicle->id, true);
-            if ($lastLoan->active_loan == 0 ) {
+            if ($lastLoan->active_loan == 0) {
                 $response->data["message"] = 'peticion satisfactoria | devolucion de prestamo no concluido.';
                 $response->data["alert_icon"] = "warning";
                 $response->data["alert_text"] = "Devolución de prestamo no completado YAAAA - El vehículo no tiene un prestamo activo";
