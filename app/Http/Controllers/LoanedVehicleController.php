@@ -54,7 +54,7 @@ class LoanedVehicleController extends Controller
             $assignedVehicleController = new AssignedVehicleController();
             $lastAssignedVehicle = $assignedVehicleController->getLastAssignmentBy($response, 'vehicle_id', $request->vehicle_id, true);
             if ($lastAssignedVehicle) {
-                if (!$lastAssignedVehicle->active_assignment) {
+                if ($lastAssignedVehicle->active_assignment == 0) {
                     $response->data["message"] = 'peticion satisfactoria | prestamo no concluido.';
                     $response->data["alert_icon"] = "warning";
                     $response->data["alert_text"] = "Prestamo no completado - El vehículo no está asignado a ningún director";
@@ -64,9 +64,9 @@ class LoanedVehicleController extends Controller
             }
 
             #VERIFICAR QUE EL VEHICULO NO TENGA PRESTAMO ACTIVO
-            $lastLoan = $this->getLastLoanBy($response, 'assigned_vehicle_id', $request->vehicle_id, true);
+            $lastLoan = $this->getLastLoanBy($response, 'assigned_vehicle_id', $lastAssignedVehicle->id, true);
             if ($lastLoan) {
-                if (!$lastLoan->active_assignment) {
+                if ($lastLoan->active_loan == 1) {
                     $response->data["message"] = 'peticion satisfactoria | prestamo no concluido.';
                     $response->data["alert_icon"] = "warning";
                     $response->data["alert_text"] = "Prestamo no completado - El vehículo tiene un prestamo activo";
@@ -76,7 +76,7 @@ class LoanedVehicleController extends Controller
             }
 
 
-            #VERIFICAR ESTE EN EL ESTATUS CORRECTO = 3-ASIGNADO
+            #VERIFICAR QUE ESTE EN EL ESTATUS CORRECTO = 3-ASIGNADO
             $vehicle = Vehicle::find($lastAssignedVehicle->vehicle_id);
             if ($vehicle->vehicle_status_id !== 3) {
                 $response->data["message"] = 'peticion satisfactoria | vehiculo no asignado.';
@@ -86,11 +86,11 @@ class LoanedVehicleController extends Controller
             }
 
             $userAuth = Auth::user();
-            if ($userAuth->role_id <= 2) {
-            } # no hay problema por ser admins,,, creo
+            // return "hasta aqui todo bien";
+            if ($userAuth->role_id <= 2) {} # no hay problema por ser admins,,, creo
             else if ($userAuth->role_id == 5) # Verificar que sea el usuario responsable de la unidad
             {
-                if ($userAuth->id != $assignedVehicleController->user_id) {
+                if ($userAuth->id != $lastAssignedVehicle->user_id) {
                     $response->data["message"] = 'peticion satisfactoria | prestamo no concluida.';
                     $response->data["alert_icon"] = "warning";
                     $response->data["alert_text"] = "Prestamo no completado - Solo el director asignado a la unidad puede prestarlo.";
@@ -152,7 +152,7 @@ class LoanedVehicleController extends Controller
             $assignedVehicleController = new AssignedVehicleController();
             $lastAssignedVehicle = $assignedVehicleController->getLastAssignmentBy($response, 'id', $request->assigned_vehicle_id, true);
             if ($lastAssignedVehicle) {
-                if (!$lastAssignedVehicle->active_assignment) {
+                if ($lastAssignedVehicle->active_assignment == 0) {
                     $response->data["message"] = 'peticion satisfactoria | devolucion de prestamo no concluido.';
                     $response->data["alert_icon"] = "warning";
                     $response->data["alert_text"] = "Devolución de prestamo no aplicable - El vehículo no está asignado a ningún director";
@@ -163,10 +163,10 @@ class LoanedVehicleController extends Controller
 
             #VERIFICAR QUE EL VEHICULO TENGA PRESTAMO ACTIVO
             $lastLoan = $this->getLastLoanBy($response, 'assigned_vehicle_id', $lastAssignedVehicle->id, true);
-            if (!$lastLoan || !$lastLoan->active_loan) {
+            if ($lastLoan->active_loan == 0 ) {
                 $response->data["message"] = 'peticion satisfactoria | devolucion de prestamo no concluido.';
                 $response->data["alert_icon"] = "warning";
-                $response->data["alert_text"] = "Devolución de prestamo no completado - El vehículo no tiene un prestamo activo";
+                $response->data["alert_text"] = "Devolución de prestamo no completado YAAAA - El vehículo no tiene un prestamo activo";
                 return response()->json($response, $response->data["status_code"]);
             }
 

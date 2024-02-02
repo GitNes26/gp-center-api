@@ -49,9 +49,9 @@ class AssignedVehicleController extends Controller
             //  }
 
             #VERIFICAR QUE EL VEHICULO NO ESTE ASIGNADO
-            $activeAssignment = $this->getLastAssignmentBy($response, 'vehicle_id', $request->vehicle_id, true);
-            if ($activeAssignment) {
-                if ($activeAssignment->active_assignment) {
+            $lastAssignedVehicle = $this->getLastAssignmentBy($response, 'vehicle_id', $request->vehicle_id, true);
+            if ($lastAssignedVehicle) {
+                if ($lastAssignedVehicle->active_assignment) {
                     $response->data["message"] = 'peticion satisfactoria | asignacion no concluida.';
                     $response->data["alert_icon"] = "warning";
                     $response->data["alert_text"] = "Asignación no completada - El vehículo ya está asignado";

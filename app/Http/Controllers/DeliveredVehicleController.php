@@ -30,9 +30,9 @@ class DeliveredVehicleController extends Controller
 
             #VERIFICAR QUE EL VEHICULO ESTE ASIGNADO
             $assignedVehicleController = new AssignedVehicleController();
-            $lastAssignedVehicle = $assignedVehicleController->getLastAssignmentBy($response, 'id', $request->assigned_vehicle_id, true);
+            $lastAssignedVehicle = $assignedVehicleController->getLastAssignmentBy($response, 'vehicle_id', $request->vehicle_id, true);
             if ($lastAssignedVehicle) {
-                if (!$lastAssignedVehicle->active_assignment) {
+                if ($lastAssignedVehicle->active_assignment == 0) {
                     $response->data["message"] = 'peticion satisfactoria | devolucion de unidad no concluido.';
                     $response->data["alert_icon"] = "warning";
                     $response->data["alert_text"] = "Devolución de unidad no aplicable - El vehículo no está asignado a ningún director";
@@ -45,7 +45,7 @@ class DeliveredVehicleController extends Controller
             $loanedVehicleController = new LoanedVehicleController();
             $lastLoan = $loanedVehicleController->getLastLoanBy($response, 'assigned_vehicle_id', $lastAssignedVehicle->vehicle_id, true);
             if ($lastLoan) {
-                if (!$lastLoan->active_assignment) {
+                if ($lastLoan->active_loan == 1) {
                     $response->data["message"] = 'peticion satisfactoria | devolucion de unidad no concluido.';
                     $response->data["alert_icon"] = "warning";
                     $response->data["alert_text"] = "Devolución de unidad no completado - El vehículo tiene un prestamo activo";
@@ -69,7 +69,7 @@ class DeliveredVehicleController extends Controller
             } # no hay problema por ser admins,,, creo
             else if ($userAuth->role_id == 5) # Verificar que sea el usuario responsable de la unidad
             {
-                if ($userAuth->id != $assignedVehicleController->user_id) {
+                if ($userAuth->id != $lastAssignedVehicle->user_id) {
                     $response->data["message"] = 'peticion satisfactoria | devolucion de unidad no concluida.';
                     $response->data["alert_icon"] = "warning";
                     $response->data["alert_text"] = "Devolución de unidad no completado - Solo el director asignado a la unidad puede devolverla.";
