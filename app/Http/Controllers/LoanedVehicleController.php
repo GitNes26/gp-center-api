@@ -53,12 +53,14 @@ class LoanedVehicleController extends Controller
             #VERIFICAR QUE EL VEHICULO ESTE ASIGNADO
             $assignedVehicleController = new AssignedVehicleController();
             $lastAssignedVehicle = $assignedVehicleController->getLastAssignmentBy($response, 'vehicle_id', $request->vehicle_id, true);
-            if (!$lastAssignedVehicle || $lastAssignedVehicle->active_assignment == 0) {
-                $response->data["message"] = 'peticion satisfactoria | prestamo no concluido.';
-                $response->data["alert_icon"] = "warning";
-                $response->data["alert_text"] = "Prestamo no completado - El vehículo no está asignado a ningún director";
-                return response()->json($response, $response->data["status_code"]);
-                // return "no hay asignaciones a este vehiculo";
+            if ($lastAssignedVehicle) {
+                if ($lastAssignedVehicle->active_assignment == 0) {
+                    $response->data["message"] = 'peticion satisfactoria | prestamo no concluido.';
+                    $response->data["alert_icon"] = "warning";
+                    $response->data["alert_text"] = "Prestamo no completado - El vehículo no está asignado a ningún director";
+                    return response()->json($response, $response->data["status_code"]);
+                    // return "no hay asignaciones a este vehiculo";
+                }
             }
 
             #VERIFICAR QUE EL VEHICULO NO TENGA PRESTAMO ACTIVO
@@ -151,17 +153,19 @@ class LoanedVehicleController extends Controller
             #VERIFICAR QUE EL VEHICULO ESTE ASIGNADO
             $assignedVehicleController = new AssignedVehicleController();
             $lastAssignedVehicle = $assignedVehicleController->getLastAssignmentBy($response, 'vehicle_id', $request->vehicle_id, true);
-            if (!$lastAssignedVehicle || $lastAssignedVehicle->active_assignment == 0) {
-                $response->data["message"] = 'peticion satisfactoria | devolucion de prestamo no concluido.';
-                $response->data["alert_icon"] = "warning";
-                $response->data["alert_text"] = "Devolución de prestamo no aplicable - El vehículo no está asignado a ningún director";
-                return response()->json($response, $response->data["status_code"]);
-                // return "no hay asignaciones a este vehiculo";
+            if ($lastAssignedVehicle) {
+                if ($lastAssignedVehicle->active_assignment == 0) {
+                    $response->data["message"] = 'peticion satisfactoria | devolucion de prestamo no concluido.';
+                    $response->data["alert_icon"] = "warning";
+                    $response->data["alert_text"] = "Devolución de prestamo no aplicable - El vehículo no está asignado a ningún director";
+                    return response()->json($response, $response->data["status_code"]);
+                    // return "no hay asignaciones a este vehiculo";
+                }
             }
 
             #VERIFICAR QUE EL VEHICULO TENGA PRESTAMO ACTIVO
             $lastLoan = $this->getLastLoanBy($response, 'assigned_vehicle_id', $lastAssignedVehicle->id, true);
-            if (!$lastLoan || $lastLoan->active_loan == 0) {
+            if ($lastLoan->active_loan == 0) {
                 $response->data["message"] = 'peticion satisfactoria | devolucion de prestamo no concluido.';
                 $response->data["alert_icon"] = "warning";
                 $response->data["alert_text"] = "Devolución de prestamo no completado - El vehículo no tiene un prestamo activo";
