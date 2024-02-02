@@ -26,6 +26,7 @@ return new class extends Migration
             // $table->string('file_name')->default('#');
             $table->integer('order')->nullable();
             $table->boolean('show_counter')->default(false);
+            $table->string('others_permissions')->nullable();
             $table->boolean('active')->default(true);
             $table->timestamps();
             $table->dateTime('deleted_at')->nullable();

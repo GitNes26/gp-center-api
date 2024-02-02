@@ -22,7 +22,7 @@ class RoleController extends Controller
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
-            $list = Role::where('active', true)->where("id", ">=", $role_id)
+            $list = Role::where("id", ">=", $role_id)
                 ->orderBy('roles.id', 'asc')->get();
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'Peticion satisfactoria. Lista de roles:';
@@ -151,6 +151,31 @@ class RoleController extends Controller
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'peticion satisfactoria | rol eliminado.';
             $response->data["alert_text"] = 'Rol eliminado';
+        } catch (\Exception $ex) {
+            $response->data = ObjResponse::CatchResponse($ex->getMessage());
+        }
+        return response()->json($response, $response->data["status_code"]);
+    }
+
+    /**
+     * "Activar o Desactivar" (cambiar estado activo) rol.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response $response
+     */
+    public function DisEnableRole(Int $id, Int $active, Response $response)
+    {
+        $response->data = ObjResponse::DefaultResponse();
+        try {
+            Role::where('id', $id)
+                ->update([
+                    'active' => (bool)$active
+                ]);
+
+            $description = $active == "0" ? 'desactivado' : 'reactivado';
+            $response->data = ObjResponse::CorrectResponse();
+            $response->data["message"] = "peticion satisfactoria | rol $description.";
+            $response->data["alert_text"] = "Rol $description";
         } catch (\Exception $ex) {
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
         }
