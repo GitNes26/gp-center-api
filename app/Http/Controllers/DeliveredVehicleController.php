@@ -77,7 +77,7 @@ class DeliveredVehicleController extends Controller
                 }
             } else {
                 $response->data["message"] = 'peticion satisfactoria | devolucion de unidad no concluida.';
-                $response->data["alert_icon"] = "warning";
+                $response->data["alert_icon"] = "error";
                 $response->data["alert_text"] = "Devolución de unidad no completado - Solo el director asignado a la unidad puede devolverla.";
                 return response()->json($response, $response->data["status_code"]);
             }
