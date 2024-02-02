@@ -99,7 +99,7 @@ class LoanedVehicleController extends Controller
                 }
             } else {
                 $response->data["message"] = 'peticion satisfactoria | prestamo no concluida.';
-                $response->data["alert_icon"] = "warning";
+                $response->data["alert_icon"] = "error";
                 $response->data["alert_text"] = "Prestamo no completado - Solo el director asignado a la unidad puede prestarlo.";
                 return response()->json($response, $response->data["status_code"]);
             }
@@ -167,7 +167,7 @@ class LoanedVehicleController extends Controller
             if ($lastLoan->active_loan == 0) {
                 $response->data["message"] = 'peticion satisfactoria | devolucion de prestamo no concluido.';
                 $response->data["alert_icon"] = "warning";
-                $response->data["alert_text"] = "Devolución de prestamo no completado YAAAA - El vehículo no tiene un prestamo activo";
+                $response->data["alert_text"] = "Devolución de prestamo no completado - El vehículo no tiene un prestamo activo";
                 return response()->json($response, $response->data["status_code"]);
             }
 
@@ -193,7 +193,7 @@ class LoanedVehicleController extends Controller
                 }
             } else {
                 $response->data["message"] = 'peticion satisfactoria | devolucion de prestamo no concluida.';
-                $response->data["alert_icon"] = "warning";
+                $response->data["alert_icon"] = "error";
                 $response->data["alert_text"] = "Devolución de prestamo no completado - Solo el conductor solicitante puede devolver el prestamo.";
                 return response()->json($response, $response->data["status_code"]);
             }
