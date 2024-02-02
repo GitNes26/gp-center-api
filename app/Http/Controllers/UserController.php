@@ -35,9 +35,10 @@ class UserController extends Controller
          $field => 'required',
          'password' => 'required'
       ]);
-      $user = User::where("users.$field", "$value")
+      $user = User::where("users.$field", "$value")->where('users.active', 1)
          ->join("roles", "users.role_id", "=", "roles.id")
          ->select("users.*", "roles.role", "roles.read")
+         ->orderBy('users.id', 'desc')
          ->first();
 
 
@@ -225,8 +226,8 @@ class UserController extends Controller
       $response->data = ObjResponse::DefaultResponse();
       try {
          $token = $request->bearerToken();
-        //  return $request;
-        // return  "role_id:$role_id -- el user_id: $request->user_id -- email:$request->email --  y el id:$request->id";
+         //  return $request;
+         // return  "role_id:$role_id -- el user_id: $request->user_id -- email:$request->email --  y el id:$request->id";
          if ((int)$role_id <= 2) $id = (int)$request->id > 0 ? (int)$request->id : null;
          else $id = (int)$request->user_id > 0 ? (int)$request->user_id : null;
          $minus = "usuario";
