@@ -91,7 +91,7 @@ class LoanedVehicleController extends Controller
             } # no hay problema por ser admins,,, creo
             else if ($userAuth->role_id == 5) # Verificar que sea el usuario responsable de la unidad
             {
-                if ($userAuth->id != $lastAssignedVehicle->user_id) {
+                if ((int)$userAuth->id != (int)$lastAssignedVehicle->user_id) {
                     $response->data["message"] = 'peticion satisfactoria | prestamo no concluida.';
                     $response->data["alert_icon"] = "warning";
                     $response->data["alert_text"] = "Prestamo no completado - Solo el director asignado a la unidad puede prestarlo.";
@@ -185,7 +185,7 @@ class LoanedVehicleController extends Controller
             } # no hay problema por ser admins,,, creo
             else if ($userAuth->role_id == 6) # Verificar que sea el usuario quien solicitó el prestamo de la unidad
             {
-                if ($userAuth->id != $lastLoan->requesting_user_id) {
+                if ((int)$userAuth->id != (int)$lastLoan->requesting_user_id) {
                     $response->data["message"] = 'peticion satisfactoria | devolucion de prestamo no concluida.';
                     $response->data["alert_icon"] = "warning";
                     $response->data["alert_text"] = "Devolución de prestamo no completado - Solo el conductor solicitante puede devolver el prestamo.";

@@ -69,7 +69,7 @@ class DeliveredVehicleController extends Controller
             } # no hay problema por ser admins,,, creo
             else if ($userAuth->role_id == 5) # Verificar que sea el usuario responsable de la unidad
             {
-                if ($userAuth->id != $lastAssignedVehicle->user_id) {
+                if ((int)$userAuth->id != (int)$lastAssignedVehicle->user_id) {
                     $response->data["message"] = 'peticion satisfactoria | devolucion de unidad no concluida.';
                     $response->data["alert_icon"] = "warning";
                     $response->data["alert_text"] = "Devolución de unidad no completado - Solo el director asignado a la unidad puede devolverla.";
