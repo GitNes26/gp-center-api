@@ -31,7 +31,7 @@ class ServiceController extends Controller
                         ->where('vehicle_plates.expired', '=', 0);
                 })
                 ->join('users', 'services.mechanic_id', '=', 'users.id')
-                ->select('services.*','vehicles.stock_number','vehicles.year','vehicles.registration_date','vehicles.description', 'brands.brand', 'models.model', 'vehicle_status.vehicle_status', 'vehicle_status.bg_color', 'vehicle_status.letter_black', 'plates', 'initial_date', 'due_date','users.username')
+                ->select('services.*', 'vehicles.stock_number', 'vehicles.year', 'vehicles.registration_date', 'vehicles.description', 'brands.brand', 'models.model', 'vehicle_status.vehicle_status', 'vehicle_status.bg_color', 'vehicle_status.letter_black', 'plates', 'initial_date', 'due_date', 'users.username')
                 ->orderBy('services.id', 'desc')->get();
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'Peticion satisfactoria | Lista de servicios.';
@@ -76,7 +76,7 @@ class ServiceController extends Controller
             $folio = $this->getLastFolio();
 
             $new_service = Service::create([
-                'folio' => (int)$folio+1,
+                'folio' => (int)$folio + 1,
                 'vehicle_id' => $request->vehicle_id,
                 'contact_name' => $request->contact_name,
                 'contact_phone' => $request->contact_phone,
@@ -91,9 +91,8 @@ class ServiceController extends Controller
 
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'peticion satisfactoria | servicio registrado.';
-            $response->data["alert_text"] = "Servicio registrado <br> tu folio es <b>$new_service->folio</b>" ;
+            $response->data["alert_text"] = "Servicio registrado <br> tu folio es <b>$new_service->folio</b>";
             $response->data["result"] = $new_service;
-
         } catch (\Exception $ex) {
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
         }
@@ -111,7 +110,7 @@ class ServiceController extends Controller
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
-            $service = Service::where('services.id',$request->id)
+            $service = Service::where('services.id', $request->id)
                 ->join('vehicles', 'services.vehicle_id', '=', 'vehicles.id')
                 ->join('brands', 'vehicles.brand_id', '=', 'brands.id')
                 ->join('models', 'vehicles.model_id', '=', 'models.id')
@@ -121,7 +120,7 @@ class ServiceController extends Controller
                         ->where('vehicle_plates.expired', '=', 0);
                 })
                 ->join('users', 'services.mechanic_id', '=', 'users.id')
-                ->select('services.*','vehicles.stock_number','vehicles.year','vehicles.registration_date','vehicles.description', 'brands.brand', 'models.model', 'vehicle_status.vehicle_status', 'vehicle_status.bg_color', 'vehicle_status.letter_black', 'plates', 'initial_date', 'due_date', 'users.username')
+                ->select('services.*', 'vehicles.stock_number', 'vehicles.year', 'vehicles.registration_date', 'vehicles.description', 'brands.brand', 'models.model', 'vehicle_status.vehicle_status', 'vehicle_status.bg_color', 'vehicle_status.letter_black', 'plates', 'initial_date', 'due_date', 'users.username')
                 ->orderBy('services.id', 'asc')->first();
 
             $response->data = ObjResponse::CorrectResponse();
