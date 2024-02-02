@@ -31,12 +31,14 @@ class DeliveredVehicleController extends Controller
             #VERIFICAR QUE EL VEHICULO ESTE ASIGNADO
             $assignedVehicleController = new AssignedVehicleController();
             $lastAssignedVehicle = $assignedVehicleController->getLastAssignmentBy($response, 'vehicle_id', $request->vehicle_id, true);
-            if (!$lastAssignedVehicle || $lastAssignedVehicle->active_assignment == 0) {
-                $response->data["message"] = 'peticion satisfactoria | devolucion de unidad no concluido.';
-                $response->data["alert_icon"] = "warning";
-                $response->data["alert_text"] = "Devolución de unidad no aplicable - El vehículo no está asignado a ningún director";
-                return response()->json($response, $response->data["status_code"]);
-                // return "no hay asignaciones a este vehiculo";
+            if ($lastAssignedVehicle) {
+                if ($lastAssignedVehicle->active_assignment == 0) {
+                    $response->data["message"] = 'peticion satisfactoria | devolucion de unidad no concluido.';
+                    $response->data["alert_icon"] = "warning";
+                    $response->data["alert_text"] = "Devolución de unidad no aplicable - El vehículo no está asignado a ningún director";
+                    return response()->json($response, $response->data["status_code"]);
+                    // return "no hay asignaciones a este vehiculo";
+                }
             }
 
             #VERIFICAR QUE EL VEHICULO NO TENGA PRESTAMO ACTIVO
