@@ -22,8 +22,8 @@ return new class extends Migration
             $table->text('pre_diagnosis')->comment("lo que el usuario le dice al mecanico");
             $table->text('final_diagnosis')->nullable()->comment("lo que el mecanico determina despues de revisarlo");
             $table->string('evidence_img_path')->nullable()->comment("por si desea subir foto NO CONTEMPLADO AUN");
-            $table->foreignId('mechanic_id')->constrained('users', 'id');
-            $table->enum('status',["Abierta","En Revisión", "Cerrada"])->default("Abierta");
+            $table->foreignId('mechanic_id')->constrained('users', 'id')->nullable();
+            $table->enum('status', ["Abierta", "En Revisión", "Cerrada"])->default("Abierta");
 
             $table->boolean('active')->default(true);
             $table->timestamps();
