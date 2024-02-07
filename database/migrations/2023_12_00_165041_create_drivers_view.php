@@ -23,13 +23,12 @@ return new class extends Migration
                 ' ',
                 d.maternal_last_name) AS full_name, d.*,
         r.role, r.read, r.create, r.update, r.delete, r.more_permissions,
-        dep.department,
         dir.username 'director'
         FROM drivers d
         INNER JOIN users u ON d.user_id=u.id
         INNER JOIN roles r ON u.role_id=r.id
-        INNER JOIN departments dep ON d.department_id=dep.id
-        INNER JOIN directors_view dir ON d.director_id=dir.id   
+        -- INNER JOIN departments dep ON d.department_id=dep.id
+        LEFT JOIN directors_view dir ON d.department=dir.department
         WHERE u.active=1;
         ");
     }

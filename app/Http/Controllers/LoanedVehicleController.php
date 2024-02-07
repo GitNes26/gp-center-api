@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\AssignedVehicle;
+use App\Models\DriverView;
 use App\Models\LoanedVehicle;
 use App\Models\ObjResponse;
 use App\Models\Vehicle;
@@ -75,9 +76,27 @@ class LoanedVehicleController extends Controller
                 }
             }
 
+            #VERIFICAR QUE CONCIDAN EL TIPO DE LICENCIAS
+            $vehicle = Vehicle::find($lastAssignedVehicle->vehicle_id);
+            $driver = DriverView::where("user_id", $request->requesting_user_id)->first();
+            if ($vehicle->acceptable_license_type != "") {
+                $acceptable_license_type = explode(",", $vehicle->acceptable_license_type);
+                // return print_r($acceptable_license_type);
+                if (!in_array($driver->license_type, $acceptable_license_type)) {
+                    $response->data["message"] = 'peticion satisfactoria | tipo de licencia no valida.';
+                    $response->data["alert_icon"] = "warning";
+                    $response->data["alert_text"] = "Asignación no completada - Tipo de licencia no valida para esta unidad.";
+                    return response()->json($response, $response->data["status_code"]);
+                }
+            } else {
+                $response->data["message"] = 'peticion satisfactoria | tipo de licencia no valida.';
+                $response->data["alert_icon"] = "warning";
+                $response->data["alert_text"] = "Asignación no completada - El vehículo no tiene tipos de licencias asignados.";
+                return response()->json($response, $response->data["status_code"]);
+            }
+
 
             #VERIFICAR QUE ESTE EN EL ESTATUS CORRECTO = 3-ASIGNADO
-            $vehicle = Vehicle::find($lastAssignedVehicle->vehicle_id);
             if ($vehicle->vehicle_status_id !== 3) {
                 $response->data["message"] = 'peticion satisfactoria | vehiculo no asignado.';
                 $response->data["alert_icon"] = "warning";
@@ -91,7 +110,7 @@ class LoanedVehicleController extends Controller
             } # no hay problema por ser admins,,, creo
             else if ($userAuth->role_id == 5) # Verificar que sea el usuario responsable de la unidad
             {
-                return "userAuth->id:$userAuth->id -- lastAssignedVehicle->user_id:$lastAssignedVehicle->user_id";
+                // return "userAuth->id:$userAuth->id -- lastAssignedVehicle->user_id:$lastAssignedVehicle->user_id";
                 if ((int)$userAuth->id != (int)$lastAssignedVehicle->user_id) {
                     $response->data["message"] = 'peticion satisfactoria | prestamo no concluida.';
                     $response->data["alert_icon"] = "warning";
@@ -165,7 +184,14 @@ class LoanedVehicleController extends Controller
 
             #VERIFICAR QUE EL VEHICULO TENGA PRESTAMO ACTIVO
             $lastLoan = $this->getLastLoanBy($response, 'assigned_vehicle_id', $lastAssignedVehicle->id, true);
-            if ($lastLoan->active_loan == 0) {
+            if ($lastLoan) {
+                if ($lastLoan->active_loan == 0) {
+                    $response->data["message"] = 'peticion satisfactoria | devolucion de prestamo no concluido.';
+                    $response->data["alert_icon"] = "warning";
+                    $response->data["alert_text"] = "Devolución de prestamo no completado - El vehículo no tiene un prestamo activo";
+                    return response()->json($response, $response->data["status_code"]);
+                }
+            } else {
                 $response->data["message"] = 'peticion satisfactoria | devolucion de prestamo no concluido.';
                 $response->data["alert_icon"] = "warning";
                 $response->data["alert_text"] = "Devolución de prestamo no completado - El vehículo no tiene un prestamo activo";

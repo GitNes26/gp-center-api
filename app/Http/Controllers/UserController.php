@@ -35,11 +35,23 @@ class UserController extends Controller
          $field => 'required',
          'password' => 'required'
       ]);
+      //   $userAuth=Auth::user();
+
       $user = User::where("users.$field", "$value")->where('users.active', 1)
          ->join("roles", "users.role_id", "=", "roles.id")
          ->select("users.*", "roles.role", "roles.read", "roles.create", "roles.update", "roles.delete", "roles.more_permissions")
          ->orderBy('users.id', 'desc')
          ->first();
+
+      // print_r("todo bien hasta aqui-----$user ");
+      if ($user->role_id === 5) {
+         $user = User::where("users.$field", "$value")->where('users.active', 1)
+            ->join("roles", "users.role_id", "=", "roles.id")
+            ->leftJoin('directors', 'users.id', '=', 'directors.user_id')
+            ->select("users.*", "roles.role", "roles.read", "roles.create", "roles.update", "roles.delete", "roles.more_permissions", "directors.department")
+            ->orderBy('users.id', 'desc')
+            ->first();
+      }
 
 
       $response->data = ObjResponse::CorrectResponse();

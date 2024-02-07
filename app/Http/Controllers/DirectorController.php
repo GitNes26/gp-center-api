@@ -74,7 +74,7 @@ class DirectorController extends Controller
          if ($director) $id = $director->id;
          else $director = new Director();
 
-         $duplicate = $this->validateAvailableData($request->phone, $request->license_number, $id);
+         $duplicate = $this->validateAvailableData($request->phone, $request->license_number, $request->payroll_number, $id);
          if ($duplicate["result"] == true) {
             return $duplicate;
          }
@@ -85,9 +85,11 @@ class DirectorController extends Controller
          $director->maternal_last_name = $request->maternal_last_name;
          $director->phone = $request->phone;
          $director->license_number = $request->license_number;
+         $director->license_type = $request->license_type;
          $director->license_due_date = $request->license_due_date;
          $director->payroll_number = $request->payroll_number;
-         $director->department_id = $request->department_id;
+         $director->department = $request->department;
+        //  $director->department_id = $request->department_id;
          $director->community_id = $request->community_id;
          $director->street = $request->street;
          $director->num_ext = $request->num_ext;
@@ -136,13 +138,15 @@ class DirectorController extends Controller
    }
 
 
-   private function validateAvailableData($phone, $license_number, $id)
+   private function validateAvailableData($phone, $license_number, $payroll_number, $id)
    {
       $checkAvailable = new UserController();
       // #VALIDACION DE DATOS REPETIDOS
       $duplicate = $checkAvailable->checkAvailableData('directors', 'phone', $phone, 'El número telefónico', 'phone', $id, "users");
       if ($duplicate["result"] == true) return $duplicate;
       $duplicate = $checkAvailable->checkAvailableData('directors', 'license_number', $license_number, 'El número de licencia', 'license_number', $id, "users");
+      if ($duplicate["result"] == true) return $duplicate;
+      $duplicate = $checkAvailable->checkAvailableData('directors', 'payroll_number', $payroll_number, 'El empleado (número de nómina) ya ha sido registrado', 'payroll_number', $id, "users");
       if ($duplicate["result"] == true) return $duplicate;
       return array("result" => false);
    }
