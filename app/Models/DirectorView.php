@@ -46,7 +46,7 @@ class DirectorView extends Model
         'more_permissions'
     ];
 
-     /**
+    /**
      * Los atributos que deben ocultarse para la serialización.
      *
      * @var array<int, string>

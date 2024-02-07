@@ -60,17 +60,24 @@ class DeliveredVehicleController extends Controller
                     return response()->json($response, $response->data["status_code"]);
                     // return "no hay asignaciones a este vehiculo";
                 }
+            } else {
+                $response->data["message"] = 'peticion satisfactoria | devolucion de unidad no concluido.';
+                $response->data["alert_icon"] = "warning";
+                $response->data["alert_text"] = "Devolución de unidad no aplicable - El vehículo no está asignado a ningún director";
+                return response()->json($response, $response->data["status_code"]);
             }
 
             #VERIFICAR QUE EL VEHICULO NO TENGA PRESTAMO ACTIVO
             $loanedVehicleController = new LoanedVehicleController();
-            $lastLoan = $loanedVehicleController->getLastLoanBy($response, 'assigned_vehicle_id', $lastAssignedVehicle->vehicle_id, true);
-            if ($lastLoan->active_loan == 1) {
-                $response->data["message"] = 'peticion satisfactoria | devolucion de unidad no concluido.';
-                $response->data["alert_icon"] = "warning";
-                $response->data["alert_text"] = "Devolución de unidad no completado - El vehículo tiene un prestamo activo";
-                return response()->json($response, $response->data["status_code"]);
-                // return "no hay asignaciones a este vehiculo";
+            $lastLoan = $loanedVehicleController->getLastLoanBy($response, 'assigned_vehicle_id', $lastAssignedVehicle->id, true);
+            if ($lastLoan) {
+                if ($lastLoan->active_loan === 1) {
+                    $response->data["message"] = 'peticion satisfactoria | devolucion de unidad no concluido.';
+                    $response->data["alert_icon"] = "warning";
+                    $response->data["alert_text"] = "Devolución de unidad no completado - El vehículo tiene un prestamo activo";
+                    return response()->json($response, $response->data["status_code"]);
+                    // return "no hay asignaciones a este vehiculo";
+                }
             }
 
 
