@@ -86,6 +86,7 @@ class VehicleController extends Controller
                 'registration_date' => $request->registration_date,
                 'vehicle_status_id' => $request->vehicle_status_id,
                 'description' => $request->description,
+                'acceptable_license_type' => $request->acceptable_license_type,
                 'serial_number' => $request->serial_number,
                 'circulation_card' => $request->circulation_card,
                 'insurance_policy' => $request->insurance_policy,
@@ -251,6 +252,7 @@ class VehicleController extends Controller
             $vehicle->registration_date = $request->registration_date;
             $vehicle->vehicle_status_id = $request->vehicle_status_id;
             $vehicle->description = $request->description;
+            $vehicle->acceptable_license_type = $request->acceptable_license_type;
             $vehicle->serial_number = $request->serial_number;
             $vehicle->circulation_card = $request->circulation_card;
             $vehicle->insurance_policy = $request->insurance_policy;

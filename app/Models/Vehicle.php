@@ -27,6 +27,7 @@ class Vehicle extends Model
         'year',
         'registration_date',
         'description',
+        'acceptable_license_type',
         'vehicle_status_id',
         'img_preview',
         'serial_number',
