@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\DirectorView;
 use App\Models\Driver;
 use App\Models\ObjResponse;
 use App\Models\DriverView;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -24,7 +26,15 @@ class DriverController extends Controller
    {
       $response->data = ObjResponse::DefaultResponse();
       try {
-         $list = DriverView::all();
+        $userAuth=Auth::user();
+          $list = DriverView::all();
+          #si es director -> traerse solo los del departamento correspondiente
+          if ($userAuth->role_id === 5) {
+            $director = DirectorView::where('user_id',$userAuth->id)->first();
+            // print_r("el department: $director->department");
+             $list = DriverView::where('department',$director->department)->get();
+          }
+
 
          $response->data = ObjResponse::CorrectResponse();
          $response->data["message"] = 'peticion satisfactoria | lista de conductores.';
@@ -45,8 +55,13 @@ class DriverController extends Controller
    {
       $response->data = ObjResponse::DefaultResponse();
       try {
-         $list = DriverView::select('id', 'username as label')
+          $userAuth=Auth::user();
+          $list = DriverView::select('id', 'username as label')
             ->orderBy('username', 'asc')->get();
+          #si es director -> traerse solo los del departamento correspondiente
+         if ($userAuth->role_id === 5) $list = DriverView::where('department',$userAuth->department)->select('id', 'username as label')
+         ->orderBy('username', 'asc')->get();
+
          $response->data = ObjResponse::CorrectResponse();
          $response->data["message"] = 'peticion satisfactoria | lista de conductores.';
          $response->data["alert_text"] = "conductores encontrados";
@@ -72,21 +87,23 @@ class DriverController extends Controller
          if ($driver) $id = $driver->id;
          else $driver = new Driver();
 
-         $duplicate = $this->validateAvailableData($request->phone, $request->license_number, $id);
+         $duplicate = $this->validateAvailableData($request->phone, $request->license_number, $request->payroll_number, $id);
          if ($duplicate["result"] == true) {
             return $duplicate;
          }
 
          $driver->user_id = $user_id;
-         $driver->director_id = $request->director_id;
+        //  $driver->director_id = $request->director_id;
          $driver->name = $request->name;
          $driver->paternal_last_name = $request->paternal_last_name;
          $driver->maternal_last_name = $request->maternal_last_name;
          $driver->phone = $request->phone;
          $driver->license_number = $request->license_number;
          $driver->license_due_date = $request->license_due_date;
+         $driver->license_type = $request->license_type;
          $driver->payroll_number = $request->payroll_number;
-         $driver->department_id = $request->department_id;
+         $driver->department = $request->department;
+        //  $driver->department_id = $request->department_id;
          $driver->community_id = $request->community_id;
          $driver->street = $request->street;
          $driver->num_ext = $request->num_ext;
@@ -135,13 +152,15 @@ class DriverController extends Controller
    }
 
 
-   private function validateAvailableData($phone, $license_number, $id)
+   private function validateAvailableData($phone, $license_number, $payroll_number, $id)
    {
       $checkAvailable = new UserController();
       // #VALIDACION DE DATOS REPETIDOS
       $duplicate = $checkAvailable->checkAvailableData('drivers', 'phone', $phone, 'El número telefónico', 'phone', $id, "users");
       if ($duplicate["result"] == true) return $duplicate;
       $duplicate = $checkAvailable->checkAvailableData('drivers', 'license_number', $license_number, 'El número de licencia', 'license_number', $id, "users");
+      if ($duplicate["result"] == true) return $duplicate;
+      $duplicate = $checkAvailable->checkAvailableData('drivers', 'payroll_number', $payroll_number, 'El empleado (número de nómina) ya ha sido registrado', 'payroll_number', $id, "users");
       if ($duplicate["result"] == true) return $duplicate;
       return array("result" => false);
    }

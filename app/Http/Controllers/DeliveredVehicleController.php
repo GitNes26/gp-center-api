@@ -15,6 +15,27 @@ use Illuminate\Support\Facades\Auth;
 class DeliveredVehicleController extends Controller
 {
     /**
+     * Mostrar lista de devoluciones de vehiculo
+     *
+     * @return \Illuminate\Http\Response $response
+     */
+    public function index(Response $response)
+    {
+        $response->data = ObjResponse::DefaultResponse();
+        try {
+            $list = DeliveredVehicle::all();
+
+            $response->data = ObjResponse::CorrectResponse();
+            $response->data["message"] = 'peticion satisfactoria | lista de devoluciones de vehiculo.';
+            $response->data["alert_text"] = "Devoluciones de vehiculos encontrados";
+            $response->data["result"] = $list;
+        } catch (\Exception $ex) {
+            $response->data = ObjResponse::CatchResponse($ex->getMessage());
+        }
+        return response()->json($response, $response->data["status_code"]);
+    }
+
+    /**
      * Crear o Actualizar prestamo de vehiculo.
      *
      * @return \Illuminate\Http\Response $response

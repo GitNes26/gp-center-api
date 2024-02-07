@@ -23,6 +23,7 @@ class Director extends Model
         'maternal_last_name',
         'phone',
         'license_number',
+        'license_type',
         'license_due_date',
         'img_license',
         'payroll_number',

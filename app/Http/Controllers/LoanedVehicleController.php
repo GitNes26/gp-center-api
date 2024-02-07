@@ -91,7 +91,7 @@ class LoanedVehicleController extends Controller
             } # no hay problema por ser admins,,, creo
             else if ($userAuth->role_id == 5) # Verificar que sea el usuario responsable de la unidad
             {
-                return "userAuth->id:$userAuth->id -- lastAssignedVehicle->user_id:$lastAssignedVehicle->user_id";
+                // return "userAuth->id:$userAuth->id -- lastAssignedVehicle->user_id:$lastAssignedVehicle->user_id";
                 if ((int)$userAuth->id != (int)$lastAssignedVehicle->user_id) {
                     $response->data["message"] = 'peticion satisfactoria | prestamo no concluida.';
                     $response->data["alert_icon"] = "warning";
