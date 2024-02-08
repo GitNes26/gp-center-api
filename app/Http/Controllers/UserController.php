@@ -85,7 +85,9 @@ class UserController extends Controller
    {
       try {
          //  DB::table('personal_access_tokens')->where('tokenable_id', $id)->delete();
-         auth()->user()->tokens()->delete();
+         // Auth::user()->currentAccessToken()->delete(); #Elimina solo el token activo
+
+         auth()->user()->tokens()->delete(); #Utilizar este en caso de que el usuario desee cerrar sesión en todos lados o cambie informacion de su usuario / contraseña
 
          $response->data = ObjResponse::CorrectResponse();
          $response->data["message"] = 'peticion satisfactoria | sesión cerrada.';
