@@ -104,22 +104,15 @@ class VehicleController extends Controller
             $img_insurance_policy = $this->ImageUp($request, 'img_insurance_policy', $new_vehicle->id, 'insurance_policy', true, "sinPoliza.png");
 
             $vehicle = Vehicle::find($new_vehicle->id);
-            if ($request->hasFile('img_preview')) $vehicle->img_preview = $img_preview;
-            if ($request->hasFile('img_right')) $vehicle->img_right = $img_right;
-            if ($request->hasFile('img_back')) $vehicle->img_back = $img_back;
-            if ($request->hasFile('img_left')) $vehicle->img_left = $img_left;
-            if ($request->hasFile('img_front')) $vehicle->img_front = $img_front;
-            if ($request->hasFile('img_serial_number')) $vehicle->img_serial_number = $img_serial_number;
-            if ($request->hasFile('img_circulation_card')) $vehicle->img_circulation_card = $img_circulation_card;
-            if ($request->hasFile('img_insurance_policy')) $vehicle->img_insurance_policy = $img_insurance_policy;
-            // if ($img_preview != "") $vehicle->img_preview = $img_preview;
-            // if ($img_right != "") $vehicle->img_right = $img_right;
-            // if ($img_back != "") $vehicle->img_back = $img_back;
-            // if ($img_left != "") $vehicle->img_left = $img_left;
-            // if ($img_front != "") $vehicle->img_front = $img_front;
-            // if ($img_serial_number != "") $vehicle->img_serial_number = $img_serial_number;
-            // if ($img_circulation_card != "") $vehicle->img_circulation_card = $img_circulation_card;
-            // if ($img_insurance_policy != "") $vehicle->img_insurance_policy = $img_insurance_policy;
+            if ($request->hasFile('img_preview' || $request->img_preview == "")) $vehicle->img_preview = $img_preview;
+            if ($request->hasFile('img_right' || $request->img_right == "")) $vehicle->img_right = $img_right;
+            if ($request->hasFile('img_back' || $request->img_back == "")) $vehicle->img_back = $img_back;
+            if ($request->hasFile('img_left' || $request->img_left == "")) $vehicle->img_left = $img_left;
+            if ($request->hasFile('img_front' || $request->img_front == "")) $vehicle->img_front = $img_front;
+            if ($request->hasFile('img_serial_number' || $request->img_serial_number == "")) $vehicle->img_serial_number = $img_serial_number;
+            if ($request->hasFile('img_circulation_card' || $request->img_circulation_card == "")) $vehicle->img_circulation_card = $img_circulation_card;
+            if ($request->hasFile('img_insurance_policy' || $request->img_insurance_policy == "")) $vehicle->img_insurance_policy = $img_insurance_policy;
+
             $vehicle->save();
 
             $vehiclesPlatesController = new VehiclePlatesController();
@@ -145,26 +138,6 @@ class VehicleController extends Controller
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
-            // $vehicle = Vehicle::where("vehicles.active", 1)->where($searchBy, $value)
-            //     ->join('brands', 'vehicles.brand_id', '=', 'brands.id')
-            //     ->join('models', 'vehicles.model_id', '=', 'models.id')
-            //     ->join('vehicle_status', 'vehicles.vehicle_status_id', '=', 'vehicle_status.id')
-            //     ->join('vehicle_plates', function ($join) {
-            //         $join->on('vehicle_plates.vehicle_id', '=', 'vehicles.id')
-            //             ->where('vehicle_plates.expired', '=', 0);
-            //     })
-            //     // ->join('assigned_vehicles', function ($join) {
-            //     //     $join->on('assigned_vehicles.vehicle_id', '=', 'vehicles.id')
-            //     //     ->where('assigned_vehicles.active', '=', 1)
-            //     //     ->orderBy('assigned_vehicles.date','desc');
-            //     // })
-            //     // ->join('directors_view', function ($join) {
-            //     //     $join->on('assigned_vehicles.user_id', '=', 'directors_view.user_id')
-            //     //     ->where('assigned_vehicles.active', '=', 1)
-            //     //     ->orderBy('assigned_vehicles.date','desc');
-            //     // })
-            //     ->select('vehicles.*', 'brands.brand', 'brands.img_path as img_brand', 'models.model', 'vehicle_status.vehicle_status', 'vehicle_status.bg_color', 'vehicle_status.letter_black', 'plates', 'initial_date', 'due_date')
-            //     ->first();
             $vehicle = VehicleDetailView::where("active", 1)->where($searchBy, $value)->first();
 
 
@@ -197,16 +170,6 @@ class VehicleController extends Controller
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
-            // $vehicle = Vehicle::where('vehicles.id', $request->id)
-            //     ->join('brands', 'vehicles.brand_id', '=', 'brands.id')
-            //     ->join('models', 'vehicles.model_id', '=', 'models.id')
-            //     ->join('vehicle_status', 'vehicles.vehicle_status_id', '=', 'vehicle_status.id')
-            //     ->join('vehicle_plates', function ($join) {
-            //         $join->on('vehicle_plates.vehicle_id', '=', 'vehicles.id')
-            //             ->where('vehicle_plates.expired', '=', 0);
-            //     })
-            //     ->select('vehicles.*', 'brands.brand', 'models.model', 'vehicle_status.vehicle_status', 'vehicle_status.bg_color', 'vehicle_status.letter_black', 'plates', 'initial_date', 'due_date')
-            //     ->first();
             $vehicle = VehicleDetailView::find($request->id);
 
             $response->data = ObjResponse::CorrectResponse();
@@ -257,22 +220,15 @@ class VehicleController extends Controller
             $vehicle->circulation_card = $request->circulation_card;
             $vehicle->insurance_policy = $request->insurance_policy;
             // violated
-            if ($request->hasFile('img_preview')) $vehicle->img_preview = $img_preview;
-            if ($request->hasFile('img_right')) $vehicle->img_right = $img_right;
-            if ($request->hasFile('img_back')) $vehicle->img_back = $img_back;
-            if ($request->hasFile('img_left')) $vehicle->img_left = $img_left;
-            if ($request->hasFile('img_front')) $vehicle->img_front = $img_front;
-            if ($request->hasFile('img_serial_number')) $vehicle->img_serial_number = $img_serial_number;
-            if ($request->hasFile('img_circulation_card')) $vehicle->img_circulation_card = $img_circulation_card;
-            if ($request->hasFile('img_insurance_policy')) $vehicle->img_insurance_policy = $img_insurance_policy;
-            // if ($img_preview != "") $vehicle->img_preview = $img_preview;
-            // if ($img_right != "") $vehicle->img_right = $img_right;
-            // if ($img_back != "") $vehicle->img_back = $img_back;
-            // if ($img_left != "") $vehicle->img_left = $img_left;
-            // if ($img_front != "") $vehicle->img_front = $img_front;
-            // if ($img_serial_number != "") $vehicle->img_serial_number = $img_serial_number;
-            // if ($img_circulation_card != "") $vehicle->img_circulation_card = $img_circulation_card;
-            // if ($img_insurance_policy != "") $vehicle->img_insurance_policy = $img_insurance_policy;
+            if ($request->hasFile('img_preview' || $request->img_preview == "")) $vehicle->img_preview = $img_preview;
+            if ($request->hasFile('img_right' || $request->img_right == "")) $vehicle->img_right = $img_right;
+            if ($request->hasFile('img_back' || $request->img_back == "")) $vehicle->img_back = $img_back;
+            if ($request->hasFile('img_left' || $request->img_left == "")) $vehicle->img_left = $img_left;
+            if ($request->hasFile('img_front' || $request->img_front == "")) $vehicle->img_front = $img_front;
+            if ($request->hasFile('img_serial_number' || $request->img_serial_number == "")) $vehicle->img_serial_number = $img_serial_number;
+            if ($request->hasFile('img_circulation_card' || $request->img_circulation_card == "")) $vehicle->img_circulation_card = $img_circulation_card;
+            if ($request->hasFile('img_insurance_policy' || $request->img_insurance_policy == "")) $vehicle->img_insurance_policy = $img_insurance_policy;
+
 
             $vehicle->save();
 
