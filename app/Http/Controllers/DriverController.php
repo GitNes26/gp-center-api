@@ -26,14 +26,14 @@ class DriverController extends Controller
    {
       $response->data = ObjResponse::DefaultResponse();
       try {
-        $userAuth=Auth::user();
-          $list = DriverView::all();
-          #si es director -> traerse solo los del departamento correspondiente
-          if ($userAuth->role_id === 5) {
-            $director = DirectorView::where('user_id',$userAuth->id)->first();
+         $userAuth = Auth::user();
+         $list = DriverView::all();
+         #si es director -> traerse solo los del departamento correspondiente
+         if ($userAuth->role_id === 5) {
+            $director = DirectorView::where('user_id', $userAuth->id)->first();
             // print_r("el department: $director->department");
-             $list = DriverView::where('department',$director->department)->get();
-          }
+            $list = DriverView::where('department', $director->department)->get();
+         }
 
 
          $response->data = ObjResponse::CorrectResponse();
@@ -55,12 +55,12 @@ class DriverController extends Controller
    {
       $response->data = ObjResponse::DefaultResponse();
       try {
-          $userAuth=Auth::user();
-          $list = DriverView::select('id', 'username as label')
+         $userAuth = Auth::user();
+         $list = DriverView::select('id', 'username as label')
             ->orderBy('username', 'asc')->get();
-          #si es director -> traerse solo los del departamento correspondiente
-         if ($userAuth->role_id === 5) $list = DriverView::where('department',$userAuth->department)->select('id', 'username as label')
-         ->orderBy('username', 'asc')->get();
+         #si es director -> traerse solo los del departamento correspondiente
+         if ($userAuth->role_id === 5) $list = DriverView::where('department', $userAuth->department)->select('id', 'username as label')
+            ->orderBy('username', 'asc')->get();
 
          $response->data = ObjResponse::CorrectResponse();
          $response->data["message"] = 'peticion satisfactoria | lista de conductores.';
@@ -93,7 +93,7 @@ class DriverController extends Controller
          }
 
          $driver->user_id = $user_id;
-        //  $driver->director_id = $request->director_id;
+         //  $driver->director_id = $request->director_id;
          $driver->name = $request->name;
          $driver->paternal_last_name = $request->paternal_last_name;
          $driver->maternal_last_name = $request->maternal_last_name;
@@ -103,11 +103,11 @@ class DriverController extends Controller
          $driver->license_type = $request->license_type;
          $driver->payroll_number = $request->payroll_number;
          $driver->department = $request->department;
-        //  $driver->department_id = $request->department_id;
-         $driver->community_id = $request->community_id;
-         $driver->street = $request->street;
-         $driver->num_ext = $request->num_ext;
-         $driver->num_int = $request->num_int;
+         //  $driver->department_id = $request->department_id;
+         if ($request->community_id) $driver->community_id = $request->community_id;
+         if ($request->street) $driver->street = $request->street;
+         if ($request->num_ext) $driver->num_ext = $request->num_ext;
+         if ($request->num_int) $driver->num_int = $request->num_int;
 
          $driver->save();
 

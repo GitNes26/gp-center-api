@@ -89,11 +89,11 @@ class DirectorController extends Controller
          $director->license_due_date = $request->license_due_date;
          $director->payroll_number = $request->payroll_number;
          $director->department = $request->department;
-        //  $director->department_id = $request->department_id;
-         $director->community_id = $request->community_id;
-         $director->street = $request->street;
-         $director->num_ext = $request->num_ext;
-         $director->num_int = $request->num_int;
+         //  $director->department_id = $request->department_id;
+         if ($request->community_id) $director->community_id = $request->community_id;
+         if ($request->street) $director->street = $request->street;
+         if ($request->num_ext) $director->num_ext = $request->num_ext;
+         if ($request->num_int) $director->num_int = $request->num_int;
 
          $director->save();
 
