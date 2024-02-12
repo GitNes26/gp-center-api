@@ -217,9 +217,11 @@ class VehicleController extends Controller
             $vehicle->description = $request->description;
             $vehicle->acceptable_license_type = $request->acceptable_license_type;
             $vehicle->serial_number = $request->serial_number;
+            if ($request->visible_serial_number) $vehicle->visible_serial_number = (bool)$request->visible_serial_number;
             $vehicle->circulation_card = $request->circulation_card;
             $vehicle->insurance_policy = $request->insurance_policy;
             // violated
+
             if ($request->hasFile('img_preview' || $request->img_preview == "")) $vehicle->img_preview = $img_preview;
             if ($request->hasFile('img_right' || $request->img_right == "")) $vehicle->img_right = $img_right;
             if ($request->hasFile('img_back' || $request->img_back == "")) $vehicle->img_back = $img_back;
