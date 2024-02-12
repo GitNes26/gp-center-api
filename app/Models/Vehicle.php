@@ -32,6 +32,7 @@ class Vehicle extends Model
         'img_preview',
         'serial_number',
         'img_serial_number',
+        'visible_serial_number',
         'circulation_card',
         'img_circulation_card',
         'insurance_policy',

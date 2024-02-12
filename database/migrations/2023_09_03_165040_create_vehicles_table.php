@@ -31,6 +31,7 @@ return new class extends Migration
             $table->string('img_front')->nullable();
             $table->string("serial_number");
             $table->string("img_serial_number")->nullable();
+            $table->boolean("visible_serial_number")->default(true);
             $table->string("circulation_card");
             $table->string("img_circulation_card")->nullable();
             $table->string("insurance_policy");
