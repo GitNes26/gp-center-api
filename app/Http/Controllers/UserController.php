@@ -298,15 +298,19 @@ class UserController extends Controller
                $mayus = "Director";
                $controller = new DirectorController();
                $duplicate = $controller->validateAvailableData($request->phone, $request->license_number, $request->payroll_number, null);
+               if ($duplicate["result"] == true) {
+                  $response->data = $duplicate;
+                  return response()->json($response);
+               }
             } elseif ($role_id == 6) {
                $minus = "conductor";
                $mayus = "Conductor";
                $controller = new DriverController();
                $duplicate = $controller->validateAvailableData($request->phone, $request->license_number, $request->payroll_number, null);
-            }
-            if ($duplicate["result"] == true) {
-               $response->data = $duplicate;
-               return response()->json($response);
+               if ($duplicate["result"] == true) {
+                  $response->data = $duplicate;
+                  return response()->json($response);
+               }
             }
          }
 
