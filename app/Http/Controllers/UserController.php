@@ -149,13 +149,10 @@ class UserController extends Controller
       $response->data = ObjResponse::DefaultResponse();
       try {
          $userAuth = Auth::user();
-         // return $userAuth;
          $user = User::find($userAuth->id);
-         $psdhash = Hash::make($request->password);
-         // return "current: $user->password - viene con hash: $psdhash <-";
 
          $response->data = ObjResponse::CorrectResponse();
-         if (!Hash::check($psdhash, $user->password)) {
+         if (!Hash::check($request->password, $user->password)) {
             $response->data["message"] = 'peticion satisfactoria | la contraseña actual no es correcta.';
             $response->data["alert_icon"] = "error";
             $response->data["alert_text"] = "La contraseña actual que ingresas no es correcta";
@@ -313,9 +310,6 @@ class UserController extends Controller
                }
             }
          }
-
-
-
 
          $user = User::find($id);
          if (!$user) $user = new User();
