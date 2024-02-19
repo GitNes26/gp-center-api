@@ -159,7 +159,7 @@ class MenuSeeder extends Seeder
                 'type' => 'item',
                 'belongs_to' => $menuGarage,
                 'url' => '/admin/taller/almacen',
-                'icon' => 'IconCarGarage',
+                'icon' => 'IconBuildingWarehouse',
                 'order' => $order,
                 'created_at' => now(),
             ]);
