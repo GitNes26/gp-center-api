@@ -340,16 +340,15 @@ class UserController extends Controller
          } elseif ($role_id == 4) {
             $minus = "mecánico";
             $mayus = "Mecánico";
+         } elseif ($role_id == 5) {
+            $minus = "director";
+            $mayus = "Director";
+            $controller = new DirectorController();
+         } elseif ($role_id == 6) {
+            $minus = "conductor";
+            $mayus = "Conductor";
+            $controller = new DriverController();
          }
-         // } elseif ($role_id == 5) {
-         //    $minus = "director";
-         //    $mayus = "Director";
-         //    $controller = new DirectorController();
-         // } elseif ($role_id == 6) {
-         //    $minus = "conductor";
-         //    $mayus = "Conductor";
-         //    $controller = new DriverController();
-         // }
 
          if ($controller) {
             $obj = $controller->createOrUpdate($user->id, $request);
