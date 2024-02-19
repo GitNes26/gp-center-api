@@ -138,7 +138,7 @@ class DirectorController extends Controller
    }
 
 
-   private function validateAvailableData($phone, $license_number, $payroll_number, $id)
+   public function validateAvailableData($phone, $license_number, $payroll_number, $id)
    {
       $checkAvailable = new UserController();
       // #VALIDACION DE DATOS REPETIDOS

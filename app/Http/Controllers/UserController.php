@@ -81,13 +81,12 @@ class UserController extends Controller
     * @param int $id
     * @return \Illuminate\Http\Response $response
     */
-   public function logout(Response $response)
+   public function logout(Response $response, bool $all_sessions = false)
    {
       try {
          //  DB::table('personal_access_tokens')->where('tokenable_id', $id)->delete();
-         // Auth::user()->currentAccessToken()->delete(); #Elimina solo el token activo
-
-         auth()->user()->tokens()->delete(); #Utilizar este en caso de que el usuario desee cerrar sesión en todos lados o cambie informacion de su usuario / contraseña
+         if (!$all_sessions) Auth::user()->currentAccessToken()->delete(); #Elimina solo el token activo
+         else auth()->user()->tokens()->delete(); #Utilizar este en caso de que el usuario desee cerrar sesión en todos lados o cambie informacion de su usuario / contraseña
 
          $response->data = ObjResponse::CorrectResponse();
          $response->data["message"] = 'peticion satisfactoria | sesión cerrada.';
@@ -133,6 +132,43 @@ class UserController extends Controller
          $response->data = ObjResponse::CorrectResponse();
          $response->data["message"] = 'peticion satisfactoria | usuario registrado.';
          $response->data["alert_text"] = "¡Felicidades! ya eres parte de la familia";
+      } catch (\Exception $ex) {
+         $response->data = ObjResponse::CatchResponse($ex->getMessage());
+      }
+      return response()->json($response, $response->data["status_code"]);
+   }
+
+   /**
+    * Cambiar contraseña usuario.
+    *
+    * @param  \Illuminate\Http\Request $request
+    * @return \Illuminate\Http\Response $response
+    */
+   public function changePasswordAuth(Request $request, Response $response)
+   {
+      $response->data = ObjResponse::DefaultResponse();
+      try {
+         $userAuth = Auth::user();
+         // return $userAuth;
+         $user = User::find($userAuth->id);
+         $psdhash = Hash::make($request->password);
+         // return "current: $user->password - viene con hash: $psdhash <-";
+
+         $response->data = ObjResponse::CorrectResponse();
+         if (!Hash::check($psdhash, $user->password)) {
+            $response->data["message"] = 'peticion satisfactoria | la contraseña actual no es correcta.';
+            $response->data["alert_icon"] = "error";
+            $response->data["alert_text"] = "La contraseña actual que ingresas no es correcta";
+            return response()->json($response, $response->data["status_code"]);
+         }
+
+         $user->password = Hash::make($request->new_password);
+         $user->save();
+         auth()->user()->tokens()->delete(); #Utilizar este en caso de que el usuario desee cerrar sesión en todos lados o cambie informacion de su usuario / contraseña
+
+         $response->data = ObjResponse::CorrectResponse();
+         $response->data["message"] = 'peticion satisfactoria | contraseña actualizada.';
+         $response->data["alert_text"] = "Contraseña actualizada - todas tus sesiones se cerraran para aplicar cambios.";
       } catch (\Exception $ex) {
          $response->data = ObjResponse::CatchResponse($ex->getMessage());
       }
@@ -256,6 +292,26 @@ class UserController extends Controller
             $response->data = $duplicate;
             return response()->json($response);
          }
+         if (!$id) {
+            if ($role_id == 5) {
+               $minus = "director";
+               $mayus = "Director";
+               $controller = new DirectorController();
+               $duplicate = $controller->validateAvailableData($request->phone, $request->license_number, $request->payroll_number, null);
+            } elseif ($role_id == 6) {
+               $minus = "conductor";
+               $mayus = "Conductor";
+               $controller = new DriverController();
+               $duplicate = $controller->validateAvailableData($request->phone, $request->license_number, $request->payroll_number, null);
+            }
+            if ($duplicate["result"] == true) {
+               $response->data = $duplicate;
+               return response()->json($response);
+            }
+         }
+
+
+
 
          $user = User::find($id);
          if (!$user) $user = new User();
@@ -280,15 +336,16 @@ class UserController extends Controller
          } elseif ($role_id == 4) {
             $minus = "mecánico";
             $mayus = "Mecánico";
-         } elseif ($role_id == 5) {
-            $minus = "director";
-            $mayus = "Director";
-            $controller = new DirectorController();
-         } elseif ($role_id == 6) {
-            $minus = "conductor";
-            $mayus = "Conductor";
-            $controller = new DriverController();
          }
+         // } elseif ($role_id == 5) {
+         //    $minus = "director";
+         //    $mayus = "Director";
+         //    $controller = new DirectorController();
+         // } elseif ($role_id == 6) {
+         //    $minus = "conductor";
+         //    $mayus = "Conductor";
+         //    $controller = new DriverController();
+         // }
 
          if ($controller) {
             $obj = $controller->createOrUpdate($user->id, $request);

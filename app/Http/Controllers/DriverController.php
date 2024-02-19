@@ -152,7 +152,7 @@ class DriverController extends Controller
    }
 
 
-   private function validateAvailableData($phone, $license_number, $payroll_number, $id)
+   public function validateAvailableData($phone, $license_number, $payroll_number, $id)
    {
       $checkAvailable = new UserController();
       // #VALIDACION DE DATOS REPETIDOS
@@ -160,7 +160,7 @@ class DriverController extends Controller
       if ($duplicate["result"] == true) return $duplicate;
       $duplicate = $checkAvailable->checkAvailableData('drivers', 'license_number', $license_number, 'El número de licencia', 'license_number', $id, "users");
       if ($duplicate["result"] == true) return $duplicate;
-      $duplicate = $checkAvailable->checkAvailableData('drivers', 'payroll_number', $payroll_number, 'El empleado (número de nómina) ya ha sido registrado', 'payroll_number', $id, "users");
+      $duplicate = $checkAvailable->checkAvailableData('drivers', 'payroll_number', $payroll_number, 'El empleado (número de nómina) ya ha sido registrado,', 'payroll_number', $id, "users");
       if ($duplicate["result"] == true) return $duplicate;
       return array("result" => false);
    }

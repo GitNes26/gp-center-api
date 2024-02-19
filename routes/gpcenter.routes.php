@@ -27,7 +27,7 @@ Route::post('/signup', [UserController::class, 'signup']);
 
 Route::middleware('auth:sanctum')->group(function () {
     // Route::get('/getUser/{token}', [UserController::class,'getUser']); //cerrar sesión (eliminar los tokens creados)
-    Route::get('/logout', [UserController::class, 'logout']); //cerrar sesión (eliminar los tokens creados)
+    Route::get('/logout/{all_sessions?}', [UserController::class, 'logout']); //cerrar sesión (eliminar los tokens creados)
 
     Route::controller(RoleController::class)->group(function () {
         Route::get('/roles/role_id/{role_id}', 'index');
@@ -69,6 +69,7 @@ Route::middleware('auth:sanctum')->group(function () {
         // Route::post('/users/create/{role_id}', 'create');
         Route::post('/users/create/role_id/{role_id}', 'createOrUpdate');
         Route::post('/users/update/role_id/{role_id}', 'createOrUpdate');
+        Route::post('/users/changePasswordAuth', 'changePasswordAuth');
     });
 
     Route::controller(DirectorController::class)->group(function () {
