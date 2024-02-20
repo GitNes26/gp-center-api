@@ -130,7 +130,7 @@ class BrandController extends Controller
                 return response()->json($response);
             }
 
-            $img_path = $this->ImageUp($request, "img_path", $request->id, true);
+            $img_path = $this->ImageUp($request, "img_path", $request->id, false);
 
             $brand = Brand::find($request->id);
             $brand->brand = $request->brand;
