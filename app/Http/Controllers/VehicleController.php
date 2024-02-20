@@ -104,14 +104,14 @@ class VehicleController extends Controller
             $img_insurance_policy = $this->ImageUp($request, 'img_insurance_policy', $new_vehicle->id, 'insurance_policy', true, "sinPoliza.png");
 
             $vehicle = Vehicle::find($new_vehicle->id);
-            if ($request->hasFile('img_preview' || $request->img_preview == "")) $vehicle->img_preview = $img_preview;
-            if ($request->hasFile('img_right' || $request->img_right == "")) $vehicle->img_right = $img_right;
-            if ($request->hasFile('img_back' || $request->img_back == "")) $vehicle->img_back = $img_back;
-            if ($request->hasFile('img_left' || $request->img_left == "")) $vehicle->img_left = $img_left;
-            if ($request->hasFile('img_front' || $request->img_front == "")) $vehicle->img_front = $img_front;
-            if ($request->hasFile('img_serial_number' || $request->img_serial_number == "")) $vehicle->img_serial_number = $img_serial_number;
-            if ($request->hasFile('img_circulation_card' || $request->img_circulation_card == "")) $vehicle->img_circulation_card = $img_circulation_card;
-            if ($request->hasFile('img_insurance_policy' || $request->img_insurance_policy == "")) $vehicle->img_insurance_policy = $img_insurance_policy;
+            if ($request->hasFile('img_preview') || $request->img_preview == "") $vehicle->img_preview = $img_preview;
+            if ($request->hasFile('img_right') || $request->img_right == "") $vehicle->img_right = $img_right;
+            if ($request->hasFile('img_back') || $request->img_back == "") $vehicle->img_back = $img_back;
+            if ($request->hasFile('img_left') || $request->img_left == "") $vehicle->img_left = $img_left;
+            if ($request->hasFile('img_front') || $request->img_front == "") $vehicle->img_front = $img_front;
+            if ($request->hasFile('img_serial_number') || $request->img_serial_number == "") $vehicle->img_serial_number = $img_serial_number;
+            if ($request->hasFile('img_circulation_card') || $request->img_circulation_card == "") $vehicle->img_circulation_card = $img_circulation_card;
+            if ($request->hasFile('img_insurance_policy') || $request->img_insurance_policy == "") $vehicle->img_insurance_policy = $img_insurance_policy;
 
             $vehicle->save();
 
@@ -222,14 +222,14 @@ class VehicleController extends Controller
             $vehicle->insurance_policy = $request->insurance_policy;
             // violated
 
-            if ($request->hasFile('img_preview' || $request->img_preview == "")) $vehicle->img_preview = $img_preview;
-            if ($request->hasFile('img_right' || $request->img_right == "")) $vehicle->img_right = $img_right;
-            if ($request->hasFile('img_back' || $request->img_back == "")) $vehicle->img_back = $img_back;
-            if ($request->hasFile('img_left' || $request->img_left == "")) $vehicle->img_left = $img_left;
-            if ($request->hasFile('img_front' || $request->img_front == "")) $vehicle->img_front = $img_front;
-            if ($request->hasFile('img_serial_number' || $request->img_serial_number == "")) $vehicle->img_serial_number = $img_serial_number;
-            if ($request->hasFile('img_circulation_card' || $request->img_circulation_card == "")) $vehicle->img_circulation_card = $img_circulation_card;
-            if ($request->hasFile('img_insurance_policy' || $request->img_insurance_policy == "")) $vehicle->img_insurance_policy = $img_insurance_policy;
+            if ($request->hasFile('img_preview') || $request->img_preview == "") $vehicle->img_preview = $img_preview;
+            if ($request->hasFile('img_right') || $request->img_right == "") $vehicle->img_right = $img_right;
+            if ($request->hasFile('img_back') || $request->img_back == "") $vehicle->img_back = $img_back;
+            if ($request->hasFile('img_left') || $request->img_left == "") $vehicle->img_left = $img_left;
+            if ($request->hasFile('img_front') || $request->img_front == "") $vehicle->img_front = $img_front;
+            if ($request->hasFile('img_serial_number') || $request->img_serial_number == "") $vehicle->img_serial_number = $img_serial_number;
+            if ($request->hasFile('img_circulation_card') || $request->img_circulation_card == "") $vehicle->img_circulation_card = $img_circulation_card;
+            if ($request->hasFile('img_insurance_policy') || $request->img_insurance_policy == "") $vehicle->img_insurance_policy = $img_insurance_policy;
 
 
             $vehicle->save();
