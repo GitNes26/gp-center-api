@@ -38,9 +38,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/roles/destroy/{id}', 'destroy');
 
         Route::get('/roles/{id}/DisEnableRole/{active}', 'DisEnableRole');
-    });
+        Route::post('/roles/updatePermissions', 'updatePermissions');
+     });
 
-    Route::controller(MenuController::class)->group(function () {
+     Route::controller(MenuController::class)->group(function () {
         Route::get('/menus', 'index');
         Route::get('/menus/selectIndex', 'selectIndex');
         Route::get('/menus/headers/selectIndex', 'headersSelectIndex');
@@ -52,7 +53,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/menus/MenusByRole/{pages_read}', 'MenusByRole');
         Route::post('/menus/getIdByUrl', 'getIdByUrl');
         Route::get('/menus/{id}/DisEnableMenu/{active}', 'DisEnableMenu');
-    });
+     });
 
 
     Route::controller(UserController::class)->group(function () {
