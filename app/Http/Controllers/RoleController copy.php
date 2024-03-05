@@ -117,10 +117,10 @@ class RoleController extends Controller
                 ->update([
                     'role' => $request->role,
                     'description' => $request->description,
-                    // 'read' => $request->read,
-                    // 'create' => $request->create,
-                    // 'update' => $request->update,
-                    // 'delete' => $request->delete,
+                    'read' => $request->read,
+                    'create' => $request->create,
+                    'update' => $request->update,
+                    'delete' => $request->delete,
                 ]);
 
             $response->data = ObjResponse::CorrectResponse();
@@ -176,34 +176,6 @@ class RoleController extends Controller
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = "peticion satisfactoria | rol $description.";
             $response->data["alert_text"] = "Rol $description";
-        } catch (\Exception $ex) {
-            $response->data = ObjResponse::CatchResponse($ex->getMessage());
-        }
-        return response()->json($response, $response->data["status_code"]);
-    }
-
-    /**
-     * Actualizar permisos.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response $response
-     */
-    public function updatePermissions(Request $request, Response $response)
-    {
-        $response->data = ObjResponse::DefaultResponse();
-        try {
-            $role = Role::find($request->id);
-            $role->read = $request->read;
-            $role->create = $request->create;
-            $role->update = $request->update;
-            $role->delete = $request->delete;
-            $role->more_permissions = $request->more_permissions;
-
-            $role->save();
-
-            $response->data = ObjResponse::CorrectResponse();
-            $response->data["message"] = 'peticion satisfactoria | permisos actualizado.';
-            $response->data["alert_text"] = 'Permisos actualizados';
         } catch (\Exception $ex) {
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
         }

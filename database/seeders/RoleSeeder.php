@@ -22,7 +22,7 @@ class RoleSeeder extends Seeder
             'create' => 'todas',
             'update' => 'todas',
             'delete' => 'todas',
-            'more_permissions' => 'todas',
+            'more_permissions' => '2@Solicitar Servicio,2@Asignar Vehículo,2@Prestar Vehículo,2@Devolver Prestamo,2@Devolver Vehículo,5@Asignar Permisos',
             'created_at' => now(),
         ]);
         DB::table('roles')->insert([
@@ -32,6 +32,7 @@ class RoleSeeder extends Seeder
             'create' => 'todas',
             'update' => 'todas',
             'delete' => 'todas',
+            'more_permissions' => '2@Solicitar Servicio,2@Asignar Vehículo,2@Prestar Vehículo,2@Devolver Prestamo,2@Devolver Vehículo,5@Asignar Permisos',
             'created_at' => now(),
         ]);
         DB::table('roles')->insert([
@@ -53,12 +54,14 @@ class RoleSeeder extends Seeder
             'role' => 'Director',
             'description' => 'Rol dedicado para usuarios a quienes se les asignaran las unidades y haran uso de ella.',
             'read' => '1,2',
+            'more_permissions' => '2@Prestar Vehículo,2@Devolver Vehículo',
             'created_at' => now(),
         ]);
         DB::table('roles')->insert([
             'role' => 'Conductor',
             'description' => 'Rol dedicado para conductores permitidos por los directores.',
             'read' => '1,2',
+            'more_permissions' => '2@Devolver Prestamo',
             'created_at' => now(),
         ]);
     }

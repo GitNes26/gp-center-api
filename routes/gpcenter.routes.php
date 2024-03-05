@@ -19,6 +19,7 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\VehiclePlatesController;
 use App\Http\Controllers\VehicleStatusController;
+use App\Http\Controllers\VoucherController;
 
 #endregion CONTROLLERS
 
@@ -38,9 +39,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/roles/destroy/{id}', 'destroy');
 
         Route::get('/roles/{id}/DisEnableRole/{active}', 'DisEnableRole');
-    });
+        Route::post('/roles/updatePermissions', 'updatePermissions');
+     });
 
-    Route::controller(MenuController::class)->group(function () {
+     Route::controller(MenuController::class)->group(function () {
         Route::get('/menus', 'index');
         Route::get('/menus/selectIndex', 'selectIndex');
         Route::get('/menus/headers/selectIndex', 'headersSelectIndex');
@@ -52,7 +54,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/menus/MenusByRole/{pages_read}', 'MenusByRole');
         Route::post('/menus/getIdByUrl', 'getIdByUrl');
         Route::get('/menus/{id}/DisEnableMenu/{active}', 'DisEnableMenu');
-    });
+     });
 
 
     Route::controller(UserController::class)->group(function () {
@@ -186,5 +188,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/deliveredVehicle/create', 'createOrUpdate');
         Route::post('/deliveredVehicle/update/{id?}', 'createOrUpdate');
         Route::post('/deliveredVehicle/destroy/{id}', 'destroy');
+    });
+
+    Route::controller(VoucherController::class)->group(function () {
+        Route::get('/vouchers', 'index');
+        Route::get('/vouchers/{id}', 'show');
+        Route::get('/vouchers/selectIndex', 'selectIndex');
+        Route::post('/vouchers/create', 'createOrUpdate');
+        Route::post('/vouchers/update/{id?}', 'createOrUpdate');
+        Route::post('/vouchers/destroy/{id}', 'destroy');
+
+        Route::get('/vouchers/updateStatus/id/{id}/voucher_status/{voucher_status}', 'updateStatus');
     });
 });

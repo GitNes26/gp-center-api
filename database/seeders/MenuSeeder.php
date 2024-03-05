@@ -30,7 +30,7 @@ class MenuSeeder extends Seeder
             'order' => 1,
             'created_at' => now(),
         ]);
-            $order=.1;
+            $order+=1;
             DB::table('menus')->insert([ #2 Buscador
                 'menu' => 'Buscador',
                 'caption' => '',
@@ -39,6 +39,7 @@ class MenuSeeder extends Seeder
                 'url' => '/admin',
                 'icon' => 'IconSearch',
                 'order' => $order,
+                'others_permissions' => "2@Solicitar Servicio,2@Asignar Vehículo,2@Prestar Vehículo,2@Devolver Prestamo,2@Devolver Vehículo",
                 'created_at' => now(),
             ]);
 
@@ -52,7 +53,7 @@ class MenuSeeder extends Seeder
             'order' => 2,
             'created_at' => now(),
         ]);
-            $order=.1;
+            $order+=1;
             DB::table('menus')->insert([ #4 Menus
                 'menu' => 'Menus',
                 'type' => 'item',
@@ -62,7 +63,7 @@ class MenuSeeder extends Seeder
                 'order' => $order,
                 'created_at' => now(),
             ]);
-            $order=.1;
+            $order+=1;
             DB::table('menus')->insert([ #5 Roles
                 'menu' => 'Roles',
                 'type' => 'item',
@@ -70,9 +71,10 @@ class MenuSeeder extends Seeder
                 'url' => '/admin/roles',
                 'icon' => 'IconPaperBag',
                 'order' => $order,
+                'others_permissions' => "5@Asignar Permisos",
                 'created_at' => now(),
             ]);
-            $order=.1;
+            $order+=1;
             DB::table('menus')->insert([ #6 Departamentos
                 'menu' => 'Departamentos',
                 'type' => 'item',
@@ -82,7 +84,7 @@ class MenuSeeder extends Seeder
                 'order' => $order,
                 'created_at' => now(),
             ]);
-            $order=.1;
+            $order+=1;
             DB::table('menus')->insert([ #7 Usuarios
                 'menu' => 'Usuarios',
                 'type' => 'item',
@@ -92,7 +94,7 @@ class MenuSeeder extends Seeder
                 'order' => $order,
                 'created_at' => now(),
             ]);
-            $order=.1;
+            $order+=1;
             DB::table('menus')->insert([ #8 Administradores
                 'menu' => 'Administradores',
                 'type' => 'item',
@@ -102,7 +104,7 @@ class MenuSeeder extends Seeder
                 'order' => $order,
                 'created_at' => now(),
             ]);
-            $order=.1;
+            $order+=1;
             DB::table('menus')->insert([ #9 Encargado de Almacen
                 'menu' => 'Encargados de Almacen',
                 'type' => 'item',
@@ -112,7 +114,7 @@ class MenuSeeder extends Seeder
                 'order' => $order,
                 'created_at' => now(),
             ]);
-            $order=.1;
+            $order+=1;
             DB::table('menus')->insert([ #10 Mecánicos
                 'menu' => 'Mecánicos',
                 'type' => 'item',
@@ -122,7 +124,7 @@ class MenuSeeder extends Seeder
                 'order' => $order,
                 'created_at' => now(),
             ]);
-            $order=.1;
+            $order+=1;
             DB::table('menus')->insert([ #11 Directores
                 'menu' => 'Directores',
                 'type' => 'item',
@@ -132,7 +134,7 @@ class MenuSeeder extends Seeder
                 'order' => $order,
                 'created_at' => now(),
             ]);
-            $order=.1;
+            $order+=1;
             DB::table('menus')->insert([ #12 Conductores
                 'menu' => 'Conductores',
                 'type' => 'item',
@@ -153,7 +155,7 @@ class MenuSeeder extends Seeder
             'order' => 3,
             'created_at' => now(),
         ]);
-            $order=.1;
+            $order+=1;
             DB::table('menus')->insert([ #14 Almacen (Stock)
                 'menu' => 'Almacen (Stock)',
                 'type' => 'item',
@@ -163,7 +165,7 @@ class MenuSeeder extends Seeder
                 'order' => $order,
                 'created_at' => now(),
             ]);
-            $order=.1;
+            $order+=1;
             DB::table('menus')->insert([ #15 Servicios
                 'menu' => 'Servicios',
                 'type' => 'item',
@@ -173,7 +175,7 @@ class MenuSeeder extends Seeder
                 'order' => $order,
                 'created_at' => now(),
             ]);
-            $order=.1;
+            $order+=1;
             DB::table('menus')->insert([ #16 Requisiciones
                 'menu' => 'Requisiciones - PENDIENTE',
                 'type' => 'item',
@@ -194,7 +196,7 @@ class MenuSeeder extends Seeder
             'order' => 4,
             'created_at' => now(),
         ]);
-            $order=.1;
+            $order+=1;
             DB::table('menus')->insert([ #18 Marcas
                 'menu' => 'Marcas',
                 'type' => 'item',
@@ -204,7 +206,7 @@ class MenuSeeder extends Seeder
                 'order' => $order,
                 'created_at' => now(),
             ]);
-            $order=.1;
+            $order+=1;
             DB::table('menus')->insert([ #19 Modelos
                 'menu' => 'Modelos',
                 'type' => 'item',
@@ -214,7 +216,7 @@ class MenuSeeder extends Seeder
                 'order' => $order,
                 'created_at' => now(),
             ]);
-            $order=.1;
+            $order+=1;
             DB::table('menus')->insert([ #20 Estatus de Vehículo
                 'menu' => 'Estatus de Vehículos',
                 'type' => 'item',
@@ -224,7 +226,7 @@ class MenuSeeder extends Seeder
                 'order' => $order,
                 'created_at' => now(),
             ]);
-            $order=.1;
+            $order+=1;
             DB::table('menus')->insert([ #21 Vehículos
                 'menu' => 'Vehículos',
                 'type' => 'item',

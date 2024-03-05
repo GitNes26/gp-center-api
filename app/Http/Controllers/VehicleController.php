@@ -50,7 +50,7 @@ class VehicleController extends Controller
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
-            $list = Vehicle::where('vehicles.active', true)->where('vehicles.', $request->brand_id)
+            $list = Vehicle::where('vehicles.active', true)->where('vehicles.brand_id', $request->brand_id)
                 ->select('vehicles.id as id', 'vehicles.model as label')
                 ->orderBy('vehicles.model', 'asc')->get();
             $response->data = ObjResponse::CorrectResponse();
