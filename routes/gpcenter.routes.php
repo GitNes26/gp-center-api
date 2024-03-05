@@ -40,9 +40,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/roles/{id}/DisEnableRole/{active}', 'DisEnableRole');
         Route::post('/roles/updatePermissions', 'updatePermissions');
-     });
+    });
 
-     Route::controller(MenuController::class)->group(function () {
+    Route::controller(MenuController::class)->group(function () {
         Route::get('/menus', 'index');
         Route::get('/menus/selectIndex', 'selectIndex');
         Route::get('/menus/headers/selectIndex', 'headersSelectIndex');
@@ -54,7 +54,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/menus/MenusByRole/{pages_read}', 'MenusByRole');
         Route::post('/menus/getIdByUrl', 'getIdByUrl');
         Route::get('/menus/{id}/DisEnableMenu/{active}', 'DisEnableMenu');
-     });
+    });
 
 
     Route::controller(UserController::class)->group(function () {
@@ -198,6 +198,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/vouchers/update/{id?}', 'createOrUpdate');
         Route::post('/vouchers/destroy/{id}', 'destroy');
 
-        Route::get('/vouchers/updateStatus/id/{id}/voucher_status/{voucher_status}', 'updateStatus');
+        Route::post('/vouchers/updateStatus/id/{id}/voucher_status/{voucher_status}', 'updateStatus');
     });
 });

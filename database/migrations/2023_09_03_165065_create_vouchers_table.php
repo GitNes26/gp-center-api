@@ -15,10 +15,11 @@ return new class extends Migration
     {
         Schema::create('vouchers', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id')->comment('usuario que registro el voucher');
-            $table->text('foliated_vouchers');
+            $table->integer('requested_by')->comment('usuario que solicita el vale');
+            $table->text('foliated_vouchers')->nullable();
             $table->integer('stock_number')->nullable();
             $table->text('vehicle_plates')->nullable();
+            $table->integer('requested_amount');
             $table->integer('payroll_number')->nullable();
             $table->string('department')->nullable();
             $table->string('name');
@@ -26,8 +27,13 @@ return new class extends Migration
             $table->string('maternal_last_name');
             $table->string('phone');
             $table->text('activity');
-            $table->enum('voucher_status',['ALTA','APROBADA','CANCELADA']);
-            $table->integer('quantity');
+            $table->enum('voucher_status', ['ALTA', 'APROBADA', 'CANCELADA'])->default('ALTA');
+            $table->integer('approved_by')->nullable()->comment("aprobado por");
+            $table->integer('approved_amount')->nullable()->comment("cantidad aprobada");
+            $table->dateTime('approved_at')->nullable()->comment("aprobado el");
+            $table->integer('canceled_by')->nullable()->comment("cancelado por");
+            $table->text('canceled_comments')->nullable();
+            $table->dateTime('canceled_at')->nullable()->comment("cancelado el");
 
             $table->boolean('active')->default(true);
             $table->timestamps();
