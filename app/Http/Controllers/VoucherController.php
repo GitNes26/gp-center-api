@@ -167,7 +167,7 @@ class VoucherController extends Controller
             $voucher = Voucher::find($id);
             $voucher->voucher_status = $voucher_status;
 
-            if ($voucher_status === "APROBADO") {
+            if ($voucher_status === "APROBADA") {
                 $voucher->foliated_vouchers = $request->foliated_vouchers;
                 $voucher->approved_by = $request->approved_by; #user_id
                 $voucher->approved_amount = $request->approved_amount;
