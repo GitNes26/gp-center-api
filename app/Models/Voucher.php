@@ -20,10 +20,11 @@ class Voucher extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'user_id',
+        'requested_by',
         'foliated_vouchers',
         'stock_number',
         'vehicle_plates',
+        'requested_amount',
         'payroll_number',
         'department',
         'name',
@@ -32,7 +33,13 @@ class Voucher extends Model
         'phone',
         'activity',
         'voucher_status',
-        'quantity',
+        'approved_by',
+        'approved_amount',
+        'approved_at',
+        'canceled_by',
+        'canceled_comments',
+        'canceled_at',
+
         'active',
         'deleted_at'
     ];

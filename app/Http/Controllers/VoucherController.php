@@ -93,10 +93,11 @@ class VoucherController extends Controller
 
             $voucher = Voucher::find($id);
             if (!$voucher) $voucher = new Voucher();
-            $voucher->user_id = $request->user_id;
+            $voucher->requested_by = $request->requested_by;
             $voucher->foliated_vouchers = $request->foliated_vouchers;
             $voucher->stock_number = $request->stock_number;
             $voucher->vehicle_plates = $request->vehicle_plates;
+            $voucher->requested_amount = $request->requested_amount;
             $voucher->payroll_number = $request->payroll_number;
             $voucher->department = $request->department;
             $voucher->name = $request->name;
@@ -105,7 +106,15 @@ class VoucherController extends Controller
             $voucher->phone = $request->phone;
             $voucher->activity = $request->activity;
             $voucher->voucher_status = $request->voucher_status;
-            $voucher->quantity = $request->quantity;
+
+            if ($id > 0) {
+                $voucher->approved_by = $request->approved_by; #user_id
+                $voucher->approved_amount = $request->approved_amount;
+                $voucher->approved_at = $request->approved_at;
+                $voucher->canceled_by = $request->canceled_by; #user_id
+                $voucher->canceled_comments = $request->canceled_comments;
+                $voucher->canceled_at = $request->canceled_at;
+            }
 
             $voucher->save();
 
@@ -151,12 +160,24 @@ class VoucherController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response $response
      */
-    public function updateStatus(Response $response, int $id, int $voucher_status, bool $internal=false)
+    public function updateStatus(Request $request, Response $response, int $id, string $voucher_status, bool $internal = false)
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
             $voucher = Voucher::find($id);
             $voucher->voucher_status = $voucher_status;
+
+            if ($voucher_status === "APROBADA") {
+                $voucher->foliated_vouchers = $request->foliated_vouchers;
+                $voucher->approved_by = $request->approved_by; #user_id
+                $voucher->approved_amount = $request->approved_amount;
+                $voucher->approved_at = $request->approved_at;
+            } elseif ($voucher_status === "CANCELADA") {
+                $voucher->canceled_at = $request->canceled_at; #user_id
+                $voucher->canceled_comments = $request->canceled_comments;
+                $voucher->canceled_by = $request->canceled_by;
+            }
+
             $voucher->save();
 
             if ((bool)$internal) return 1;

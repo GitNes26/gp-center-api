@@ -275,7 +275,7 @@ class UserController extends Controller
          $token = $request->bearerToken();
          //  return $request;
          // return  "role_id:$role_id -- el user_id: $request->user_id -- email:$request->email --  y el id:$request->id";
-         if ((int)$role_id <= 2) $id = (int)$request->id > 0 ? (int)$request->id : null;
+         if ((int)$role_id <= 2 || (int)$role_id >= 7) $id = (int)$request->id > 0 ? (int)$request->id : null;
          else $id = (int)$request->user_id > 0 ? (int)$request->user_id : null;
          $minus = "usuario";
          $mayus = "Usuario";
@@ -419,12 +419,19 @@ class UserController extends Controller
       $response->data = ObjResponse::DefaultResponse();
       try {
          // echo "el id: $request->id";
+         // $user = User::where('users.id', $request->id)
+         //    ->join('roles', 'users.role_id', '=', 'roles.id')
+         //    // ->join('departments', 'users.department_id', '=', 'departments.id')
+         //    ->select('users.*', 'roles.role')
+         //    // ->select('users.*', 'roles.role', 'departments.department', 'departments.description as department_description')
+         //    ->first();
+
          $user = User::where('users.id', $request->id)
-            ->join('roles', 'users.role_id', '=', 'roles.id')
-            // ->join('departments', 'users.department_id', '=', 'departments.id')
-            ->select('users.*', 'roles.role')
-            // ->select('users.*', 'roles.role', 'departments.department', 'departments.description as department_description')
+            ->join("roles", "users.role_id", "=", "roles.id")
+            ->select("users.*", "roles.role", "roles.read", "roles.create", "roles.update", "roles.delete", "roles.more_permissions")
+            ->orderBy('users.id', 'desc')
             ->first();
+
 
          $response->data = ObjResponse::CorrectResponse();
          $response->data["message"] = 'peticion satisfactoria | usuario encontrado.';
