@@ -95,7 +95,7 @@ class VoucherController extends Controller
             if (!$voucher) $voucher = new Voucher();
             $voucher->requested_by = $request->requested_by;
             $voucher->foliated_vouchers = $request->foliated_vouchers;
-            $voucher->stock_number = $request->stock_number;
+            $voucher->vehicle = $request->vehicle;
             $voucher->vehicle_plates = $request->vehicle_plates;
             $voucher->requested_amount = $request->requested_amount;
             $voucher->payroll_number = $request->payroll_number;

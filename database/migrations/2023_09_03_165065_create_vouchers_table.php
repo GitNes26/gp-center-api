@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->integer('requested_by')->comment('usuario que solicita el vale');
             $table->text('foliated_vouchers')->nullable();
-            $table->integer('stock_number')->nullable();
+            $table->text('vehicle')->nullable();
             $table->text('vehicle_plates')->nullable();
             $table->integer('requested_amount');
             $table->integer('payroll_number')->nullable();
