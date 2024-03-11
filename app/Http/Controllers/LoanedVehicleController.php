@@ -227,6 +227,7 @@ class LoanedVehicleController extends Controller
 
             $lastLoan->active_loan = false;
             $lastLoan->delivery_km = $request->delivery_km;
+            $lastLoan->delivery_comments = $request->delivery_comments;
             $lastLoan->delivery_date = $request->delivery_date;
 
             $lastLoan->save();

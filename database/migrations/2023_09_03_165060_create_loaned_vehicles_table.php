@@ -22,6 +22,7 @@ return new class extends Migration
             $table->dateTime('loan_date');
             $table->boolean('active_loan')->default(true)->comment('prestamo activo');
             $table->decimal('delivery_km', 10, 2)->nullable();
+            $table->text('delivery_comments')->nullable();
             $table->dateTime('delivery_date')->nullable();
             $table->boolean('active')->default(true)->comment('registro activo');
             $table->timestamps();

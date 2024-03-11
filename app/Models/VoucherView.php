@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class LoanedVehicle extends Model
+class VoucherView extends Model
 {
     use HasFactory;
 
@@ -20,16 +20,29 @@ class LoanedVehicle extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'id',
-        'assigned_vehicle_id',
-        'requesting_user_id',
-        'reason',
-        'initial_km',
-        'loan_date',
-        'active_loan',
-        'delivery_km',
-        'delivery_comments',
-        'delivery_date',
+        'requested_by',
+        'foliated_vouchers',
+        'stock_number',
+        'vehicle_plates',
+        'requested_amount',
+        'payroll_number',
+        'department',
+        'name',
+        'paternal_last_name',
+        'maternal_last_name',
+        'phone',
+        'activity',
+        'voucher_status',
+        'approved_by',
+        'approved_amount',
+        'approved_at',
+        'canceled_by',
+        'canceled_comments',
+        'canceled_at',
+
+        'username_approved',
+        'username_canceled',
+
         'active',
         'deleted_at'
     ];
@@ -47,7 +60,7 @@ class LoanedVehicle extends Model
      * Nombre de la tabla asociada al modelo.
      * @var string
      */
-    protected $table = 'loaned_vehicles';
+    protected $table = 'vouchers_view';
 
     /**
      * LlavePrimaria asociada a la tabla.

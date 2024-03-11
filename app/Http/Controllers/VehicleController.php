@@ -8,6 +8,7 @@ use App\Models\ObjResponse;
 use App\Models\VehicleDetailView;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class VehicleController extends Controller
@@ -21,6 +22,7 @@ class VehicleController extends Controller
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
+            $auth = Auth::user();
             $list = Vehicle::where('vehicles.active', true)
                 ->join('brands', 'vehicles.brand_id', '=', 'brands.id')
                 ->join('models', 'vehicles.model_id', '=', 'models.id')
@@ -31,6 +33,14 @@ class VehicleController extends Controller
                 })
                 ->select('vehicles.*', 'brands.brand', 'models.model', 'vehicle_status.vehicle_status', 'vehicle_status.bg_color', 'vehicle_status.letter_black', 'plates', 'initial_date', 'due_date')
                 ->orderBy('vehicles.id', 'asc')->get();
+            if ($auth->role_id === 5)
+                $list = VehicleDetailView::where('active_assignment', 1)->where('directors.user_id', $auth->id)
+                    ->join('directors', 'dir_id', '=', 'directors.id')
+                    ->orderBy('v.id', 'asc')->get();
+            elseif ($auth->role_id === 6)
+                $list = VehicleDetailView::where('active_loan', 1)->where('drivers.user_id', $auth->id)
+                    ->join('drivers', 'dri_id', '=', 'drivers.id')
+                    ->orderBy('v.id', 'asc')->get();
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'Peticion satisfactoria | Lista de vehículos.';
             $response->data["result"] = $list;
