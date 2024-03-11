@@ -39,7 +39,7 @@ class UserController extends Controller
 
       $user = User::where("users.$field", "$value")->where('users.active', 1)
          ->join("roles", "users.role_id", "=", "roles.id")
-         ->select("users.*", "roles.role", "roles.read", "roles.create", "roles.update", "roles.delete", "roles.more_permissions")
+         ->select("users.*", "roles.role", "roles.read", "roles.create", "roles.update", "roles.delete", "roles.more_permissions", "roles.page_index")
          ->orderBy('users.id', 'desc')
          ->first();
 
@@ -48,7 +48,7 @@ class UserController extends Controller
          $user = User::where("users.$field", "$value")->where('users.active', 1)
             ->join("roles", "users.role_id", "=", "roles.id")
             ->leftJoin('directors', 'users.id', '=', 'directors.user_id')
-            ->select("users.*", "roles.role", "roles.read", "roles.create", "roles.update", "roles.delete", "roles.more_permissions", "directors.department")
+            ->select("users.*", "roles.role", "roles.read", "roles.create", "roles.update", "roles.delete", "roles.more_permissions", "directors.department", "roles.page_index")
             ->orderBy('users.id', 'desc')
             ->first();
       }

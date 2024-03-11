@@ -27,6 +27,8 @@ class Role extends Model
         'create',
         'update',
         'delete',
+        'more_permissions',
+        'page_index',
         'active',
         'deleted_at'
     ];
@@ -57,7 +59,7 @@ class Role extends Model
      */
     public function users()
     {
-        return $this->hasMany(User::class,'role_id','id'); //primero se declara FK y despues la PK
+        return $this->hasMany(User::class, 'role_id', 'id'); //primero se declara FK y despues la PK
     }
 
     /**

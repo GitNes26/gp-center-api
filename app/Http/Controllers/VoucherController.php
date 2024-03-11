@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Voucher;
 use App\Models\ObjResponse;
-
+use App\Models\VoucherView;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class VoucherController extends Controller
@@ -21,7 +22,11 @@ class VoucherController extends Controller
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
-            $list = Voucher::all();
+            $auth = Auth::user();
+            if (in_array($auth->role_id, [1, 7]))
+                $list = VoucherView::all();
+            else
+                $list = VoucherView::where("requested_by", $auth->id)->get();
 
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'peticion satisfactoria | lista de vales.';
@@ -66,7 +71,7 @@ class VoucherController extends Controller
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
-            $voucher = Voucher::find($request->id);
+            $voucher = VoucherView::find($request->id);
 
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'peticion satisfactoria | vale encontrado.';
