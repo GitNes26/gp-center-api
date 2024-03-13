@@ -99,8 +99,10 @@ class DirectorController extends Controller
 
          $avatar = $this->ImageUp($request, "avatar", $director->id, "avatar", true, "noAvatar");
          $img_license = $this->ImageUp($request, "img_license", $director->id, "licencia", true, "noLicense");
+         $img_firm = $this->ImageUp($request, "img_firm", $director->id, "firma", true, "noFirm");
          if ($request->hasFile('avatar')) $director->avatar = $avatar;
          if ($request->hasFile('img_license')) $director->img_license = $img_license;
+         if ($request->hasFile('img_firm')) $director->img_firm = $img_firm;
 
          $director->save();
 

@@ -20,6 +20,7 @@ use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\VehiclePlatesController;
 use App\Http\Controllers\VehicleStatusController;
 use App\Http\Controllers\VoucherController;
+use App\Http\Controllers\VoucherRequesterController;
 
 #endregion CONTROLLERS
 
@@ -199,5 +200,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/vouchers/destroy/{id}', 'destroy');
 
         Route::post('/vouchers/updateStatus/id/{id}/voucher_status/{voucher_status}', 'updateStatus');
+    });
+    Route::controller(VoucherRequesterController::class)->group(function () {
+        Route::get('/voucherRequesters', 'index');
+        Route::get('/voucherRequesters/selectIndex', 'selectIndex');
+        Route::get('/voucherRequesters/{id}', 'show');
+        // Route::post('/voucherRequesters/create', 'createOrUpdate'); #ES POR MEDIO DEL UserController
+        // Route::post('/voucherRequesters/update/{id?}', 'createOrUpdate');
+        // Route::post('/voucherRequesters/destroy/{id}', 'destroy');
     });
 });

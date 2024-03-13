@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\ObjResponse;
 use App\Models\User;
-
+use App\Models\VoucherRequester;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -275,20 +275,27 @@ class UserController extends Controller
          $token = $request->bearerToken();
          //  return $request;
          // return  "role_id:$role_id -- el user_id: $request->user_id -- email:$request->email --  y el id:$request->id";
-         if ((int)$role_id <= 2 || (int)$role_id >= 7) $id = (int)$request->id > 0 ? (int)$request->id : null;
-         else $id = (int)$request->user_id > 0 ? (int)$request->user_id : null;
+
+         #SI NO ES ALGUN TIPO DE ADMIN
+         if (!in_array((int)$role_id, [1, 2, 7])) $id = (int)$request->user_id > 0 ? (int)$request->user_id : null;
+         else $id = (int)$request->id > 0 ? (int)$request->id : null;
+         // if ((int)$role_id <= 2 || (int)$role_id >= 7) $id = (int)$request->id > 0 ? (int)$request->id : null;
+         // else $id = (int)$request->user_id > 0 ? (int)$request->user_id : null;
          $minus = "usuario";
          $mayus = "Usuario";
          $controller = null;
          $secondTable = null;
          //  if ($request->role_id == 5) $secondTable="directors";
          //  if ($request->role_id == 6) $secondTable="drivers";
+         // return "Solicitador de vales: $id";
+
 
          $duplicate = $this->validateAvailableData($request->username, $request->email, $id, $secondTable);
          if ($duplicate["result"] == true) {
             $response->data = $duplicate;
             return response()->json($response);
          }
+         # VALIDACION DE DUPLICADOS
          if (!$id) {
             if ($role_id == 5) {
                $minus = "director";
@@ -308,9 +315,19 @@ class UserController extends Controller
                   $response->data = $duplicate;
                   return response()->json($response);
                }
+            } elseif ($role_id == 8) {
+               $minus = "solicitador de vales";
+               $mayus = "Solicitador de vales";
+               $controller = new VoucherRequesterController();
+               $duplicate = $controller->validateAvailableData($request->phone, $request->payroll_number, null);
+               if ($duplicate["result"] == true) {
+                  $response->data = $duplicate;
+                  return response()->json($response);
+               }
             }
          }
 
+         # INSERT O UPDATE
          $user = User::find($id);
          if (!$user) $user = new User();
 
@@ -342,8 +359,14 @@ class UserController extends Controller
             $minus = "conductor";
             $mayus = "Conductor";
             $controller = new DriverController();
+         } elseif ($role_id == 7) {
+            $minus = "admin de control vehícular";
+            $mayus = "Admin de Control Vehícular";
+         } elseif ($role_id == 8) {
+            $minus = "solicitador de vales";
+            $mayus = "Solicitador de vales";
+            $controller = new VoucherRequesterController();
          }
-
          if ($controller) {
             $obj = $controller->createOrUpdate($user->id, $request);
 
