@@ -148,6 +148,28 @@ class MenuController extends Controller
         return response()->json($response, $response->data["status_code"]);
     }
 
+
+    /**
+     * Mostrar listado para un selector (id=urls).
+     *
+     * @return \Illuminate\Http\Response $response
+     */
+    public function selectIndexUrl(Response $response)
+    {
+        $response->data = ObjResponse::DefaultResponse();
+        try {
+            $list = Menu::where('active', true)
+                ->select('menus.url as id', 'menus.menu as label')
+                ->orderBy('menus.menu', 'asc')->get();
+            $response->data = ObjResponse::CorrectResponse();
+            $response->data["message"] = 'Peticion satisfactoria | Lista de menus';
+            $response->data["result"] = $list;
+        } catch (\Exception $ex) {
+            $response->data = ObjResponse::CatchResponse($ex->getMessage());
+        }
+        return response()->json($response, $response->data["status_code"]);
+    }
+
     /**
      * Crear o Actualizar prestamo de menu.
      *
