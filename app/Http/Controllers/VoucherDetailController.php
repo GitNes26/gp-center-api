@@ -17,19 +17,41 @@ class VoucherDetailController extends Controller
      *
      * @return \Illuminate\Http\Response $response
      */
-    public function indexByVoucher(Response $response, Int $id, bool $internal=false)
+    public function indexByVoucher(Response $response, Int $id, bool $internal = false)
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
-                $list = VoucherDetail::where('active',1)->where("voucher_id", $id)->get();
+            $list = VoucherDetail::where('active', 1)->where("voucher_id", $id)->select('voucher_details.*')->selectRaw("CONCAT(voucher_details.name,' ',voucher_details.paternal_last_name,' ',voucher_details.maternal_last_name) 'creditor_fullname'")->get();
 
-                if ($internal === true) return $list;
+            if ($internal === true) return $list;
 
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'peticion satisfactoria | lista de detalles del vale.';
             $response->data["alert_text"] = "detalles encontrados";
             $response->data["result"] = $list;
+        } catch (\Exception $ex) {
+            $response->data = ObjResponse::CatchResponse($ex->getMessage());
+        }
+        return response()->json($response, $response->data["status_code"]);
+    }
 
+    /**
+     * Mostrar lista de detalles del vale activas
+     *
+     * @return \Illuminate\Http\Response $response
+     */
+    public function showVoucherDetail(Response $response, Int $id, bool $internal = false)
+    {
+        $response->data = ObjResponse::DefaultResponse();
+        try {
+            $voucher_detail = VoucherDetail::find($id)->select('voucher_details.*')->selectRaw("CONCAT(voucher_details.name,' ',voucher_details.paternal_last_name,' ',voucher_details.maternal_last_name) 'creditor_fullname'");
+
+            if ($internal === true) return $voucher_detail;
+
+            $response->data = ObjResponse::CorrectResponse();
+            $response->data["message"] = 'peticion satisfactoria | lista de detalles del vale.';
+            $response->data["alert_text"] = "detalles encontrados";
+            $response->data["result"] = $voucher_detail;
         } catch (\Exception $ex) {
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
         }
@@ -41,7 +63,7 @@ class VoucherDetailController extends Controller
      *
      * @return \Illuminate\Http\Response $response
      */
-    public function createOrUpdate(Request $request, Response $response, Int $voucher_id = null)
+    public function createOrUpdate(Request $request, Response $response, Int $id = null)
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
@@ -50,9 +72,9 @@ class VoucherDetailController extends Controller
             //      return $duplicate;
             //  }
 
-            $voucher_detail = VoucherDetail::where('voucher_id',$voucher_id)->first();
+            $voucher_detail = VoucherDetail::where('id', $id)->first();
             if (!$voucher_detail) $voucher_detail = new VoucherDetail();
-            $voucher_detail->voucher_id = $voucher_id;
+            $voucher_detail->voucher_id = $request->voucher_id;
             $voucher_detail->vehicle = $request->vehicle;
             $voucher_detail->vehicle_plates = $request->vehicle_plates;
             $voucher_detail->requested_amount = $request->requested_amount;
@@ -66,8 +88,8 @@ class VoucherDetailController extends Controller
             $voucher_detail->save();
 
             $response->data = ObjResponse::CorrectResponse();
-            $response->data["message"] = $voucher_detail->id > 0 ? 'peticion satisfactoria | detalle de vale editado.' : 'peticion satisfactoria | detalle de vale registrado.';
-            $response->data["alert_text"] = $voucher_detail->id > 0 ? "Detalle de Vale editado" : "Detalle de Vale registrado";
+            $response->data["message"] = $id > 0 ? 'peticion satisfactoria | detalle de vale editado.' : 'peticion satisfactoria | detalle de vale registrado.';
+            $response->data["alert_text"] = $id > 0 ? "Detalle de Vale editado" : "Detalle de Vale registrado";
         } catch (\Exception $ex) {
             error_log("Hubo un error al crear o actualizar el vale ->" . $ex->getMessage());
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
@@ -75,7 +97,7 @@ class VoucherDetailController extends Controller
         return response()->json($response, $response->data["status_code"]);
     }
 
-     /**
+    /**
      * Eliminar detalle voucher o detalles voucher.
      *
      * @param  int $id
@@ -98,6 +120,4 @@ class VoucherDetailController extends Controller
         }
         return response()->json($response, $response->data["status_code"]);
     }
-
-
 }

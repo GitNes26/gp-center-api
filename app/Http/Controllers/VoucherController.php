@@ -128,6 +128,7 @@ class VoucherController extends Controller
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = $id > 0 ? 'peticion satisfactoria | vale editado.' : 'peticion satisfactoria | vale registrado.';
             $response->data["alert_text"] = $id > 0 ? "Vale editado" : "Vale registrado";
+            $response->data["result"] = $voucher;
         } catch (\Exception $ex) {
             error_log("Hubo un error al crear o actualizar el vale ->" . $ex->getMessage());
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
@@ -200,7 +201,7 @@ class VoucherController extends Controller
         return response()->json($response, $response->data["status_code"]);
     }
 
-     /**
+    /**
      * Al ver el voucher (voucher visto).
      *
      * @param  \Illuminate\Http\Request $request
@@ -210,14 +211,14 @@ class VoucherController extends Controller
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
-                $voucher = Voucher::find($id);
+            $voucher = Voucher::find($id);
 
-                if ($voucher->viewed_by < 1) {
-                    $voucher->viewed_by = $request->viewed_by; #user_id
-                    $voucher->viewed_at = $request->viewed_at;
+            if ($voucher->viewed_by < 1) {
+                $voucher->viewed_by = $request->viewed_by; #user_id
+                $voucher->viewed_at = $request->viewed_at;
 
-                    $voucher->save();
-                }
+                $voucher->save();
+            }
 
             if ((bool)$internal) return 1;
 
