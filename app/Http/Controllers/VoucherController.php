@@ -24,9 +24,9 @@ class VoucherController extends Controller
         try {
             $auth = Auth::user();
             if (in_array($auth->role_id, [1, 7]))
-                $list = VoucherView::all();
+                $list = VoucherView::orderBy('id', 'desc')->get();
             else
-                $list = VoucherView::where("requested_by", $auth->id)->get();
+                $list = VoucherView::where("requested_by", $auth->id)->orderBy('id', 'desc')->get();
 
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'peticion satisfactoria | lista de vales.';
@@ -176,6 +176,7 @@ class VoucherController extends Controller
             $voucher->voucher_status = $voucher_status;
 
             if ($voucher_status === "APROBADA") {
+                $voucher->letter_folio = $request->letter_folio;
                 $voucher->foliated_vouchers = $request->foliated_vouchers;
                 $voucher->approved_by = $request->approved_by; #user_id
                 $voucher->approved_amount = $request->approved_amount;
