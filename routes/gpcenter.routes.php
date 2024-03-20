@@ -20,6 +20,7 @@ use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\VehiclePlatesController;
 use App\Http\Controllers\VehicleStatusController;
 use App\Http\Controllers\VoucherController;
+use App\Http\Controllers\VoucherDetailController;
 use App\Http\Controllers\VoucherRequesterController;
 
 #endregion CONTROLLERS
@@ -46,6 +47,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::controller(MenuController::class)->group(function () {
         Route::get('/menus', 'index');
         Route::get('/menus/selectIndex', 'selectIndex');
+        Route::get('/menus/selectIndexUrl', 'selectIndexUrl');
         Route::get('/menus/headers/selectIndex', 'headersSelectIndex');
         Route::get('/menus/{id}', 'show');
         Route::post('/menus/create', 'createOrUpdate');
@@ -200,7 +202,19 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/vouchers/destroy/{id}', 'destroy');
 
         Route::post('/vouchers/updateStatus/id/{id}/voucher_status/{voucher_status}', 'updateStatus');
+        Route::post('/vouchers/seenVoucher/{id}', 'seenVoucher');
+
     });
+
+
+    Route::controller(VoucherDetailController::class)->group(function () {
+        Route::get('/voucherDetails/voucher_id/{voucher_id}', 'indexByVoucher');
+        Route::get('/voucherDetails/id/{id}', 'showVoucherDetail');
+        Route::post('/voucherDetails/create', 'createOrUpdate');
+        Route::post('/voucherDetails/update/{id?}', 'createOrUpdate');
+        Route::post('/voucherDetails/destroy', 'destroy');
+    });
+
     Route::controller(VoucherRequesterController::class)->group(function () {
         Route::get('/voucherRequesters', 'index');
         Route::get('/voucherRequesters/selectIndex', 'selectIndex');
