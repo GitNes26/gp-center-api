@@ -87,5 +87,14 @@ class RoleSeeder extends Seeder
                         'page_index' => '/admin/cove/vales',
                         'created_at' => now(),
                 ]);
+                DB::table('roles')->insert([
+                    'role' => 'Supervisor de vales',
+                    'description' => 'Rol dedicado unicamente para darvisto bueno (VoBo) a las solicitudes de vales antes de asignar folios.',
+                    'read' => '19,24',
+                    'create' => '24',
+                    'more_permissions' => "24@Cancelar Vale, 24@VoBo",
+                    'page_index' => '/admin/cove/vales',
+                    'created_at' => now(),
+            ]);
         }
 }
