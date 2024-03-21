@@ -24,9 +24,9 @@ class VoucherController extends Controller
         try {
             $auth = Auth::user();
             if (in_array($auth->role_id, [1, 7]))
-                $list = VoucherView::all();
+                $list = VoucherView::orderBy('id', 'desc')->get();
             else
-                $list = VoucherView::where("requested_by", $auth->id)->get();
+                $list = VoucherView::where("requested_by", $auth->id)->orderBy('id', 'desc')->get();
 
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'peticion satisfactoria | lista de vales.';
@@ -99,16 +99,18 @@ class VoucherController extends Controller
             $voucher = Voucher::find($id);
             if (!$voucher) $voucher = new Voucher();
             $voucher->requested_by = $request->requested_by;
+            $voucher->internal_folio = $request->internal_folio;
+            $voucher->letter_folio = $request->letter_folio;
             $voucher->foliated_vouchers = $request->foliated_vouchers;
-            $voucher->vehicle = $request->vehicle;
-            $voucher->vehicle_plates = $request->vehicle_plates;
-            $voucher->requested_amount = $request->requested_amount;
-            $voucher->payroll_number = $request->payroll_number;
-            $voucher->department = $request->department;
-            $voucher->name = $request->name;
-            $voucher->paternal_last_name = $request->paternal_last_name;
-            $voucher->maternal_last_name = $request->maternal_last_name;
-            $voucher->phone = $request->phone;
+            // $voucher->vehicle = $request->vehicle;
+            // $voucher->vehicle_plates = $request->vehicle_plates;
+            // $voucher->requested_amount = $request->requested_amount;
+            // $voucher->payroll_number = $request->payroll_number;
+            // $voucher->department = $request->department;
+            // $voucher->name = $request->name;
+            // $voucher->paternal_last_name = $request->paternal_last_name;
+            // $voucher->maternal_last_name = $request->maternal_last_name;
+            // $voucher->phone = $request->phone;
             $voucher->activity = $request->activity;
             $voucher->voucher_status = $request->voucher_status;
 
@@ -126,6 +128,7 @@ class VoucherController extends Controller
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = $id > 0 ? 'peticion satisfactoria | vale editado.' : 'peticion satisfactoria | vale registrado.';
             $response->data["alert_text"] = $id > 0 ? "Vale editado" : "Vale registrado";
+            $response->data["result"] = $voucher;
         } catch (\Exception $ex) {
             error_log("Hubo un error al crear o actualizar el vale ->" . $ex->getMessage());
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
@@ -173,6 +176,7 @@ class VoucherController extends Controller
             $voucher->voucher_status = $voucher_status;
 
             if ($voucher_status === "APROBADA") {
+                $voucher->letter_folio = $request->letter_folio;
                 $voucher->foliated_vouchers = $request->foliated_vouchers;
                 $voucher->approved_by = $request->approved_by; #user_id
                 $voucher->approved_amount = $request->approved_amount;
@@ -190,6 +194,38 @@ class VoucherController extends Controller
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = "peticion satisfactoria | vale en estatus: $voucher_status.";
             $response->data["alert_text"] = "Vale en estatus: $voucher_status";
+        } catch (\Exception $ex) {
+            error_log($ex->getMessage());
+            if ((bool)$internal) return 0;
+            $response->data = ObjResponse::CatchResponse($ex->getMessage());
+        }
+        return response()->json($response, $response->data["status_code"]);
+    }
+
+    /**
+     * Al ver el voucher (voucher visto).
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response $response
+     */
+    public function seenVoucher(Request $request, Response $response, int $id, bool $internal = false)
+    {
+        $response->data = ObjResponse::DefaultResponse();
+        try {
+            $voucher = Voucher::find($id);
+
+            if ($voucher->viewed_by < 1) {
+                $voucher->viewed_by = $request->viewed_by; #user_id
+                $voucher->viewed_at = $request->viewed_at;
+
+                $voucher->save();
+            }
+
+            if ((bool)$internal) return 1;
+
+            $response->data = ObjResponse::CorrectResponse();
+            $response->data["message"] = "peticion satisfactoria | vale visto.";
+            $response->data["alert_text"] = "Vale visto";
         } catch (\Exception $ex) {
             error_log($ex->getMessage());
             if ((bool)$internal) return 0;
