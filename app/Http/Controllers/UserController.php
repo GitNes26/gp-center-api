@@ -277,7 +277,7 @@ class UserController extends Controller
          // return  "role_id:$role_id -- el user_id: $request->user_id -- email:$request->email --  y el id:$request->id";
 
          #SI NO ES ALGUN TIPO DE ADMIN -
-         if (in_array((int)$role_id, [3,4,5,6])) $id = (int)$request->user_id > 0 ? (int)$request->user_id : null;
+         if (in_array((int)$role_id, [3, 4, 5, 6, 8])) $id = (int)$request->user_id > 0 ? (int)$request->user_id : null;
          else $id = (int)$request->id > 0 ? (int)$request->id : null;
 
          // if ((int)$role_id <= 2 || (int)$role_id >= 7) $id = (int)$request->id > 0 ? (int)$request->id : null;
