@@ -25,7 +25,7 @@ return new class extends Migration
             // $table->string('tag')->nullable();
             // $table->string('file_name')->default('#');
             $table->integer('order')->nullable();
-            $table->boolean('show_counter')->default(false);
+            $table->string('show_counter')->nullable();
             $table->string('others_permissions')->nullable();
             $table->boolean('active')->default(true);
             $table->timestamps();

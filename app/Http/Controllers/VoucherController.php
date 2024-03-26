@@ -233,4 +233,27 @@ class VoucherController extends Controller
         }
         return response()->json($response, $response->data["status_code"]);
     }
+
+    /**
+     * Contar vales que...
+     *
+     * @param   int $id
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response $response
+     */
+    public function counter(Request $request, Response $response, String $key, String $value)
+    {
+        $response->data = ObjResponse::DefaultResponse();
+        try {
+            $values = explode(',', $value);
+            $count = VoucherView::whereIn($key, $values)->count();
+
+            $response->data = ObjResponse::CorrectResponse();
+            $response->data["message"] = 'peticion satisfactoria | vales contados.';
+            $response->data["result"] = $count;
+        } catch (\Exception $ex) {
+            $response->data = ObjResponse::CatchResponse($ex->getMessage());
+        }
+        return response()->json($response, $response->data["status_code"]);
+    }
 }
