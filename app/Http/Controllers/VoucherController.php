@@ -23,8 +23,10 @@ class VoucherController extends Controller
         $response->data = ObjResponse::DefaultResponse();
         try {
             $auth = Auth::user();
-            if (in_array($auth->role_id, [1, 7, 9]))
+            if (in_array($auth->role_id, [1, 7]))
                 $list = VoucherView::orderBy('id', 'desc')->get();
+            elseif (in_array($auth->role_id, [9]))
+                $list = VoucherView::where('voucher_status', 'ALTA')->orderBy('id', 'desc')->get();
             else
                 $list = VoucherView::where("requested_by", $auth->id)->orderBy('id', 'desc')->get();
 
@@ -178,8 +180,7 @@ class VoucherController extends Controller
             if ($voucher_status === "VoBo") {
                 $voucher->vobo_by = $request->vobo_by; #user_id
                 $voucher->vobo_at = $request->vobo_at;
-            }
-            elseif ($voucher_status === "APROBADA") {
+            } elseif ($voucher_status === "APROBADA") {
                 $voucher->letter_folio = $request->letter_folio;
                 $voucher->foliated_vouchers = $request->foliated_vouchers;
                 $voucher->approved_by = $request->approved_by; #user_id
@@ -233,6 +234,29 @@ class VoucherController extends Controller
         } catch (\Exception $ex) {
             error_log($ex->getMessage());
             if ((bool)$internal) return 0;
+            $response->data = ObjResponse::CatchResponse($ex->getMessage());
+        }
+        return response()->json($response, $response->data["status_code"]);
+    }
+
+    /**
+     * Contar vales que...
+     *
+     * @param   int $id
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response $response
+     */
+    public function counter(Request $request, Response $response, String $key, String $value)
+    {
+        $response->data = ObjResponse::DefaultResponse();
+        try {
+            $values = explode(',', $value);
+            $count = VoucherView::whereIn($key, $values)->count();
+
+            $response->data = ObjResponse::CorrectResponse();
+            $response->data["message"] = 'peticion satisfactoria | vales contados.';
+            $response->data["result"] = $count;
+        } catch (\Exception $ex) {
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
         }
         return response()->json($response, $response->data["status_code"]);

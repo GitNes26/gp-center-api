@@ -203,7 +203,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::post('/vouchers/updateStatus/id/{id}/voucher_status/{voucher_status}', 'updateStatus');
         Route::post('/vouchers/seenVoucher/{id}', 'seenVoucher');
-
+        Route::get('/vouchers/counter/{key}/{value}', 'counter');
     });
 
 
