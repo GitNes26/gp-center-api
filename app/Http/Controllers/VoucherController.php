@@ -23,7 +23,7 @@ class VoucherController extends Controller
         $response->data = ObjResponse::DefaultResponse();
         try {
             $auth = Auth::user();
-            if (in_array($auth->role_id, [1, 7]))
+            if (in_array($auth->role_id, [1, 7, 9]))
                 $list = VoucherView::orderBy('id', 'desc')->get();
             else
                 $list = VoucherView::where("requested_by", $auth->id)->orderBy('id', 'desc')->get();
@@ -175,7 +175,11 @@ class VoucherController extends Controller
             $voucher = Voucher::find($id);
             $voucher->voucher_status = $voucher_status;
 
-            if ($voucher_status === "APROBADA") {
+            if ($voucher_status === "VoBo") {
+                $voucher->vobo_by = $request->vobo_by; #user_id
+                $voucher->vobo_at = $request->vobo_at;
+            }
+            elseif ($voucher_status === "APROBADA") {
                 $voucher->letter_folio = $request->letter_folio;
                 $voucher->foliated_vouchers = $request->foliated_vouchers;
                 $voucher->approved_by = $request->approved_by; #user_id

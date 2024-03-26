@@ -29,7 +29,9 @@ return new class extends Migration
             // $table->string('maternal_last_name');
             // $table->string('phone');
             $table->text('activity');
-            $table->enum('voucher_status', ['CREADO', 'ALTA', 'APROBADA', 'CANCELADA'])->default('ALTA');
+            $table->enum('voucher_status', ['CREADO', 'ALTA', 'VoBo','APROBADA', 'CANCELADA'])->default('ALTA');
+            $table->integer('vobo_by')->nullable()->comment('Visto Bueno por');
+            $table->dateTime('vobo_at')->nullable()->comment('Visto Bueno el');
             $table->integer('viewed_by')->nullable();
             $table->dateTime('viewed_at')->nullable();
             $table->integer('approved_by')->nullable()->comment("aprobado por");
