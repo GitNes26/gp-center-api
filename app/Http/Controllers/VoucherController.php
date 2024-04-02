@@ -18,7 +18,7 @@ class VoucherController extends Controller
      *
      * @return \Illuminate\Http\Response $response
      */
-    public function index(Response $response)
+    public function index(Response $response, Bool $internal = false)
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
@@ -29,6 +29,8 @@ class VoucherController extends Controller
                 $list = VoucherView::where('voucher_status', 'ALTA')->orderBy('id', 'desc')->get();
             else
                 $list = VoucherView::where("requested_by", $auth->id)->orderBy('id', 'desc')->get();
+
+            if ((bool)$internal) return $list;
 
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'peticion satisfactoria | lista de vales.';

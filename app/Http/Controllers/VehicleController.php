@@ -100,6 +100,7 @@ class VehicleController extends Controller
                 'serial_number' => $request->serial_number,
                 'circulation_card' => $request->circulation_card,
                 'insurance_policy' => $request->insurance_policy,
+                'gasoline_code' => $request->gasoline_code,
                 // violated
             ]);
 
@@ -230,6 +231,7 @@ class VehicleController extends Controller
             if ($request->visible_serial_number) $vehicle->visible_serial_number = (bool)$request->visible_serial_number;
             $vehicle->circulation_card = $request->circulation_card;
             $vehicle->insurance_policy = $request->insurance_policy;
+            $vehicle->gasoline_code = $request->gasoline_code;
             // violated
 
             if ($request->hasFile('img_preview') || $request->img_preview == "") $vehicle->img_preview = $img_preview;
