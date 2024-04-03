@@ -36,6 +36,7 @@ class VoucherRequesterView extends Model
         // 'department_id',
         'department',
         'img_firm',
+        'img_stamp',
         // 'community_id',
         // 'street',
         // 'num_ext',
