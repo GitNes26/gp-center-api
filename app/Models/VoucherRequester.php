@@ -25,6 +25,7 @@ class VoucherRequester extends Model
         'payroll_number',
         'department',
         'img_firm',
+        'img_stamp',
     ];
 
     /**

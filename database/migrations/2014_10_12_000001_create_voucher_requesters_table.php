@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('payroll_number')->nullable();
             $table->string('department');
             $table->string('img_firm')->nullable();
+            $table->string('img_stamp')->nullable();
             // // $table->foreignId('department_id')->constrained('departments','id')->default(1);
             // $table->integer('community_id')->default(0)->comment("este dato viene de una API que por medio del C.P. nos arroja de estado a colonia");
             // $table->string('street');
