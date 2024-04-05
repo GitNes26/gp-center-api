@@ -23,10 +23,10 @@ class VoucherController extends Controller
         $response->data = ObjResponse::DefaultResponse();
         try {
             $auth = Auth::user();
-            if (in_array($auth->role_id, [1, 7]))
+            if (in_array($auth->role_id, [1, 7, 9]))
                 $list = VoucherView::orderBy('id', 'desc')->get();
-            elseif (in_array($auth->role_id, [9]))
-                $list = VoucherView::where('voucher_status', 'ALTA')->orderBy('id', 'desc')->get();
+            // elseif (in_array($auth->role_id, [9]))
+            //     $list = VoucherView::where('voucher_status', 'ALTA')->orderBy('id', 'desc')->get();
             else
                 $list = VoucherView::where("requested_by", $auth->id)->orderBy('id', 'desc')->get();
 
