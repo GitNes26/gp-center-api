@@ -120,6 +120,7 @@ class VoucherController extends Controller
             // $voucher->phone = $request->phone;
             $voucher->activity = $request->activity;
             $voucher->voucher_status = $request->voucher_status;
+            $voucher->requester_external = $request->requester_external; #id de quien hizo la solicitud
 
             if ($id > 0) {
                 $voucher->approved_by = $request->approved_by; #user_id
