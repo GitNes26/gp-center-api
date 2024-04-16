@@ -29,8 +29,8 @@ class VoucherController extends Controller
                 if (!$status) $list = VoucherView::orderBy('id', 'desc')->get();
                 else $list = VoucherView::whereIn('voucher_status', $values)->orderBy('id', 'desc')->get();
             } else {
-                if (!$status) $list = VoucherView::where("requested_by", $auth->id)->orderBy('id', 'desc')->get();
-                else $list = VoucherView::whereIn('voucher_status', $values)->where("requested_by", $auth->id)->orderBy('id', 'desc')->get();
+                if (!$status) $list = VoucherView::where("requested_by", $auth->id)->where('requester_external', null)->orderBy('id', 'desc')->get();
+                else $list = VoucherView::whereIn('voucher_status', $values)->where("requested_by", $auth->id)->where('requester_external', null)->orderBy('id', 'desc')->get();
             }
 
             if ((bool)$internal) return $list;
