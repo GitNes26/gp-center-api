@@ -47,7 +47,7 @@ class VoucherRequesterController extends Controller
    {
       $response->data = ObjResponse::DefaultResponse();
       try {
-         $list = VoucherRequesterView::select('id', 'username as label')
+         $list = VoucherRequesterView::select('user_id as id', 'username as label')
             ->orderBy('username', 'asc')->get();
          $response->data = ObjResponse::CorrectResponse();
          $response->data["message"] = 'peticion satisfactoria | lista de solicitadores de vales.';

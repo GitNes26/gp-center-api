@@ -29,7 +29,7 @@ return new class extends Migration
             // $table->string('maternal_last_name');
             // $table->string('phone');
             $table->text('activity');
-            $table->enum('voucher_status', ['CREADO', 'ALTA', 'VoBo','APROBADA', 'CANCELADA'])->default('ALTA');
+            $table->enum('voucher_status', ['CREADO', 'ALTA', 'VoBo', 'APROBADA', 'CANCELADA'])->default('ALTA');
             $table->integer('vobo_by')->nullable()->comment('Visto Bueno por');
             $table->dateTime('vobo_at')->nullable()->comment('Visto Bueno el');
             $table->integer('viewed_by')->nullable();
@@ -40,6 +40,7 @@ return new class extends Migration
             $table->integer('canceled_by')->nullable()->comment("cancelado por");
             $table->text('canceled_comments')->nullable();
             $table->dateTime('canceled_at')->nullable()->comment("cancelado el");
+            $table->integer('requester_external')->nullable()->comment("cuando un usuario crea una solicitud por un solicitador");
 
             $table->boolean('active')->default(true);
             $table->timestamps();

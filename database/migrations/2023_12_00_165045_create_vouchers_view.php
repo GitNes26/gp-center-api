@@ -19,13 +19,14 @@ return new class extends Migration
         SELECT v.*,
         -- CONCAT(v.name,' ',v.paternal_last_name,' ',v.maternal_last_name) 'creditor_fullname',
         ua.username 'username_approved', uvb.username 'username_vobo', uv.username 'username_viewed', uc.username 'username_canceled',
-        ur.role_id 'requested_role_id'
+        ur.role_id 'requested_role_id', ure.username 'requested_by_name'
         FROM vouchers v
         INNER JOIN users ur ON v.requested_by=ur.id
         LEFT JOIN users uvb ON v.vobo_by=uvb.id
         LEFT JOIN users uv ON v.viewed_by=uv.id
         LEFT JOIN users ua ON v.approved_by=ua.id
         LEFT JOIN users uc ON v.canceled_by=uc.id
+        LEFT JOIN users ure ON v.requested_by=ure.id
         WHERE v.active=1
         ;
         ");
