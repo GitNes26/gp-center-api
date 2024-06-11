@@ -696,7 +696,7 @@ class UserController extends Controller
          $query = "SELECT count(*) as duplicate FROM $table WHERE $column='$value' AND active=1";
          if ($id != null) $query = "SELECT count(*) as duplicate FROM $table WHERE $column='$value' AND active=1 AND id!=$id";
       }
-      // echo $query;
+      // echo "LA CONSULTA DEL checkAvailableData() -> $query";
       $result = DB::select($query)[0];
       //   var_dump($result->duplicate);
       if ((int)$result->duplicate > 0) {

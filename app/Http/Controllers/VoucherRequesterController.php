@@ -74,7 +74,8 @@ class VoucherRequesterController extends Controller
          if ($voucher_requester) $id = $voucher_requester->id;
          else $voucher_requester = new VoucherRequester();
 
-         $duplicate = $this->validateAvailableData($request->phone, $request->payroll_number, $id);
+         if ($request->phone) $duplicate = $this->validateAvailableData(null, $request->payroll_number, $id);
+         else $duplicate = $this->validateAvailableData($request->phone, $request->payroll_number, $id);
          if ($duplicate["result"] == true) {
             return $duplicate;
          }
@@ -83,7 +84,7 @@ class VoucherRequesterController extends Controller
          $voucher_requester->name = $request->name;
          $voucher_requester->paternal_last_name = $request->paternal_last_name;
          $voucher_requester->maternal_last_name = $request->maternal_last_name;
-         $voucher_requester->phone = $request->phone;
+         if ($request->phone) $voucher_requester->phone = $request->phone;
          $voucher_requester->payroll_number = $request->payroll_number;
          $voucher_requester->department = $request->department;
 
@@ -132,12 +133,14 @@ class VoucherRequesterController extends Controller
    }
 
 
-   public function validateAvailableData($phone, $payroll_number, $id)
+   public function validateAvailableData($phone = null, $payroll_number, $id)
    {
       $checkAvailable = new UserController();
       // #VALIDACION DE DATOS REPETIDOS
-      $duplicate = $checkAvailable->checkAvailableData('voucher_requesters', 'phone', $phone, 'El número telefónico', 'phone', $id, "users");
-      if ($duplicate["result"] == true) return $duplicate;
+      if ($phone != null) {
+         $duplicate = $checkAvailable->checkAvailableData('voucher_requesters', 'phone', $phone, 'El número telefónico', 'phone', $id, "users");
+         if ($duplicate["result"] == true) return $duplicate;
+      }
 
       $duplicate = $checkAvailable->checkAvailableData('voucher_requesters', 'payroll_number', $payroll_number, 'El empleado (número de nómina) ya ha sido registrado', 'payroll_number', $id, "users");
       if ($duplicate["result"] == true) return $duplicate;
