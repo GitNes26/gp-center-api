@@ -209,6 +209,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
     Route::controller(VoucherDetailController::class)->group(function () {
+        Route::get('/voucherDetails', 'index');
         Route::get('/voucherDetails/voucher_id/{voucher_id}', 'indexByVoucher');
         Route::get('/voucherDetails/id/{id}', 'showVoucherDetail');
         Route::post('/voucherDetails/create', 'createOrUpdate');
