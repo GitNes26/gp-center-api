@@ -13,6 +13,30 @@ use Illuminate\Support\Facades\DB;
 class VoucherDetailController extends Controller
 {
     /**
+     * Mostrar lista de detalles de vales activas
+     *
+     * @return \Illuminate\Http\Response $response
+     */
+    public function index(Response $response, bool $internal = false)
+    {
+        $response->data = ObjResponse::DefaultResponse();
+        try {
+            $list = VoucherDetail::where('active', 1)->select('voucher_details.*')->selectRaw("CONCAT(voucher_details.name,' ',voucher_details.paternal_last_name,' ',voucher_details.maternal_last_name) 'creditor_fullname'")->get();
+
+            if ($internal === true) return $list;
+
+            $response->data = ObjResponse::CorrectResponse();
+            $response->data["message"] = 'peticion satisfactoria | lista de detalles de vales.';
+            $response->data["alert_text"] = "detalles encontrados";
+            $response->data["result"] = $list;
+        } catch (\Exception $ex) {
+            $response->data = ObjResponse::CatchResponse($ex->getMessage());
+        }
+        return response()->json($response, $response->data["status_code"]);
+    }
+
+
+    /**
      * Mostrar lista de detalles del vale activas
      *
      * @return \Illuminate\Http\Response $response
