@@ -161,6 +161,7 @@ class UserController extends Controller
 
          $user->password = Hash::make($request->new_password);
          $user->save();
+
          auth()->user()->tokens()->delete(); #Utilizar este en caso de que el usuario desee cerrar sesión en todos lados o cambie informacion de su usuario / contraseña
 
          $response->data = ObjResponse::CorrectResponse();
@@ -337,7 +338,7 @@ class UserController extends Controller
          if (strlen($request->password) > 0) {
             $user->password = Hash::make($request->password);
 
-            auth()->user()->tokens()->delete(); #Utilizar este en caso de que el usuario desee cerrar sesión en todos lados o cambie informacion de su usuario / contraseña
+            DB::table('personal_access_tokens')->where('tokenable_id', $id)->delete(); #Utilizar este en caso de que el usuario desee cerrar sesión en todos lados o cambie informacion de su usuario / contraseña
             $message_change_psw = "Contraseña actualizada - todas tus sesiones se cerraran para aplicar cambios.";
          }
          $user->role_id = $role_id;
