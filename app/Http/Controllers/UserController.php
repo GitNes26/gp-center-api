@@ -328,13 +328,18 @@ class UserController extends Controller
             }
          }
 
+         $message_change_psw = "";
          # INSERT O UPDATE
          $user = User::find($id);
          if (!$user) $user = new User();
-
          $user->username = $request->username;
          $user->email = $request->email;
-         if (strlen($request->password) > 0) $user->password = Hash::make($request->password);
+         if (strlen($request->password) > 0) {
+            $user->password = Hash::make($request->password);
+
+            auth()->user()->tokens()->delete(); #Utilizar este en caso de que el usuario desee cerrar sesión en todos lados o cambie informacion de su usuario / contraseña
+            $message_change_psw = "Contraseña actualizada - todas tus sesiones se cerraran para aplicar cambios.";
+         }
          $user->role_id = $role_id;
 
          $user->save();
@@ -377,7 +382,7 @@ class UserController extends Controller
             }
          }
          $response->data["message"] = $id > 0 ? "peticion satisfactoria | $minus editado." : "peticion satisfactoria | $minus registrado.";
-         $response->data["alert_text"] = $id > 0 ? "$mayus editado" : "$mayus registrado";
+         $response->data["alert_text"] = $id > 0 ? "$mayus editado $message_change_psw" : "$mayus registrado";
       } catch (\Exception $ex) {
          $response->data = ObjResponse::CatchResponse($ex->getMessage());
       }

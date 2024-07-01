@@ -27,7 +27,8 @@ return new class extends Migration
         INNER JOIN users u ON vr.user_id=u.id
         INNER JOIN roles r ON u.role_id=r.id
         -- INNER JOIN departments dep ON vr.department_id=dep.id
-        WHERE u.active=1;
+        -- WHERE u.active=1
+        ;
         ");
     }
 
