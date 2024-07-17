@@ -50,7 +50,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/menus/selectIndexToRoles', 'selectIndexToRoles');
         // Route::get('/menus/selectIndexUrl', 'selectIndexUrl');
         Route::get('/menus/headers/selectIndex', 'headersSelectIndex');
-        Route::get('/menus/{id}', 'show');
+        Route::get('/menus/id/{id}', 'show');
         Route::post('/menus/create', 'createOrUpdate');
         Route::post('/menus/update/{id?}', 'createOrUpdate');
         Route::post('/menus/destroy/{id}', 'destroy');
