@@ -147,6 +147,27 @@ class MenuController extends Controller
         }
         return response()->json($response, $response->data["status_code"]);
     }
+    public function selectIndexToRoles(Response $response)
+    {
+        $response->data = ObjResponse::DefaultResponse();
+        try {
+            $list = Menu::where('menus.active', true)->where('menus.belongs_to', '>', 0)
+                ->leftJoin('menus as patern', 'menus.belongs_to', '=', 'patern.id')
+                ->select(
+                    "menus.id as id",
+                    DB::raw("CONCAT(patern.menu,' : ', menus.menu) as label")
+                )
+                ->orderBy('menus.menu', 'asc')->get();
+            // $sql = $list->toSql();
+            // return $sql;
+            $response->data = ObjResponse::CorrectResponse();
+            $response->data["message"] = 'Peticion satisfactoria | Lista de menus';
+            $response->data["result"] = $list;
+        } catch (\Exception $ex) {
+            $response->data = ObjResponse::CatchResponse($ex->getMessage());
+        }
+        return response()->json($response, $response->data["status_code"]);
+    }
 
 
     /**
