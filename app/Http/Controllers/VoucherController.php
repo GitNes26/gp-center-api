@@ -125,6 +125,8 @@ class VoucherController extends Controller
             if ($id > 0) {
                 $voucher->approved_by = $request->approved_by; #user_id
                 $voucher->approved_amount = $request->approved_amount;
+                $voucher->approved_liters = $request->approved_liters;
+                $voucher->approved_combustible = $request->approved_combustible;
                 $voucher->approved_at = $request->approved_at;
                 $voucher->canceled_by = $request->canceled_by; #user_id
                 $voucher->canceled_comments = $request->canceled_comments;
@@ -191,6 +193,8 @@ class VoucherController extends Controller
                 $voucher->foliated_vouchers = $request->foliated_vouchers;
                 $voucher->approved_by = $request->approved_by; #user_id
                 $voucher->approved_amount = $request->approved_amount;
+                $voucher->approved_liters = $request->approved_liters;
+                $voucher->approved_combustible = $request->approved_combustible;
                 $voucher->approved_at = $request->approved_at;
             } elseif ($voucher_status === "CANCELADA") {
                 $voucher->canceled_at = $request->canceled_at; #user_id
