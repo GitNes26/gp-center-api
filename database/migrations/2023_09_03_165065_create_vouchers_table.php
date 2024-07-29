@@ -36,6 +36,8 @@ return new class extends Migration
             $table->dateTime('viewed_at')->nullable();
             $table->integer('approved_by')->nullable()->comment("aprobado por");
             $table->integer('approved_amount')->nullable()->comment("cantidad aprobada");
+            $table->decimal('approved_liters', 11, 2)->nullable()->comment("cantidad de litros aprobada");
+            $table->string('approved_combustible')->nullable()->comment("tipo de combustible aprobada");
             $table->dateTime('approved_at')->nullable()->comment("aprobado el");
             $table->integer('canceled_by')->nullable()->comment("cancelado por");
             $table->text('canceled_comments')->nullable();

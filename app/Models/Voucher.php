@@ -30,6 +30,8 @@ class Voucher extends Model
         'viewed_amount',
         'approved_by',
         'approved_amount',
+        'approved_liters',
+        'approved_combustible',
         'approved_at',
         'canceled_by',
         'canceled_comments',

@@ -35,6 +35,8 @@ class VoucherView extends Model
         'voucher_status',
         'approved_by',
         'approved_amount',
+        'approved_liters',
+        'approved_combustible',
         'approved_at',
         'canceled_by',
         'canceled_comments',
