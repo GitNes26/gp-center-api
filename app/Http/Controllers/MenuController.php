@@ -217,6 +217,7 @@ class MenuController extends Controller
             if ($request->others_permissions) $menu->others_permissions = $request->others_permissions;
             $menu->show_counter = (bool)$request->show_counter;
             $menu->counter_name = $request->counter_name;
+            if ($request->read_only) $menu->read_only = (bool)$request->read_only;
             if ($request->active) $menu->active = (bool)$request->active;
 
             $menu->save();

@@ -5,7 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Service;
 use App\Models\ObjResponse;
-
+use App\Models\ServiceApprovedView;
+use App\Models\ServiceClosedView;
+use App\Models\ServiceInReviewedView;
+use App\Models\ServiceOpenedView;
+use App\Models\ServiceRejectedView;
+use App\Models\ServiceView;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -18,18 +23,18 @@ class ServiceController extends Controller
      *
      * @return \Illuminate\Http\Response $response
      */
-    public function index(Response $response)
+    public function index(Response $response, string $status = null)
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
             $userAuth = Auth::user();
 
             $ViewService = new ServiceView();
-            if ($status == "Abierta") $ViewService = new ServiceOpenedView();
-            elseif ($status == "Aprobada") $ViewService = new ServiceApprovedView();
-            elseif ($status == "Rechazada") $ViewService = new ServiceRejectedView();
-            elseif ($status == "En Revisión") $ViewService = new ServiceInReviewedView();
-            elseif ($status == "Cerrada") $ViewService = new ServiceClosedView();
+            if ($status == "ABIERTA") $ViewService = new ServiceOpenedView();
+            elseif ($status == "APROBADA") $ViewService = new ServiceApprovedView();
+            elseif ($status == "RECHAZADA") $ViewService = new ServiceRejectedView();
+            elseif ($status == "EN REVISIÓN") $ViewService = new ServiceInReviewedView();
+            elseif ($status == "CERRADA") $ViewService = new ServiceClosedView();
 
             $list = $userAuth->role_id == 3 ? $ViewService::where('user_id', $userAuth->id)->get() : $ViewService::all();
             // $list = Service::where('services.active', true)

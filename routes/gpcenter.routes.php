@@ -157,6 +157,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::controller(ServiceController::class)->group(function () {
         Route::get('/services', 'index');
+        Route::get('/services/status/{status}', 'index');
         Route::get('/services/selectIndex', 'selectIndex');
         Route::get('/services/{id}', 'show');
         Route::get('/services/{searchBy?}/{value}', 'showBy');
