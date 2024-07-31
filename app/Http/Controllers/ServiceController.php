@@ -97,6 +97,8 @@ class ServiceController extends Controller
                 'contact_name' => $request->contact_name,
                 'contact_phone' => $request->contact_phone,
                 'pre_diagnosis' => $request->pre_diagnosis,
+                'requested_by' => $request->requested_by,
+                'requested_at' => $request->requested_at,
                 // 'mechanic_id' => $request->mechanic_id,
                 // 'final_diagnosis' => $request->final_diagnosis,
                 // 'evidence_img_path' => $request->evidence_img_path,
@@ -107,7 +109,7 @@ class ServiceController extends Controller
 
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'peticion satisfactoria | servicio registrado.';
-            $response->data["alert_text"] = "Servicio registrado <br> tu folio es <b>$new_service->folio</b>";
+            $response->data["alert_text"] = "Servicio registrado <br> tu folio es el <b>#$new_service->folio</b>";
             $response->data["result"] = $new_service;
         } catch (\Exception $ex) {
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
