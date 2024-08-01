@@ -207,6 +207,7 @@ class MenuController extends Controller
 
             $menu = Menu::find($id);
             if (!$menu) $menu = new Menu();
+            
             $menu->menu = $request->menu;
             $menu->caption = $request->caption;
             $menu->type = $request->type;

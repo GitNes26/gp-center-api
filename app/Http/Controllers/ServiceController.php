@@ -224,4 +224,48 @@ class ServiceController extends Controller
             return $msg;
         }
     }
+
+    /**
+     * Crear un nuevo servicio.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response $response
+     */
+    public function statusModify(Request $request, Response $response, Int $id, String $status)
+    {
+        $response->data = ObjResponse::DefaultResponse();
+        try {
+            $service = Service::find($id);
+
+            if ($status == "APROBADO") {
+                $service->approved_by = $request->approved_by;
+                $service->approved_at = $request->approved_at;
+            } elseif ($status == "RECHAZADA") {
+                $service->rejected_by = $request->rejected_by;
+                $service->rejected_at = $request->rejected_at;
+            } elseif ($status == "EN SERVICIO") {
+                $service->mechanic_id = $request->mechanic_id;
+                $service->reviewed_at = $request->reviewed_at;
+            } elseif ($status == "CERRADA") {
+                $service->closeded_by = $request->closeded_by;
+                $service->reviewed_at = $request->reviewed_at;
+            }
+            $service->folio = $request->folio;
+            $service->vehicle_id = $request->vehicle_id;
+            $service->contact_name = $request->contact_name;
+            $service->contact_phone = $request->contact_phone;
+            $service->pre_diagnosis = $request->pre_diagnosis;
+
+            $vehicleInstance = new VehicleController();
+            $vehicleInstance->updateStatus($request->vehicle_id, 5); //En Taller/Servicio
+
+            $response->data = ObjResponse::CorrectResponse();
+            $response->data["message"] = 'peticion satisfactoria | servicio registrado.';
+            $response->data["alert_text"] = "Servicio registrado <br> tu folio es el <b>#$new_service->folio</b>";
+            $response->data["result"] = $new_service;
+        } catch (\Exception $ex) {
+            $response->data = ObjResponse::CatchResponse($ex->getMessage());
+        }
+        return response()->json($response, $response->data["status_code"]);
+    }
 }
