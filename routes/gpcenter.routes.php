@@ -167,6 +167,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/services/destroy/{id}', 'destroy');
 
         Route::post('/services/{id?}', 'update');
+        Route::get('/services/{id}/changeStatus/{status}', 'changeStatus');
     });
 
     Route::controller(AssignedVehicleController::class)->group(function () {
