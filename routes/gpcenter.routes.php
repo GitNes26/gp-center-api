@@ -157,6 +157,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::controller(ServiceController::class)->group(function () {
         Route::get('/services', 'index');
+        Route::get('/services/status/{status}', 'index');
         Route::get('/services/selectIndex', 'selectIndex');
         Route::get('/services/{id}', 'show');
         Route::get('/services/{searchBy?}/{value}', 'showBy');
@@ -166,6 +167,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/services/destroy/{id}', 'destroy');
 
         Route::post('/services/{id?}', 'update');
+        Route::get('/services/{id}/changeStatus/{status}', 'changeStatus');
     });
 
     Route::controller(AssignedVehicleController::class)->group(function () {
