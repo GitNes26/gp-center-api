@@ -207,7 +207,7 @@ class MenuController extends Controller
 
             $menu = Menu::find($id);
             if (!$menu) $menu = new Menu();
-            
+
             $menu->menu = $request->menu;
             $menu->caption = $request->caption;
             $menu->type = $request->type;
@@ -215,7 +215,8 @@ class MenuController extends Controller
             if ($request->url) $menu->url = $request->url;
             if ($request->icon) $menu->icon = $request->icon;
             $menu->order = $request->order;
-            if ($request->others_permissions) $menu->others_permissions = $request->others_permissions;
+            /* if ($request->others_permissions) */
+            $menu->others_permissions = $request->others_permissions;
             $menu->show_counter = (bool)$request->show_counter;
             $menu->counter_name = $request->counter_name;
             if ($request->read_only) $menu->read_only = (bool)$request->read_only;
