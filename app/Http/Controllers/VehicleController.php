@@ -93,6 +93,7 @@ class VehicleController extends Controller
                 'brand_id' => $request->brand_id,
                 'model_id' => $request->model_id,
                 'year' => $request->year,
+                'shelter_to' => $request->shelter_to,
                 'registration_date' => $request->registration_date,
                 'vehicle_status_id' => $request->vehicle_status_id,
                 'description' => $request->description,
@@ -223,6 +224,7 @@ class VehicleController extends Controller
             $vehicle->brand_id = $request->brand_id;
             $vehicle->model_id = $request->model_id;
             $vehicle->year = $request->year;
+            $vehicle->shelter_to = $request->shelter_to;
             $vehicle->registration_date = $request->registration_date;
             $vehicle->vehicle_status_id = $request->vehicle_status_id;
             $vehicle->description = $request->description;

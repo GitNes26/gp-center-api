@@ -25,6 +25,7 @@ class Vehicle extends Model
         'brand_id',
         'model_id',
         'year',
+        'shelter_to',
         'registration_date',
         'description',
         'acceptable_license_type',
