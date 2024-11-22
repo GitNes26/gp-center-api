@@ -16,6 +16,7 @@ use App\Http\Controllers\LoanedVehicleController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ModelController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\SSEController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\VehicleMovementController;
 use App\Http\Controllers\VehiclePlatesController;
@@ -29,7 +30,10 @@ use App\Http\Controllers\VoucherRequesterController;
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/signup', [UserController::class, 'signup']);
 
+Route::get('/sse/{channel}', [SSEController::class, 'listen']);  // Ruta para escuchar los eventos
+Route::post('/disparar', [SSEController::class, 'disparar']);
 Route::middleware('auth:sanctum')->group(function () {
+
     // Route::get('/getUser/{token}', [UserController::class,'getUser']); //cerrar sesión (eliminar los tokens creados)
     Route::get('/logout/{all_sessions?}', [UserController::class, 'logout']); //cerrar sesión (eliminar los tokens creados)
 

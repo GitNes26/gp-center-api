@@ -299,6 +299,14 @@ class VehicleController extends Controller
             $vehicle = Vehicle::find($id);
             $vehicle->vehicle_status_id = $vehicle_status_id;
             $vehicle->save();
+
+            $arrayData = array(
+                "user_id" => Auth::user()->id,
+                "title" => "CAMBIO DE ESTATUS",
+                "message" => "Se cambio el estatus a OTRO"
+            );
+            $this->createOrUpdateNotification($arrayData);
+
             return 1;
         } catch (\Exception $ex) {
             error_log($ex->getMessage());
