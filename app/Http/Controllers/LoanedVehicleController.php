@@ -138,6 +138,11 @@ class LoanedVehicleController extends Controller
 
             $loanedVehicle->save();
 
+            #REGISTRAR MOVIMIENTO
+            $vehicleMovementInstance = new VehicleMovementController();
+            $r = $vehicleMovementInstance->registerMovement($request->vehicle_id, (bool)false, $loanedVehicle->getTable(), $loanedVehicle->id);
+            // var_dump($r);
+
             #ACTUALIZAR STATUS DEL VEHICULO
             $vehicleInstance = new VehicleController();
             $vehicleInstance->updateStatus($request->vehicle_id, 4); //Prestado
@@ -232,9 +237,14 @@ class LoanedVehicleController extends Controller
 
             $lastLoan->save();
 
+            #REGISTRAR MOVIMIENTO
+            $vehicleMovementInstance = new VehicleMovementController();
+            $r = $vehicleMovementInstance->registerMovement($request->vehicle_id, (bool)false, $lastLoan->getTable(), $lastLoan->id);
+            // var_dump($r);
+
             #ACTUALIZAR STATUS DEL VEHICULO
             $vehicleInstance = new VehicleController();
-            $vehicleInstance->updateStatus($vehicle->id, 3); //DISPONIBLE
+            $vehicleInstance->updateStatus($vehicle->id, 3); //ASIGNADO
 
             $response->data = ObjResponse::CorrectResponse();
 

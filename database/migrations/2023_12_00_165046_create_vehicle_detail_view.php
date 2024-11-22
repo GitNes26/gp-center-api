@@ -42,7 +42,7 @@ return new class extends Migration
         DB::statement("        
         CREATE OR REPLACE VIEW vehicle_detail_view AS
         SELECT v.*, b.brand, b.img_path brand_img, m.model,
-        vs.vehicle_status, vs.bg_color, vs.letter_black,
+        vs.vehicle_status, vs.bg_color, vs.letter_black, vs.description as vehicle_status_description,
         vp.plates, vp.initial_date, vp.due_date, vp.expired,
         aav.*, alv.*
         FROM vehicles v

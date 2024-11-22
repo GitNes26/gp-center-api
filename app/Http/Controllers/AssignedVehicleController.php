@@ -80,8 +80,7 @@ class AssignedVehicleController extends Controller
                 return response()->json($response, $response->data["status_code"]);
             }
 
-
-
+            #VERIFICAR QUE SE ENCUENTRE EN EL STATUS CORRECTO
             $response->data = ObjResponse::CorrectResponse();
             if ($vehicle->vehicle_status_id === 3) {
                 $response->data["message"] = 'peticion satisfactoria | vehiculo ya asignado.';
@@ -96,6 +95,7 @@ class AssignedVehicleController extends Controller
                 return response()->json($response, $response->data["status_code"]);
             }
 
+
             $assignedVehicle = AssignedVehicle::find($id);
             if (!$assignedVehicle) $assignedVehicle = new AssignedVehicle();
             $assignedVehicle->user_id = $request->user_id;
@@ -105,6 +105,11 @@ class AssignedVehicleController extends Controller
             if ($request->active_assignment) $assignedVehicle->active_assignment = (bool)$request->active_assignment;
 
             $assignedVehicle->save();
+
+            #REGISTRAR MOVIMIENTO
+            $vehicleMovementInstance = new VehicleMovementController();
+            $r = $vehicleMovementInstance->registerMovement($request->vehicle_id, (bool)false, $assignedVehicle->getTable(), $assignedVehicle->id);
+            // var_dump($r);
 
             #ACTUALIZAR STATUS DEL VEHICULO
             $vehicleInstance = new VehicleController();

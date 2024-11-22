@@ -120,6 +120,11 @@ class DeliveredVehicleController extends Controller
 
             $deliveredVehicle->save();
 
+            #REGISTRAR MOVIMIENTO
+            $vehicleMovementInstance = new VehicleMovementController();
+            $r = $vehicleMovementInstance->registerMovement($request->vehicle_id, (bool)false, $deliveredVehicle->getTable(), $deliveredVehicle->id);
+            // var_dump($r);
+            
             #ACTUALIZAR STATUS DEL VEHICULO
             $vehicleInstance = new VehicleController();
             $vehicleInstance->updateStatus($vehicle->id, 2); //DISPONIBLE
