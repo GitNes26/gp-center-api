@@ -33,7 +33,7 @@ class ServiceController extends Controller
             if ($status == "ABIERTA") $ViewService = new ServiceOpenedView();
             elseif ($status == "APROBADA") $ViewService = new ServiceApprovedView();
             elseif ($status == "RECHAZADA") $ViewService = new ServiceRejectedView();
-            elseif ($status == "EN REVISIÓN") $ViewService = new ServiceInReviewedView();
+            elseif (in_array($status, array("EN REVISIÓN"))) $ViewService = new ServiceInReviewedView();
             elseif ($status == "CERRADA") $ViewService = new ServiceClosedView();
 
             $list = $userAuth->role_id == 3 ? $ViewService::where('user_id', $userAuth->id)->get() : $ViewService::all();
@@ -91,6 +91,16 @@ class ServiceController extends Controller
                 // 'final_diagnosis' => $request->final_diagnosis,
                 // 'evidence_img_path' => $request->evidence_img_path,
             ]);
+
+            #PASAR A STATUS "POR APROBAR SERVICIO" DE PARTE DE PATRIMONIO
+            $vehicleMovementInstance = new VehicleMovementController();
+            $vehicleMovementInstance->registerMovement($request->vehicle_id, true, $new_service->getTable(), $new_service->id);
+
+            #ACTUALIZAR STATUS DEL VEHICULO
+            $vehicleInstance = new VehicleController();
+            $vehicleInstance->updateStatus($request->vehicle_id, 7); //Por Aprobar Servicio
+
+
 
             #YA SUCEDE HASTA QUE EL MECANICO ACEPTA LA SOLICITUD
             // $vehicleInstance = new VehicleController();
@@ -228,30 +238,79 @@ class ServiceController extends Controller
         $response->data = ObjResponse::DefaultResponse();
         try {
             $service = Service::find($id);
+            $vehicleMovementInstance = new VehicleMovementController();
+            $lastMovement = $vehicleMovementInstance->getLastMovementByVehicle($service->vehicle_id);
+            $addMovement = true;
+            $vehicle_status_id = 7; // POR APROBAR
 
             if ($status == "APROBADA") {
                 $service->approved_by = $userAuth->id;
                 $service->approved_at = $datetime;
+                $vehicle_status_id = 8; // SERVICIO APROBADO
             } elseif ($status == "RECHAZADA") {
                 $service->rejected_by = $userAuth->id;
                 $service->rejected_at = $datetime;
+                $vehicle_status_id = $lastMovement->old_vehicle_status_id; // REGRESA AL STATUS ANTERIOR
+                // $vehicle_status_id = 9; // SERVICIO RECHAZADO
             } elseif ($status == "EN REVISIÓN") {
                 $service->mechanic_id = $userAuth->id;
                 $service->reviewed_at = $datetime;
-
-                $vehicleInstance = new VehicleController();
-                $vehicleInstance->updateStatus($service->vehicle_id, 5); //En Taller/Servicio
+                $vehicle_status_id = 5; // En Taller/Servicio
+            } elseif ($status == "APROBADA POR CV") {
+                $service->confirmed_by = $userAuth->id;
+                $service->confirmed_at = $datetime;
+                $addMovement = false;
+            } elseif ($status == "RECHAZADA POR CV") {
+                $service->confirmed_by = $userAuth->id;
+                $service->confirmed_at = $datetime;
+                $lastMovement = $vehicleMovementInstance->getLastMovementByVehicle($service->vehicle_id, 2);
+                $vehicle_status_id = $lastMovement->old_vehicle_status_id; // REGRESA AL STATUS ANTERIOR
             } elseif ($status == "CERRADA") {
-                $service->closeded_by = $userAuth->id;
-                $service->reviewed_at = $datetime;
+                $service->closed_at = $datetime;
+                // $service->reviewed_at = $datetime; // SU columna en teoria es al de updated_at
+                $lastMovement = $vehicleMovementInstance->getLastMovementByVehicle($service->vehicle_id, 3);
+                $vehicle_status_id = $lastMovement->old_vehicle_status_id; // REGRESA AL STATUS ANTERIOR
             }
             $service->status = $status;
             $service->save();
+
+            if ((bool)$addMovement) {
+                #PASAR A STATUS "POR APROBAR SERVICIO" DE PARTE DE PATRIMONIO
+                $vehicleMovementInstance->registerMovement($service->vehicle_id, true, $service->getTable(), $service->id);
+
+                #ACTUALIZAR STATUS DEL VEHICULO
+                $vehicleInstance = new VehicleController();
+                $vehicleInstance->updateStatus($service->vehicle_id, $vehicle_status_id);
+            }
 
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'peticion satisfactoria | cambio de estatus.';
             $response->data["alert_text"] = "El estatus cambio a: $status";
             $response->data["result"] = $service;
+        } catch (\Exception $ex) {
+            $response->data = ObjResponse::CatchResponse($ex->getMessage());
+        }
+        return response()->json($response, $response->data["status_code"]);
+    }
+
+    /**
+     * No cargar material.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response $response
+     */
+    public function loadMaterial(Response $response, Int $id, String $request_material)
+    {
+        $requestMaterial = $request_material === "false" ? (bool)false : (bool)true;
+        $response->data = ObjResponse::DefaultResponse();
+        try {
+            $service = Service::find($id);
+            $service->request_material = (bool)$requestMaterial;
+            $service->save();
+
+            $response->data = ObjResponse::CorrectResponse();
+            $response->data["message"] = 'peticion satisfactoria | servicio actualizado.';
+            $response->data["alert_text"] = (bool)$requestMaterial ? 'Se cargo material' : 'No requirio solicitar material';
         } catch (\Exception $ex) {
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
         }
