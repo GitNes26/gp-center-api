@@ -26,22 +26,32 @@ return new class extends Migration
         LEFT JOIN users as urej ON s.rejected_by=urej.id
         LEFT JOIN users as ucv ON s.confirmed_by=ucv.id
         WHERE s.active=1;
+        ");
 
+        DB::statement("
         CREATE OR REPLACE VIEW vw_services_opened AS
         SELECT * FROM vw_services WHERE status IN ('ABIERTA');
+        ");
 
+        DB::statement("
         CREATE OR REPLACE VIEW vw_services_approved AS
         SELECT * FROM vw_services WHERE status IN ('APROBADA')
         ORDER BY approved_at;
+        ");
 
+        DB::statement("
         CREATE OR REPLACE VIEW vw_services_in_reviewed AS
         SELECT * FROM vw_services WHERE status IN ('EN REVISIÓN','APROBADA POR CV')
         ORDER BY reviewed_at;
+        ");
 
+        DB::statement("
         CREATE OR REPLACE VIEW vw_services_rejected AS
         SELECT * FROM vw_services WHERE status IN ('RECHAZADA','RECHAZADA POR CV')
         ORDER BY rejected_at;
+        ");
 
+        DB::statement("
         CREATE OR REPLACE VIEW vw_services_closed AS
         SELECT * FROM vw_services WHERE status IN ('CERRADA')
         ORDER BY closed_at;
