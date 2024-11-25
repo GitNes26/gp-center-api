@@ -16,9 +16,10 @@ return new class extends Migration
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users', 'id');
+            $table->text("send_to")->comment("puedo poner, 'comprador','1','5'");
             $table->string('title');
             $table->text('message');
-            $table->boolean('read')->nullable();
+            $table->text('read_by')->nullable();
 
             $table->boolean('active')->default(true);
             $table->timestamps();
