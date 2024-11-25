@@ -25,7 +25,6 @@ class SSEController extends Controller
         $notifications = Notification::all();
 
 
-
         // Verificar si el archivo existe
         // if (file_exists($filePath)) {
         //     // Leer el contenido del archivo

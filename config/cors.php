@@ -15,22 +15,17 @@ return [
     |
     */
 
-    'paths' => ['*', 'sanctum/csrf-cookie'],  #Servidor 
+     
     // 'paths' => ['api/*', 'sanctum/csrf-cookie'], #LocalHost 
-
-    'allowed_methods' => ['*'],
-
     // 'allowed_origins' => ['*,*'], #Servidor
-    'allowed_origins' => ['https://gpcenter.gomezpalacio.gob.mx'], #'*'   #LocalHost
 
-    'allowed_origins_patterns' => [],
-
-    'allowed_headers' => ['*'],
-
-    'exposed_headers' => [],
-
+    'paths' => ['api/*', 'sanctum/csrf-cookie'], // Rutas permitidas
+    'allowed_methods' => ['*'],                 // Métodos HTTP permitidos
+    'allowed_origins' => ['https://gpcenter.gomezpalacio.gob.mx'], // Orígenes permitidos
+    'allowed_origins_patterns' => [],           // Patrones de orígenes permitidos
+    'allowed_headers' => ['*'],                 // Encabezados permitidos
+    'exposed_headers' => [],                    // Encabezados expuestos
     'max_age' => 0,
-
-    'supports_credentials' => false,
+    'supports_credentials' => false,            // Habilitar cookies en CORS
 
 ];
