@@ -6,6 +6,7 @@
 /public/config
 /storage/*.key
 /vendor
+/config/cors.php
 .env
 .env.backup
 .env.production
