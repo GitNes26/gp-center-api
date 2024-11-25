@@ -20,6 +20,7 @@ class SSEController extends Controller
         // Ruta al archivo donde se guarda el mensaje
         // $path = public_path("GPCenter/events/{$channel}_message.txt");
         // $filePath = storage_path($path);
+        
 
         $notifications = Notification::all();
 
