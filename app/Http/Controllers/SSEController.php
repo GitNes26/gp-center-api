@@ -13,9 +13,9 @@ class SSEController extends Controller
         header("Content-Type: text/event-stream");
         header("Cache-Control: no-cache");
         header("Connection: keep-alive");
-        header("Access-Control-Allow-Origin: *");  // Permitir cualquier origen
+        // header("Access-Control-Allow-Origin: *");  // Permitir cualquier origen
         header("Access-Control-Allow-Methods: GET");  // Solo permitimos el método GET para SSE
-        header("Access-Control-Allow-Headers: *");  // Permitir todos los encabezados
+        // header("Access-Control-Allow-Headers: *");  // Permitir todos los encabezados
 
         // Ruta al archivo donde se guarda el mensaje
         // $path = public_path("GPCenter/events/{$channel}_message.txt");
