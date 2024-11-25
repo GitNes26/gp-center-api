@@ -21,11 +21,11 @@ return [
     'allowed_methods' => ['*'],
 
     // 'allowed_origins' => ['*,*'], #Servidor
-    'allowed_origins' => ['*'],   #LocalHost
+    'allowed_origins' => ['https://gpcenter.gomezpalacio.gob.mx', 'localhost'], #'*'   #LocalHost
 
     'allowed_origins_patterns' => [],
 
-    'allowed_headers' => ['*,*'],
+    'allowed_headers' => ['*'],
 
     'exposed_headers' => [],
 
