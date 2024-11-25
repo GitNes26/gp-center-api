@@ -20,7 +20,7 @@ class SSEController extends Controller
         // Ruta al archivo donde se guarda el mensaje
         // $path = public_path("GPCenter/events/{$channel}_message.txt");
         // $filePath = storage_path($path);
-        
+
 
         $notifications = Notification::all();
 
@@ -31,11 +31,11 @@ class SSEController extends Controller
         //     // Leer el contenido del archivo
         //     $message = file_get_contents($filePath);
 
-            // Enviar el mensaje como un evento SSE
-            echo "event: message\n";
-            echo "data: " . json_encode(['message' => $notifications]) . "\n\n";
+        // Enviar el mensaje como un evento SSE
+        echo "event: message\n";
+        echo "data: " . json_encode(['message' => $notifications]) . "\n\n";
         // } else {
-            // Si el archivo no existe, enviar un mensaje predeterminado
+        // Si el archivo no existe, enviar un mensaje predeterminado
         //     echo "\n\n";
         // }
 
