@@ -30,8 +30,8 @@ use App\Http\Controllers\VoucherRequesterController;
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/signup', [UserController::class, 'signup']);
 
-Route::get('/sse/{channel}', [SSEController::class, 'listen']);  // Ruta para escuchar los eventos
-Route::post('/disparar', [SSEController::class, 'disparar']);
+// Route::get('/sse/{channel}', [SSEController::class, 'listen']);  // Ruta para escuchar los eventos
+// Route::post('/disparar', [SSEController::class, 'disparar']);
 Route::middleware('auth:sanctum')->group(function () {
 
     // Route::get('/getUser/{token}', [UserController::class,'getUser']); //cerrar sesión (eliminar los tokens creados)
