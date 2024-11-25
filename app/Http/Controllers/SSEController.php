@@ -25,7 +25,6 @@ class SSEController extends Controller
         $notifications = Notification::all();
 
 
-
         // Verificar si el archivo existe
         // if (file_exists($filePath)) {
         //     // Leer el contenido del archivo
@@ -45,7 +44,7 @@ class SSEController extends Controller
 
         // Opcional: Si deseas mantener la conexión abierta y enviar más mensajes más tarde,
         // puedes descomentar sleep() para simular un retraso en el servidor.
-        // sleep(1);  // Simular un retraso para la recepción del cliente.
+        sleep(30);  // Simular un retraso para la recepción del cliente.
     }
 
     public function disparar(Request $request)
