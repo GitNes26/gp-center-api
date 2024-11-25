@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Notification;
 use App\Models\Vehicle;
 use App\Models\ObjResponse;
 use App\Models\VehicleDetailView;
+use App\Models\VehicleStatus;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class VehicleController extends Controller
 {
@@ -300,12 +303,23 @@ class VehicleController extends Controller
             $vehicle->vehicle_status_id = $vehicle_status_id;
             $vehicle->save();
 
+            $vehicleStatus = VehicleStatus::find($vehicle_status_id);
+            // Log::info($vehicleStatus);
             $arrayData = array(
                 "user_id" => Auth::user()->id,
                 "title" => "CAMBIO DE ESTATUS",
-                "message" => "Se cambio el estatus a OTRO"
+                "message" => "Se cambio el estatus a "
             );
-            $this->createOrUpdateNotification($arrayData);
+            // Log::info($vehicleStatus->vehicle_status);
+
+
+            $notification = new Notification();
+            $notification->user_id = Auth::user()->id; #$arrayData->user_id;
+            $notification->title = "CAMBIO DE ESTATUS"; #$arrayData->title;
+            $notification->message = "Se cambio el estatus a $vehicleStatus->vehicle_status"; #$arrayData->message;
+            // var_dump($notification);
+            $notification->save();
+            // $this->createOrUpdateNotification($arrayData);
 
             return 1;
         } catch (\Exception $ex) {
