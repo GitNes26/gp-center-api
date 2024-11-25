@@ -71,32 +71,32 @@ class Controller extends BaseController
      * 
      * @return \Illuminate\Http\Response $response
      */
-    public function createOrUpdateNotification(array $arrayData)
-    {
-        // Request $request, Response $response, Int $id = null, $internal = false,
-        // $response->data = ObjResponse::DefaultResponse();
-        try {
-            Log::info("SASASASA createOrUpdateNotification");
-            $notification = Notification::find($id);
-            if (!$notification) $notification = new Notification();
+    // public function createOrUpdateNotification(array $arrayData)
+    // {
+    //     // Request $request, Response $response, Int $id = null, $internal = false,
+    //     // $response->data = ObjResponse::DefaultResponse();
+    //     try {
+    //         Log::info("SASASASA createOrUpdateNotification");
+    //         $notification = Notification::find($id);
+    //         if (!$notification) $notification = new Notification();
 
-            // $notification->fill($internal ? $arrayData->all() : $request->all());
-            $notification->user_id = 1; #$arrayData->user_id;
-            Log::info("SASASASA $notification");
-            $notification->title = "CAMBIO DE ESTATUS"; #$arrayData->title;
-            $notification->message = "Se cambio el estatus a OTRO"; #$arrayData->message;
-            var_dump($notification);
-            $notification->save();
+    //         // $notification->fill($internal ? $arrayData->all() : $request->all());
+    //         $notification->user_id = 1; #$arrayData->user_id;
+    //         Log::info("SASASASA $notification");
+    //         $notification->title = "CAMBIO DE ESTATUS"; #$arrayData->title;
+    //         $notification->message = "Se cambio el estatus a OTRO"; #$arrayData->message;
+    //         var_dump($notification);
+    //         $notification->save();
 
-            // $response->data = ObjResponse::CorrectResponse();
-            // $response->data["message"] = $id > 0 ? 'peticion satisfactoria | categoria editada.' : 'peticion satisfactoria | categoria registrada.';
-            // $response->data["alert_text"] = $id > 0 ? "Categoria editada" : "Categoria registrada";
-        } catch (\Exception $ex) {
-            error_log("Hubo un error al crear o actualizar el categoria ->" . $ex->getMessage());
-            // $response->data = ObjResponse::CatchResponse($ex->getMessage());
-        }
-        // return response()->json($response, $response->data["status_code"]);
-    }
+    //         // $response->data = ObjResponse::CorrectResponse();
+    //         // $response->data["message"] = $id > 0 ? 'peticion satisfactoria | categoria editada.' : 'peticion satisfactoria | categoria registrada.';
+    //         // $response->data["alert_text"] = $id > 0 ? "Categoria editada" : "Categoria registrada";
+    //     } catch (\Exception $ex) {
+    //         error_log("Hubo un error al crear o actualizar el categoria ->" . $ex->getMessage());
+    //         // $response->data = ObjResponse::CatchResponse($ex->getMessage());
+    //     }
+    //     // return response()->json($response, $response->data["status_code"]);
+    // }
 
     // /**
     //  * Mostrar categoria.
