@@ -11,6 +11,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
@@ -281,6 +282,7 @@ class UserController extends Controller
          if (!in_array((int)$role_id, [1, 2, 7])) $id = (int)$request->user_id > 0 ? (int)$request->user_id : null;
          else $id = (int)$request->id > 0 ? (int)$request->id : null;
 
+         if ($id < 1) $id = (int)$request->id;
          // if ((int)$role_id <= 2 || (int)$role_id >= 7) $id = (int)$request->id > 0 ? (int)$request->id : null;
          // else $id = (int)$request->user_id > 0 ? (int)$request->user_id : null;
          $minus = "usuario";
@@ -484,6 +486,7 @@ class UserController extends Controller
       $response->data = ObjResponse::DefaultResponse();
       try {
          $duplicate = $this->validateAvailableData($request->username, $request->email, $request->id);
+         var_dump($duplicate);
          if ($duplicate["result"] == true) {
             $response->data = $duplicate;
             return response()->json($response);
