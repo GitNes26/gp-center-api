@@ -13,7 +13,7 @@ class SSEController extends Controller
         header("Content-Type: text/event-stream");
         header("Cache-Control: no-cache");
         header("Connection: keep-alive");
-        // header("Access-Control-Allow-Origin: *");  // Permitir cualquier origen
+        header("Access-Control-Allow-Origin: *");  // Permitir cualquier origen
         header("Access-Control-Allow-Methods: GET");  // Solo permitimos el método GET para SSE
         // header("Access-Control-Allow-Headers: *");  // Permitir todos los encabezados
 
@@ -44,7 +44,7 @@ class SSEController extends Controller
 
         // Opcional: Si deseas mantener la conexión abierta y enviar más mensajes más tarde,
         // puedes descomentar sleep() para simular un retraso en el servidor.
-        sleep(30);  // Simular un retraso para la recepción del cliente.
+        // sleep(30);  // Simular un retraso para la recepción del cliente.
     }
 
     public function disparar(Request $request)
