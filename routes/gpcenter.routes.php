@@ -30,7 +30,7 @@ use App\Http\Controllers\VoucherRequesterController;
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/signup', [UserController::class, 'signup']);
 
-// Route::get('/sse/{channel}', [SSEController::class, 'listen']);  // Ruta para escuchar los eventos
+Route::get('/sse/{channel}', [SSEController::class, 'listen']);  // Ruta para escuchar los eventos
 // Route::post('/disparar', [SSEController::class, 'disparar']);
 Route::middleware('auth:sanctum')->group(function () {
 
