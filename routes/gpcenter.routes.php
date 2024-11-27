@@ -16,7 +16,7 @@ use App\Http\Controllers\LoanedVehicleController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ModelController;
 use App\Http\Controllers\ServiceController;
-use App\Http\Controllers\SSEController;
+// use App\Http\Controllers\SSEController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\VehicleMovementController;
 use App\Http\Controllers\VehiclePlatesController;
