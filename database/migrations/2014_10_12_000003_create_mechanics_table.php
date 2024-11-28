@@ -15,12 +15,16 @@ return new class extends Migration
     {
         Schema::create('mechanics', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users','id');
+            // $table->foreignId('user_id')->constrained('users','id');
+            $table->string('payroll_number')->nullable();
             $table->string('avatar')->nullable();
             $table->string('name');
             $table->string('paternal_last_name');
             $table->string('maternal_last_name');
-            $table->string('phone');
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            // $table->string('department');
+            $table->boolean('active')->default(true);
             $table->timestamps();
             $table->dateTime('deleted_at')->nullable();
         });
