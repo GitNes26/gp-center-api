@@ -24,7 +24,7 @@ class Mechanic extends Model
         'maternal_last_name',
         'email',
         'phone',
-        'active',
+        // 'active',
     ];
 
      /**

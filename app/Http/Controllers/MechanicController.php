@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Mechanic;
+use App\Models\MechanicView;
 use App\Models\ObjResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -20,7 +21,7 @@ class MechanicController extends Controller
         $response->data = ObjResponse::DefaultResponse();
         try {
             $auth = Auth::user();
-            $list = Mechanic::orderBy('id', 'desc');
+            $list = MechanicView::orderBy('id', 'desc');
             if ($auth->role_id > 1) $list = $list->where("active", true);
             $list = $list->get();
 
@@ -42,9 +43,9 @@ class MechanicController extends Controller
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
-            $list = Mechanic::where('active', true)
-                ->select('id as id', DB::raw("CONCAT(payroll_number,' - ',name,' ',paternal_last_name,' ',maternal_last_name) as label"))
-                ->orderBy('department', 'asc')->get();
+            $list = MechanicView::where('active', true)
+                ->select('id as id', DB::raw("CONCAT(payroll_number,' - ',full_name) as label"))
+                ->orderBy('mechanic', 'asc')->get();
 
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'peticion satisfactoria | lista de mecanicos.';
@@ -75,11 +76,16 @@ class MechanicController extends Controller
                 return response()->json($response);
             }
 
-            $department = Mechanic::find($id);
-            if (!$department) $department = new Mechanic();
+            $mechanic = Mechanic::find($id);
+            if (!$mechanic) $mechanic = new Mechanic();
 
-            $department->fill($request->all());
-            $department->save();
+            $mechanic->fill($request->all());
+            $mechanic->save();
+
+            $avatar = $this->ImageUp($request, "avatar", "GPCenter/mechanics", $mechanic->id, "avatar", $id > 0 ? false : true, "noAvatar");
+            if ($request->hasFile('avatar')) $mechanic->avatar = $avatar;
+            $mechanic->save();
+
 
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = $id > 0 ? 'peticion satisfactoria | mecánico editada.' : 'peticion satisfactoria | mecánico registrada.';
@@ -102,12 +108,12 @@ class MechanicController extends Controller
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
-            $department = Mechanic::find($id);
-            if ($internal) return $department;
+            $mechanic = MechanicView::find($id);
+            if ($internal) return $mechanic;
 
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'peticion satisfactoria | mecánico encontrado.';
-            $response->data["result"] = $department;
+            $response->data["result"] = $mechanic;
         } catch (\Exception $ex) {
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
         }
@@ -151,12 +157,12 @@ class MechanicController extends Controller
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
+            $description = $active === "reactivar" ? 'reactivado' : 'desactivado';
             Mechanic::where('id', $id)
                 ->update([
                     'active' => $active === "reactivar" ? 1 : 0
                 ]);
 
-            $description = $active == "0" ? 'desactivado' : 'reactivado';
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = "peticion satisfactoria | mecanico $description.";
             $response->data["alert_text"] = "Mecánico $description";
