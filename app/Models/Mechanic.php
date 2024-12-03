@@ -18,7 +18,7 @@ class Mechanic extends Model
         'id',
         // 'user_id',
         'payroll_number',
-        'avatar',
+        // 'avatar',
         'name',
         'paternal_last_name',
         'maternal_last_name',
