@@ -111,8 +111,8 @@ class DriverController extends Controller
 
          $driver->save();
 
-         $avatar = $this->ImageUp($request, "avatar", $driver->id, "avatar", true, "noAvatar");
-         $img_license = $this->ImageUp($request, "img_license", $driver->id, "licencia", true, "noLicense");
+         $avatar = $this->ImageUp($request, "avatar", "GPCenter/drivers", $driver->id, "avatar", true, "noAvatar");
+         $img_license = $this->ImageUp($request, "img_license", "GPCenter/drivers", $driver->id, "licencia", true, "noLicense");
          if ($request->hasFile('avatar')) $driver->avatar = $avatar;
          if ($request->hasFile('img_license')) $driver->img_license = $img_license;
 
@@ -166,18 +166,18 @@ class DriverController extends Controller
    }
 
 
-   private function ImageUp($request, $requestFile, $id, $posFix, $create, $nameFake)
-   {
-      $dir_path = "GPCenter/drivers";
-      $dir = public_path($dir_path);
-      $img_name = "";
-      if ($request->hasFile($requestFile)) {
-         $img_file = $request->file($requestFile);
-         $instance = new UserController();
-         $img_name = $instance->ImgUpload($img_file, $dir, $dir_path, "$id-$posFix");
-      } else {
-         if ($create) $img_name = "$dir_path/$nameFake.png";
-      }
-      return $img_name;
-   }
+   // private function ImageUp($request, $requestFile, $id, $posFix, $create, $nameFake)
+   // {
+   //    $dir_path = "GPCenter/drivers";
+   //    $dir = public_path($dir_path);
+   //    $img_name = "";
+   //    if ($request->hasFile($requestFile)) {
+   //       $img_file = $request->file($requestFile);
+   //       $instance = new UserController();
+   //       $img_name = $instance->ImgUpload($img_file, $dir, $dir_path, "$id-$posFix");
+   //    } else {
+   //       if ($create) $img_name = "$dir_path/$nameFake.png";
+   //    }
+   //    return $img_name;
+   // }
 }

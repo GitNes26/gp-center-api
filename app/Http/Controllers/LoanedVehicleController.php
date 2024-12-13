@@ -76,22 +76,42 @@ class LoanedVehicleController extends Controller
                 }
             }
 
-            #VERIFICAR QUE CONCIDAN EL TIPO DE LICENCIAS
             $vehicle = Vehicle::find($lastAssignedVehicle->vehicle_id);
             $driver = DriverView::where("user_id", $request->requesting_user_id)->first();
+
+            #VERIFICAR QUE SU LICENCIA NO ESTE VENCIDA
+            if ($driver->license_due_date != "") {
+
+                $today = new DateTime();
+                $license_due_date = new DateTime($driver->license_due_date);
+
+                if ($today > $license_due_date) {
+                    $response->data["message"] = 'peticion satisfactoria | licencia vencida.';
+                    $response->data["alert_icon"] = "warning";
+                    $response->data["alert_text"] = "Préstamo no completada - El conductor tiene la licencia vencida.";
+                    return response()->json($response, $response->data["status_code"]);
+                }
+            } else {
+                $response->data["message"] = 'peticion satisfactoria | licencia vencida.';
+                $response->data["alert_icon"] = "warning";
+                $response->data["alert_text"] = "Préstamo no completada - El conductor no tiene registrada la fecha de vencimiento de su licencia.";
+                return response()->json($response, $response->data["status_code"]);
+            }
+
+            #VERIFICAR QUE CONCIDAN EL TIPO DE LICENCIAS
             if ($vehicle->acceptable_license_type != "") {
                 $acceptable_license_type = explode(",", $vehicle->acceptable_license_type);
                 // return print_r($acceptable_license_type);
                 if (!in_array($driver->license_type, $acceptable_license_type)) {
                     $response->data["message"] = 'peticion satisfactoria | tipo de licencia no valida.';
                     $response->data["alert_icon"] = "warning";
-                    $response->data["alert_text"] = "Asignación no completada - Tipo de licencia no valida para esta unidad.";
+                    $response->data["alert_text"] = "Préstamo no completada - Tipo de licencia no valida para esta unidad.";
                     return response()->json($response, $response->data["status_code"]);
                 }
             } else {
                 $response->data["message"] = 'peticion satisfactoria | tipo de licencia no valida.';
                 $response->data["alert_icon"] = "warning";
-                $response->data["alert_text"] = "Asignación no completada - El vehículo no tiene tipos de licencias asignados.";
+                $response->data["alert_text"] = "Préstamo no completada - El vehículo no tiene tipos de licencias asignados.";
                 return response()->json($response, $response->data["status_code"]);
             }
 

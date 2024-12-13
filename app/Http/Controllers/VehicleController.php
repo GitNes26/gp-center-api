@@ -109,14 +109,14 @@ class VehicleController extends Controller
             ]);
 
 
-            $img_preview = $this->ImageUp($request, 'img_preview', $new_vehicle->id, 'preview', true, "sinAuto.png");
-            $img_right = $this->ImageUp($request, 'img_right', $new_vehicle->id, 'right', false, "noRight.png");
-            $img_back = $this->ImageUp($request, 'img_back', $new_vehicle->id, 'back', false, "noBack.png");
-            $img_left = $this->ImageUp($request, 'img_left', $new_vehicle->id, 'left', false, "noLeft.png");
-            $img_front = $this->ImageUp($request, 'img_front', $new_vehicle->id, 'front', false, "noFront.png");
-            $img_serial_number = $this->ImageUp($request, 'img_serial_number', $new_vehicle->id, 'serial_number', true, "sinNumeroSerie.png");
-            $img_circulation_card = $this->ImageUp($request, 'img_circulation_card', $new_vehicle->id, 'circulation_card', true, "sinTarjeta.png");
-            $img_insurance_policy = $this->ImageUp($request, 'img_insurance_policy', $new_vehicle->id, 'insurance_policy', true, "sinPoliza.png");
+            $img_preview = $this->ImageUp($request, 'img_preview', "GPCenter/vehicles", $new_vehicle->id, 'preview', true, "sinAuto.png");
+            $img_right = $this->ImageUp($request, 'img_right', "GPCenter/vehicles", $new_vehicle->id, 'right', false, "noRight.png");
+            $img_back = $this->ImageUp($request, 'img_back', "GPCenter/vehicles", $new_vehicle->id, 'back', false, "noBack.png");
+            $img_left = $this->ImageUp($request, 'img_left', "GPCenter/vehicles", $new_vehicle->id, 'left', false, "noLeft.png");
+            $img_front = $this->ImageUp($request, 'img_front', "GPCenter/vehicles", $new_vehicle->id, 'front', false, "noFront.png");
+            $img_serial_number = $this->ImageUp($request, 'img_serial_number', "GPCenter/vehicles", $new_vehicle->id, 'serial_number', true, "sinNumeroSerie.png");
+            $img_circulation_card = $this->ImageUp($request, 'img_circulation_card', "GPCenter/vehicles", $new_vehicle->id, 'circulation_card', true, "sinTarjeta.png");
+            $img_insurance_policy = $this->ImageUp($request, 'img_insurance_policy', "GPCenter/vehicles", $new_vehicle->id, 'insurance_policy', true, "sinPoliza.png");
 
             $vehicle = Vehicle::find($new_vehicle->id);
             if ($request->hasFile('img_preview') || $request->img_preview == "") $vehicle->img_preview = $img_preview;
@@ -212,14 +212,14 @@ class VehicleController extends Controller
                 return response()->json($response);
             }
 
-            $img_preview = $this->ImageUp($request, 'img_preview', $request->id, 'preview', false, "sinAuto.png");
-            $img_right = $this->ImageUp($request, 'img_right', $request->id, 'right', false, "noRight.png");
-            $img_back = $this->ImageUp($request, 'img_back', $request->id, 'back', false, "noBack.png");
-            $img_left = $this->ImageUp($request, 'img_left', $request->id, 'left', false, "noLeft.png");
-            $img_front = $this->ImageUp($request, 'img_front', $request->id, 'front', false, "noFront.png");
-            $img_serial_number = $this->ImageUp($request, 'img_serial_number', $request->id, 'serial_number', false, "sinNumeroSerie.png");
-            $img_circulation_card = $this->ImageUp($request, 'img_circulation_card', $request->id, 'circulation_card', false, "sinTarjeta.png");
-            $img_insurance_policy = $this->ImageUp($request, 'img_insurance_policy', $request->id, 'insurance_policy', false, "sinPoliza.png");
+            $img_preview = $this->ImageUp($request, 'img_preview', "GPCenter/vehicles", $request->id, 'preview', false, "sinAuto.png");
+            $img_right = $this->ImageUp($request, 'img_right', "GPCenter/vehicles", $request->id, 'right', false, "noRight.png");
+            $img_back = $this->ImageUp($request, 'img_back', "GPCenter/vehicles", $request->id, 'back', false, "noBack.png");
+            $img_left = $this->ImageUp($request, 'img_left', "GPCenter/vehicles", $request->id, 'left', false, "noLeft.png");
+            $img_front = $this->ImageUp($request, 'img_front', "GPCenter/vehicles", $request->id, 'front', false, "noFront.png");
+            $img_serial_number = $this->ImageUp($request, 'img_serial_number', "GPCenter/vehicles", $request->id, 'serial_number', false, "sinNumeroSerie.png");
+            $img_circulation_card = $this->ImageUp($request, 'img_circulation_card', "GPCenter/vehicles", $request->id, 'circulation_card', false, "sinTarjeta.png");
+            $img_insurance_policy = $this->ImageUp($request, 'img_insurance_policy', "GPCenter/vehicles", $request->id, 'insurance_policy', false, "sinPoliza.png");
 
             $vehicle = Vehicle::find($request->id);
 
@@ -346,20 +346,20 @@ class VehicleController extends Controller
     }
 
 
-    private function ImageUp($request, $requestFile, $id, $posFix, $create, $nameFake)
-    {
-        $dir_path = "GPCenter/vehicles";
-        $dir = public_path($dir_path);
-        $img_name = "";
-        if ($request->hasFile($requestFile)) {
-            $img_file = $request->file($requestFile);
-            $instance = new UserController();
-            $dir_path = "$dir_path/$id";
-            $dir = "$dir/$id";
-            $img_name = $instance->ImgUpload($img_file, $dir, $dir_path, "$id-$posFix");
-        } else {
-            if ($create) $img_name = "$dir_path/$nameFake";
-        }
-        return $img_name;
-    }
+    // private function ImageUp($request, $requestFile, $id, $posFix, $create, $nameFake)
+    // {
+    //     $dir_path = "GPCenter/vehicles";
+    //     $dir = public_path($dir_path);
+    //     $img_name = "";
+    //     if ($request->hasFile($requestFile)) {
+    //         $img_file = $request->file($requestFile);
+    //         $instance = new UserController();
+    //         $dir_path = "$dir_path/$id";
+    //         $dir = "$dir/$id";
+    //         $img_name = $instance->ImgUpload($img_file, $dir, $dir_path, "$id-$posFix");
+    //     } else {
+    //         if ($create) $img_name = "$dir_path/$nameFake";
+    //     }
+    //     return $img_name;
+    // }
 }
