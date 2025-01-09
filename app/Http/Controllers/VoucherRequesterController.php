@@ -90,9 +90,9 @@ class VoucherRequesterController extends Controller
 
          $voucher_requester->save();
 
-         $avatar = $this->ImageUp($request, "avatar", $voucher_requester->id, "avatar", true, "noAvatar");
-         $img_firm = $this->ImageUp($request, "img_firm", $voucher_requester->id, "firm", true, "noFirm");
-         $img_stamp = $this->ImageUp($request, "img_stamp", $voucher_requester->id, "stamp", true, "noStamp");
+         $avatar = $this->ImageUp($request, "avatar", "GPCenter/voucherRequesters", $voucher_requester->id, "avatar", true, "noAvatar");
+         $img_firm = $this->ImageUp($request, "img_firm", "GPCenter/voucherRequesters", $voucher_requester->id, "firm", true, "noFirm");
+         $img_stamp = $this->ImageUp($request, "img_stamp", "GPCenter/voucherRequesters", $voucher_requester->id, "stamp", true, "noStamp");
          if ($request->hasFile('avatar')) $voucher_requester->avatar = $avatar;
          if ($request->hasFile('img_firm')) $voucher_requester->img_firm = $img_firm;
          if ($request->hasFile('img_stamp')) $voucher_requester->img_stamp = $img_stamp;
@@ -148,18 +148,18 @@ class VoucherRequesterController extends Controller
    }
 
 
-   private function ImageUp($request, $requestFile, $id, $poxFix, $create, $nameFake)
-   {
-      $dir_path = "GPCenter/voucherRequesters";
-      $dir = public_path($dir_path);
-      $img_name = "";
-      if ($request->hasFile($requestFile)) {
-         $img_file = $request->file($requestFile);
-         $instance = new UserController();
-         $img_name = $instance->ImgUpload($img_file, $dir, $dir_path, "$id-$poxFix");
-      } else {
-         if ($create) $img_name = "$dir_path/$nameFake.png";
-      }
-      return $img_name;
-   }
+   // private function ImageUp($request, $requestFile, $id, $poxFix, $create, $nameFake)
+   // {
+   //    $dir_path = "GPCenter/voucherRequesters";
+   //    $dir = public_path($dir_path);
+   //    $img_name = "";
+   //    if ($request->hasFile($requestFile)) {
+   //       $img_file = $request->file($requestFile);
+   //       $instance = new UserController();
+   //       $img_name = $instance->ImgUpload($img_file, $dir, $dir_path, "$id-$poxFix");
+   //    } else {
+   //       if ($create) $img_name = "$dir_path/$nameFake.png";
+   //    }
+   //    return $img_name;
+   // }
 }

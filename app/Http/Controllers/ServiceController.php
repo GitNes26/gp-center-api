@@ -78,6 +78,7 @@ class ServiceController extends Controller
         $response->data = ObjResponse::DefaultResponse();
         try {
             $folio = $this->getLastFolio();
+            $userAuth = Auth::user();
 
             $new_service = Service::create([
                 'folio' => (int)$folio + 1,
@@ -85,8 +86,8 @@ class ServiceController extends Controller
                 'contact_name' => $request->contact_name,
                 'contact_phone' => $request->contact_phone,
                 'pre_diagnosis' => $request->pre_diagnosis,
-                'requested_by' => $request->requested_by,
-                'requested_at' => $request->requested_at,
+                'requested_by' => $userAuth->id, #$request->requested_by,
+                'requested_at' => now()->toDateTimeString(), #new Date(), #$request->requested_at,
                 // 'mechanic_id' => $request->mechanic_id,
                 // 'final_diagnosis' => $request->final_diagnosis,
                 // 'evidence_img_path' => $request->evidence_img_path,

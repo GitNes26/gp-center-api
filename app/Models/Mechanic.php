@@ -16,13 +16,15 @@ class Mechanic extends Model
      */
     protected $fillable = [
         'id',
-        'user_id',
-        'avatar',
+        // 'user_id',
+        'payroll_number',
+        // 'avatar',
         'name',
         'paternal_last_name',
         'maternal_last_name',
+        'email',
         'phone',
-        'payroll_number',
+        // 'active',
     ];
 
      /**

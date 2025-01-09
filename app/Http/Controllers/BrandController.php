@@ -75,7 +75,7 @@ class BrandController extends Controller
                 'brand' => $request->brand,
             ]);
 
-            $img_path = $this->ImageUp($request, "img_path", $new_brand->id, true);
+            $img_path = $this->ImageUp($request, "img_path", "GPCenter/brands", $new_brand->id, null, true, "noImage");
 
             $brand = Brand::find($new_brand->id);
             if ($request->hasFile('img_path') || $request->img_path == "") $brand->img_path = $img_path;
@@ -130,7 +130,7 @@ class BrandController extends Controller
                 return response()->json($response);
             }
 
-            $img_path = $this->ImageUp($request, "img_path", $request->id, false);
+            $img_path = $this->ImageUp($request, "img_path", "GPCenter/brands", $request->id, null, false, "noImage");
 
             $brand = Brand::find($request->id);
             $brand->brand = $request->brand;
@@ -189,18 +189,18 @@ class BrandController extends Controller
         return array("result" => false);
     }
 
-    private function ImageUp($request, $requestFile, $id, $create)
-    {
-        $dir_path = "GPCenter/brands";
-        $dir = public_path($dir_path);
-        $img_name = "";
-        if ($request->hasFile($requestFile)) {
-            $img_file = $request->file($requestFile);
-            $instance = new UserController();
-            $img_name = $instance->ImgUpload($img_file, $dir, $dir_path, "$id");
-        } else {
-            if ($create) $img_name = "$dir_path/noBrand.png";
-        }
-        return $img_name;
-    }
+    // private function ImageUp($request, $requestFile, $id, $create)
+    // {
+    //     $dir_path = "GPCenter/brands";
+    //     $dir = public_path($dir_path);
+    //     $img_name = "";
+    //     if ($request->hasFile($requestFile)) {
+    //         $img_file = $request->file($requestFile);
+    //         $instance = new UserController();
+    //         $img_name = $instance->ImgUpload($img_file, $dir, $dir_path, "$id");
+    //     } else {
+    //         if ($create) $img_name = "$dir_path/noBrand.png";
+    //     }
+    //     return $img_name;
+    // }
 }

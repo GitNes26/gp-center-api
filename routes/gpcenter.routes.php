@@ -13,6 +13,7 @@ use App\Http\Controllers\DeliveredVehicleController;
 use App\Http\Controllers\DirectorController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\LoanedVehicleController;
+use App\Http\Controllers\MechanicController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ModelController;
 use App\Http\Controllers\ServiceController;
@@ -100,6 +101,15 @@ Route::middleware('auth:sanctum')->group(function () {
         // Route::post('/drivers/destroy/{id}', 'destroy');
     });
 
+    Route::prefix("mechanics")->group(function () {
+        Route::get("/", [MechanicController::class, 'index']);
+        Route::get("/selectIndex", [MechanicController::class, 'selectIndex']);
+        Route::post("/createOrUpdate/{id?}", [MechanicController::class, 'createOrUpdate']);
+        Route::get("/id/{id}", [MechanicController::class, 'show']);
+        Route::get("/delete/{id}", [MechanicController::class, 'delete']);
+        Route::get("/disEnable/{id}/{active}", [MechanicController::class, 'disEnable']);
+        Route::get("/deleteMultiple", [MechanicController::class, 'deleteMultiple']);
+    });
 
     Route::controller(DepartmentController::class)->group(function () {
         Route::get('/departments', 'index');
