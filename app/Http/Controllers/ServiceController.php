@@ -36,7 +36,7 @@ class ServiceController extends Controller
             elseif (in_array($status, array("EN REVISIÓN"))) $ViewService = new ServiceInReviewedView();
             elseif ($status == "CERRADA") $ViewService = new ServiceClosedView();
 
-            $list = $userAuth->role_id == 3 ? $ViewService::where('user_id', $userAuth->id)->get() : $ViewService::all();
+            $list = $userAuth->role_id == 3 ? $ViewService::where('requested_by', $userAuth->id)->get() : $ViewService::all();
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'Peticion satisfactoria | Lista de servicios.';
             $response->data["result"] = $list;
