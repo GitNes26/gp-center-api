@@ -24,13 +24,21 @@ class VoucherController extends Controller
         try {
             $auth = Auth::user();
             $values = explode(',', $status);
+            $all = false;
 
             if (in_array($auth->role_id, [8])) {
-                if (!$status) $list = VoucherView::where("requested_by", $auth->id)->where('requester_external', null)->whereYear('created_at', $year)->orderBy('id', 'desc')->get();
-                else $list = VoucherView::whereIn('voucher_status', $values)->where("requested_by", $auth->id)->where('requester_external', null)->whereYear('created_at', $year)->orderBy('id', 'desc')->get();
+                if (!$status) $list = VoucherView::where("requested_by", $auth->id)->where('requester_external', null);
+                else $list = VoucherView::whereIn('voucher_status', $values)->where("requested_by", $auth->id)->where('requester_external', null);
             } else {
-                if (!$status) $list = VoucherView::whereYear('created_at', $year)->orderBy('id', 'desc')->get();
-                else $list = VoucherView::whereIn('voucher_status', $values)->whereYear('created_at', $year)->orderBy('id', 'desc')->get();
+                if (!$status) {
+                    $list = VoucherView::orderBy('id', 'desc')->get();
+                    $all = true;
+                } else $list = VoucherView::whereIn('voucher_status', $values);
+            }
+
+            if ($year && !$all) {
+                $list = $list->whereYear('created_at', $year);
+                $list = $list->orderBy('id', 'desc')->get();
             }
 
             if ((bool)$internal) return $list;
