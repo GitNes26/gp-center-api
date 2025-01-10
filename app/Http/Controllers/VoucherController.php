@@ -18,7 +18,7 @@ class VoucherController extends Controller
      *
      * @return \Illuminate\Http\Response $response
      */
-    public function index(Response $response, String $status = null, Bool $internal = false)
+    public function index(Response $response, String $year = null, String $status = null, Bool $internal = false)
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
@@ -26,11 +26,11 @@ class VoucherController extends Controller
             $values = explode(',', $status);
 
             if (in_array($auth->role_id, [8])) {
-                if (!$status) $list = VoucherView::where("requested_by", $auth->id)->where('requester_external', null)->orderBy('id', 'desc')->get();
-                else $list = VoucherView::whereIn('voucher_status', $values)->where("requested_by", $auth->id)->where('requester_external', null)->orderBy('id', 'desc')->get();
+                if (!$status) $list = VoucherView::where("requested_by", $auth->id)->where('requester_external', null)->whereYear('created_at', $year)->orderBy('id', 'desc')->get();
+                else $list = VoucherView::whereIn('voucher_status', $values)->where("requested_by", $auth->id)->where('requester_external', null)->whereYear('created_at', $year)->orderBy('id', 'desc')->get();
             } else {
-                if (!$status) $list = VoucherView::orderBy('id', 'desc')->get();
-                else $list = VoucherView::whereIn('voucher_status', $values)->orderBy('id', 'desc')->get();
+                if (!$status) $list = VoucherView::whereYear('created_at', $year)->orderBy('id', 'desc')->get();
+                else $list = VoucherView::whereIn('voucher_status', $values)->whereYear('created_at', $year)->orderBy('id', 'desc')->get();
             }
 
             if ((bool)$internal) return $list;
