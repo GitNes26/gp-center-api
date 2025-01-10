@@ -22,12 +22,11 @@ class VoucherRequesterController extends Controller
     *
     * @return \Illuminate\Http\Response $response
     */
-   public function index(Response $response, Int $year = null)
+   public function index(Response $response)
    {
       $response->data = ObjResponse::DefaultResponse();
       try {
-         echo "loiss";
-         $list = $year == null ? VoucherRequesterView::all() : VoucherRequesterView::whereYear($year);
+         $list = VoucherRequesterView::all();
 
          $response->data = ObjResponse::CorrectResponse();
          $response->data["message"] = 'peticion satisfactoria | lista de solicitadores de vales.';
