@@ -18,7 +18,7 @@ class VoucherController extends Controller
      *
      * @return \Illuminate\Http\Response $response
      */
-    public function index(Response $response, String $year = null, String $status = null, Bool $internal = false)
+    public function index(Response $response, String $status = null, Bool $internal = false)
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
