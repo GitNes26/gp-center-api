@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class LoanedVehicleController extends Controller
 {
@@ -173,6 +174,7 @@ class LoanedVehicleController extends Controller
             $response->data["message"] = $id > 0 ? 'peticion satisfactoria | prestamo de vehiculo editada.' : 'peticion satisfactoria | prestamo de vehiculo registrada.';
             $response->data["alert_text"] = $id > 0 ? "Prestamo de vehículo editado" : "Prestamo de vehículo registrado";
         } catch (\Exception $ex) {
+            Log::info("Hubo un error al crear o actualizar el prestamo del vehículo ->" . $ex->getMessage());
             error_log("Hubo un error al crear o actualizar el prestamo del vehículo ->" . $ex->getMessage());
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
         }
