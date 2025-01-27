@@ -29,6 +29,7 @@ class ServiceController extends Controller
         try {
             $userAuth = Auth::user();
 
+            echo "id: $userAuth->id";
             $ViewService = new ServiceView();
             if ($status == "ABIERTA") $ViewService = new ServiceOpenedView();
             elseif ($status == "APROBADA") $ViewService = new ServiceApprovedView();
@@ -79,6 +80,8 @@ class ServiceController extends Controller
         try {
             $folio = $this->getLastFolio();
             $userAuth = Auth::user();
+
+            echo "EL userAuth: $userAuth->id";
 
             $new_service = Service::create([
                 'folio' => (int)$folio + 1,
