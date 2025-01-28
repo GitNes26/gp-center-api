@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('vehicle_movements_log', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users', 'id')->comment("usuario que realizo el movimiento");
-            $table->foreignId('old_vehicle_status_id')->constrained('vehicle_status', 'id');
             $table->foreignId('vehicle_id')->constrained('vehicles', 'id');
+            $table->foreignId('vehicle_status_id')->constrained('vehicle_status', 'id');
             $table->foreignId('active_user_id')->constrained('users', 'id')->comment("usuario responsable");
             $table->decimal('km', 11, 2);
             $table->text('comments')->nullable();

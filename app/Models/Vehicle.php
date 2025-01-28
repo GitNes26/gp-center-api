@@ -30,6 +30,7 @@ class Vehicle extends Model
         'description',
         'acceptable_license_type',
         'vehicle_status_id',
+        // 'km',
         'img_preview',
         'serial_number',
         'img_serial_number',

@@ -22,7 +22,7 @@ class VehicleMovementLog extends Model
     protected $fillable = [
         'id',
         'user_id',
-        'old_vehicle_status_id',
+        'vehicle_status_id',
         'vehicle_id',
         'active_user_id',
         'km',
