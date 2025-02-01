@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class VehicleMovementLogController extends Controller
 {
@@ -49,8 +50,12 @@ class VehicleMovementLogController extends Controller
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
-            $result = DB::select('CALL sp_vehicle_history(?)', [$vehicle_id]);
-            if ($internal) return $result;
+            $auth = Auth::user();
+            $list = VehicleMovementLog::where('vehicle_id', $vehicle_id)->orderBy('id', 'desc');
+            if ($auth->role_id > 1) $list = $list->where("active", true);
+            $list = $list->get();
+            // $result = DB::select('CALL sp_vehicle_history(?)', [$vehicle_id]);
+            // if ($internal) return $result;
 
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'peticion satisfactoria | historial del vehículo encontrado.';
@@ -61,11 +66,15 @@ class VehicleMovementLogController extends Controller
         return response()->json($response, $response->data["status_code"]);
     }
 
-    public function validates1()
+    public function validationsToAssign(Int $vehicle_id, Int $user_id)
     {
+        $response->data = ObjResponse::DefaultResponse();
         try {
             #VERIFICAR QUE EL VEHICULO NO ESTE ASIGNADO
-            $lastMovement = $this->getLastMovementByVehicle($request->vehicle_id);
+            Log::info("validationsToAssign ~ vehicle_id: $vehicle_id, user_id: $user_id");
+            $lastMovement = $this->getLastMovementByVehicle($vehicle_id);
+            Log::info("validationsToAssign ~ lastMovement: " . json_encode($lastMovement));
+
             if ($lastMovement) {
                 if (in_array($lastMovement->vehicle_status_id, [1, 2])) {
                     $response->data["message"] = 'peticion satisfactoria | asignacion no concluida.';
@@ -75,19 +84,23 @@ class VehicleMovementLogController extends Controller
                     // return "no hay asignaciones a este vehiculo";
                 }
             }
-
             $vehicle = Vehicle::find($request->vehicle_id);
-            $director = DirectorView::where("user_id", $request->user_id)->first();
+            $director = DirectorView::where("user_id", $user_id)->first();
+            #VERIFICAR QUE SU LICENCIA NO ESTE VENCIDA
+            if (!$this->validateLicenseActive($response, $director)) return;
+            #VERIFICAR QUE CONCIDAN EL TIPO DE LICENCIAS
+            if (!$this->validateLicenseType($response, $vehicle, $director)) return;
+            #VERIFICAR QUE SE ENCUENTRE EN EL STATUS CORRECTO
+            if (!$this->validateCorrectStatus($response, $vehicle)) return;
         } catch (Exception $ex) {
-            error_log("Hubo un error al validar el movimiento ->" . $ex->getMessage());
+            error_log("validationsToAssign ~ Hubo un error al validar el movimiento ->" . $ex->getMessage());
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
         }
-        return response()->json($response, $response->data["status_code"]);
+        return $response;
     }
-    public function validateLicenseActive()
+    private function validateLicenseActive(Response $response, $director)
     {
         try {
-            #VERIFICAR QUE SU LICENCIA NO ESTE VENCIDA
             if ($director->license_due_date != "") {
 
                 $today = new DateTime();
@@ -106,15 +119,14 @@ class VehicleMovementLogController extends Controller
                 return response()->json($response, $response->data["status_code"]);
             }
         } catch (Exception $ex) {
-            error_log("Hubo un error al validar el movimiento ->" . $ex->getMessage());
+            error_log("validateLicenseActive ~ Hubo un error al validar el movimiento ->" . $ex->getMessage());
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
         }
-        return response()->json($response, $response->data["status_code"]);
+        return true;
     }
-    public function validateLicenseType()
+    private function validateLicenseType(Response $response, $vehicle, $director)
     {
         try {
-            #VERIFICAR QUE CONCIDAN EL TIPO DE LICENCIAS
             if ($vehicle->acceptable_license_type != "") {
                 $acceptable_license_type = explode(",", $vehicle->acceptable_license_type);
                 // return $director;
@@ -134,13 +146,12 @@ class VehicleMovementLogController extends Controller
             error_log("Hubo un error al validar el movimiento ->" . $ex->getMessage());
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
         }
-        return response()->json($response, $response->data["status_code"]);
+        return true;
     }
-    public function validateCorrectStatus()
+    private function validateCorrectStatus(Response $response, $vehicle)
     {
         try {
-            #VERIFICAR QUE SE ENCUENTRE EN EL STATUS CORRECTO
-            $response->data = ObjResponse::CorrectResponse();
+            // $response->data = ObjResponse::CorrectResponse();
             if ($vehicle->vehicle_status_id === 3) {
                 $response->data["message"] = 'peticion satisfactoria | vehiculo ya asignado.';
                 $response->data["alert_icon"] = "warning";
@@ -157,7 +168,7 @@ class VehicleMovementLogController extends Controller
             error_log("Hubo un error al validar el movimiento ->" . $ex->getMessage());
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
         }
-        return response()->json($response, $response->data["status_code"]);
+        return true;
     }
 
 
@@ -167,17 +178,19 @@ class VehicleMovementLogController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response $response
      */
-    public function registerMovement(Request $request, int $vehicle_id, int $vehicle_status_id)
+    public function registerMovement(Request $request, int $vehicle_status_id, int $vehicle_id)
     {
         try {
+            $userAuth = Auth::user();
 
             #VALIDACIONES
-
+            $this->validationsToAssign($vehicle_id, $userAuth->id);
             #ACTUALIZAR STATUS DEL VEHICULO
             $vehicleInstance = new VehicleController();
             $vehicleInstance->updateStatus($vehicle_id, $vehicle_status_id); //Asignado
 
-            $userAuth = Auth::user();
+            return response()->json($response, $response->data["status_code"]);
+
             // $vehicle = Vehicle::find($vehicle_id);
             $status = VehicleStatus::find($vehicle_status_id);
 
