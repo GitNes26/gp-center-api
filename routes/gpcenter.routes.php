@@ -175,7 +175,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/vehicleMovements/history/{vehicle_id}', 'history');
     });
     Route::controller(VehicleMovementLogController::class)->group(function () {
-        Route::get('/vehicleMovementsLog/{vehicle_id}', 'index');
+        Route::get('/vehicleMovementsLog', 'index');
         Route::get('/vehicleMovementsLog/{vehicle_id}', 'history');
         Route::post('/vehicleMovementsLog/{vehicle_status_id}/{vehicle_id}', 'registerMovement');
         // Route::get('/vehicleMovements/history/{vehicle_id}', 'history');

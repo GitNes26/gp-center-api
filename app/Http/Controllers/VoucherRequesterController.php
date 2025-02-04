@@ -101,8 +101,8 @@ class VoucherRequesterController extends Controller
 
          return $voucher_requester;
       } catch (\Exception $ex) {
-         error_log("Hubo un error al crear o actualizar el solicitador de vales ->" . $ex->getMessage());
-         echo "Hubo un error al crear o actualizar el solicitador de vales ->" . $ex->getMessage();
+         error_log("Hubo un error al crear o actualizar el solicitador de vales -> " . $ex->getMessage());
+         echo "Hubo un error al crear o actualizar el solicitador de vales -> " . $ex->getMessage();
       }
    }
 

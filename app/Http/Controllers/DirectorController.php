@@ -108,8 +108,8 @@ class DirectorController extends Controller
 
          return $director;
       } catch (\Exception $ex) {
-         error_log("Hubo un error al crear o actualizar el director ->" . $ex->getMessage());
-         echo "Hubo un error al crear o actualizar el director ->" . $ex->getMessage();
+         error_log("Hubo un error al crear o actualizar el director -> " . $ex->getMessage());
+         echo "Hubo un error al crear o actualizar el director -> " . $ex->getMessage();
       }
    }
 

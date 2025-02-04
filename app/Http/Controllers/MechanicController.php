@@ -91,7 +91,7 @@ class MechanicController extends Controller
             $response->data["message"] = $id > 0 ? 'peticion satisfactoria | mecánico editada.' : 'peticion satisfactoria | mecánico registrada.';
             $response->data["alert_text"] = $id > 0 ? "Mecánico editado" : "Mecánico registrado";
         } catch (\Exception $ex) {
-            error_log("Hubo un error al crear o actualizar el mecánico ->" . $ex->getMessage());
+            error_log("Hubo un error al crear o actualizar el mecánico -> " . $ex->getMessage());
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
         }
         return response()->json($response, $response->data["status_code"]);

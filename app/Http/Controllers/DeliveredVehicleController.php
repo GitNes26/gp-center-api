@@ -124,7 +124,7 @@ class DeliveredVehicleController extends Controller
             $vehicleMovementInstance = new VehicleMovementController();
             $r = $vehicleMovementInstance->registerMovement($request->vehicle_id, (bool)false, $deliveredVehicle->getTable(), $deliveredVehicle->id);
             // var_dump($r);
-            
+
             #ACTUALIZAR STATUS DEL VEHICULO
             $vehicleInstance = new VehicleController();
             $vehicleInstance->updateStatus($vehicle->id, 2); //DISPONIBLE
@@ -139,7 +139,7 @@ class DeliveredVehicleController extends Controller
             $response->data["message"] = $id > 0 ? 'peticion satisfactoria | devolucion de unidad de vehiculo editada.' : 'peticion satisfactoria | devolucion de unidad de vehiculo registrada.';
             $response->data["alert_text"] = $id > 0 ? "Devolución de unidad editado" : "Devolución de unidad registrado";
         } catch (\Exception $ex) {
-            error_log("Hubo un error al crear o actualizar el devolucion de unidad del vehículo ->" . $ex->getMessage());
+            error_log("Hubo un error al crear o actualizar el devolucion de unidad del vehículo -> " . $ex->getMessage());
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
         }
         return response()->json($response, $response->data["status_code"]);
