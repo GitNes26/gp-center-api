@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignId('active_user_id')->constrained('users', 'id')->comment("usuario responsable");
             $table->decimal('km', 11, 2);
             $table->text('comments')->nullable();
+            $table->boolean('valid')->nullable()->comment("Para indicar que a pesar de tener otros movimientos la ASIGNACIÓN principal sigue activa/vigente");
             $table->string("table_assoc")->nullable()->comment("nombre de la tabla asociada por el movimiento de status para ligar información");
             $table->integer("table_assoc_register_id")->nullable()->comment("ID del registro de la tabla asociada para obtener datos relacionados");
 

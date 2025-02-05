@@ -27,6 +27,7 @@ class VehicleMovementLog extends Model
         'active_user_id',
         'km',
         'comments',
+        'valid',
         "table_assoc",
         "table_assoc_register_id",
         'active',
