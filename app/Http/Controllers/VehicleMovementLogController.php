@@ -70,7 +70,7 @@ class VehicleMovementLogController extends Controller
     }
 
 
-    public function validationsToAssign(Response $response, Int $vehicle_id, Int $user_id)
+    public function validationsToAssign(Response $response, Int $vehicle_id, Int $user_id, string $movement)
     {
         // $response->data = ObjResponse::DefaultResponse();
         try {
@@ -94,7 +94,7 @@ class VehicleMovementLogController extends Controller
             }
 
             #VERIFICAR QUE SE ENCUENTRE EN EL STATUS CORRECTO
-            $responseValidate = $this->validateCorrectStatus($response, $vehicle, 3);
+            $responseValidate = $this->validateCorrectStatus($response, $vehicle, $movement);
             if (!is_bool($response)) return $responseValidate;
             #VERIFICAR LICENCIA
             $responseValidate = $this->validateLicense($response, $vehicle, $director);
@@ -107,7 +107,7 @@ class VehicleMovementLogController extends Controller
         }
         return true;
     }
-    public function validationsToLoaned(Response $response, Int $vehicle_id, Int $user_id)
+    public function validationsToLoaned(Response $response, Int $vehicle_id, Int $user_id, string $movement)
     {
         try {
             #VERIFICAR QUE EL VEHICULO ESTE ASIGNADO
@@ -142,7 +142,7 @@ class VehicleMovementLogController extends Controller
             }
 
             #VERIFICAR QUE SE ENCUENTRE EN EL STATUS CORRECTO
-            $responseValidate = $this->validateCorrectStatus($response, $vehicle, 4);
+            $responseValidate = $this->validateCorrectStatus($response, $vehicle, $movement);
             if (!is_bool($response)) return $responseValidate;
             #VERIFICAR LICENCIA
             $responseValidate = $this->validateLicense($response, $vehicle, $driver);
@@ -155,7 +155,7 @@ class VehicleMovementLogController extends Controller
         }
         return true;
     }
-    public function validationsToReturnLoaned(Response $response, Int $vehicle_id, $returnLoan)
+    public function validationsToReturnLoaned(Response $response, Int $vehicle_id, string $movement)
     {
         try {
             #VERIFICAR QUE EL VEHICULO ESTE ASIGNADO
@@ -212,8 +212,7 @@ class VehicleMovementLogController extends Controller
             $responseValidate = $this->validateCorrectStatus(
                 $response,
                 $vehicle,
-                3,
-                $returnLoan
+                $movement
             );
             if (!is_bool($response)) return $responseValidate;
             // #VERIFICAR LICENCIA
@@ -227,12 +226,12 @@ class VehicleMovementLogController extends Controller
         }
         return true;
     }
-    private function validateCorrectStatus(Response $response, $vehicle, int $vehicle_status_movement_id, $returnLoan = false)
+    private function validateCorrectStatus(Response $response, $vehicle, string $movement)
     {
         try {
-            // Log::info("validateCorrectStatus ~\nel vehicle->vehicle_status_id: " . $vehicle->vehicle_status_id . " \nel vehicle_status_movement_id: " . $vehicle_status_movement_id);
+            // Log::info("validateCorrectStatus ~\nel vehicle->vehicle_status_id: " . $vehicle->vehicle_status_id . " \nel movement: " . $movement);
             #SI ESTOY REALIZANDO UNA ASIGNACIÓN, VALIDAR...
-            if ($vehicle_status_movement_id === 3) {
+            if ($movement === "Assign") {
                 if (in_array($vehicle->vehicle_status_id, [1, 2])) {
                     return true;
                 } elseif ($vehicle->vehicle_status_id === 3) {
@@ -240,7 +239,6 @@ class VehicleMovementLogController extends Controller
                     $response->data["alert_icon"] = "warning";
                     $response->data["alert_text"] = "Asignación no completada - El vehículo ya esta asignado";
                 } elseif ($vehicle->vehicle_status_id === 4) {
-                    if ($returnLoan) return true;
                     $response->data["message"] = 'peticion satisfactoria | vehiculo ya asignado.';
                     $response->data["alert_icon"] = "warning";
                     $response->data["alert_text"] = "Asignación no completada - El vehículo ya esta asignado y se encuentra prestado";
@@ -253,7 +251,7 @@ class VehicleMovementLogController extends Controller
                 return $response;
             }
             #SI ESTOY REALIZANDO UN PRESTAMO, VALIDAR...
-            elseif ($vehicle_status_movement_id === 4) {
+            elseif ($movement === "Loan") {
                 if (in_array($vehicle->vehicle_status_id, [3])) {
                     return true;
                 } elseif (in_array($vehicle->vehicle_status_id, [1, 2])) {
@@ -269,6 +267,27 @@ class VehicleMovementLogController extends Controller
                     $response->data["alert_icon"] = "warning";
                     $response->data["alert_text"] = "Prestamo no completado - El vehículo se encuentra en el taller";
                 }
+                return $response;
+            }
+            #SI ESTOY REALIZANDO UNA ASIGNACIÓN, VALIDAR...
+            if ($movement === "ReturnLoan") {
+                if (in_array($vehicle->vehicle_status_id, [4])) {
+                    return true;
+                } elseif (in_array($vehicle->vehicle_status_id, [1, 2])) {
+                    $response->data["message"] = 'peticion satisfactoria | vehiculo esta asignado pero no prestado.';
+                    $response->data["alert_icon"] = "warning";
+                    $response->data["alert_text"] = "Devolución de prestamo no completada - El vehículo ya esta asignado";
+                } elseif ($vehicle->vehicle_status_id === 3) {
+                    if ($returnLoan) return true;
+                    $response->data["message"] = 'peticion satisfactoria | vehiculo esta asignado pero no prestado.';
+                    $response->data["alert_icon"] = "warning";
+                    $response->data["alert_text"] = "Devolución de prestamo no completada - El vehículo esta asignado.";
+                } elseif (in_array($vehicle->vehicle_status_id, [5, 7, 8])) {
+                    $response->data["message"] = 'peticion satisfactoria | vehiculo en taller.';
+                    $response->data["alert_icon"] = "warning";
+                    $response->data["alert_text"] = "Devolución de prestamo no completada - El vehículo se encuentra en el taller";
+                }
+                // Log::info("validateCorrectStatus ~ response: " . json_encode($response));
                 return $response;
             }
         } catch (Exception $ex) {
@@ -333,28 +352,33 @@ class VehicleMovementLogController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response $response
      */
-    public function registerMovement(Request $request, Response $response, int $vehicle_status_id, int $vehicle_id, $returnLoan = false, $returnAssign = false)
+    public function registerMovement(Request $request, Response $response, int $vehicle_status_id, int $vehicle_id, String $movement)
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
             $userAuth = Auth::user();
             DB::beginTransaction();
 
-            Log::info("REQUEST: " . json_encode($request));
+            // Log::info("REQUEST: " . json_encode($request));
             #VALIDACIONES
-            if ($vehicle_status_id == 3) {
-                if ($returnLoan) $validate = $this->validationsToReturnLoaned($response, $vehicle_id, $returnLoan);
-                $validate = $this->validationsToAssign($response, $vehicle_id, $request->active_user_id);
-            } elseif ($vehicle_status_id == 4) {
-                $validate = $this->validationsToLoaned($response, $vehicle_id, $request->active_user_id);
+            if ($movement === "Assign") {
+                $validate = $this->validationsToAssign(
+                    $response,
+                    $vehicle_id,
+                    $request->active_user_id,
+                    $movement
+                );
+            } elseif ($movement === "Loan") {
+                $validate = $this->validationsToLoaned($response, $vehicle_id, $request->active_user_id, $movement);
+            } elseif ($movement === "ReturnLoan") {
+                $validate = $this->validationsToReturnLoaned($response, $vehicle_id, $movement);
             }
-            // $this->validationsToAssign($vehicle_id, $userAuth->id);
 
             if (!is_bool($validate)) {
                 if ($validate->data["alert_icon"] == "warning") {
-                    Log::info("VALIDATE: " . json_encode($validate));
                     return response()->json($validate, $validate->data["status_code"]);
                 }
+                Log::info("VALIDATE: " . json_encode($validate));
             }
 
             #ACTUALIZAR STATUS DEL VEHICULO
