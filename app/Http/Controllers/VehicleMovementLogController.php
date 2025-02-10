@@ -95,10 +95,11 @@ class VehicleMovementLogController extends Controller
 
             #VERIFICAR QUE SE ENCUENTRE EN EL STATUS CORRECTO
             $responseValidate = $this->validateCorrectStatus($response, $vehicle, $movement);
-            if (!is_bool($response)) return $responseValidate;
+            if (!is_bool($responseValidate)) return $responseValidate;
+
             #VERIFICAR LICENCIA
             $responseValidate = $this->validateLicense($response, $vehicle, $director);
-            if (!is_bool($response)) return $responseresponseValidate;
+            if (!is_bool($responseValidate)) return $responseValidate;
         } catch (Exception $ex) {
             $msg = "validationsToAssign ~ Hubo un error al validar el movimiento -> " . $ex->getMessage();
             error_log($msg);
@@ -113,7 +114,7 @@ class VehicleMovementLogController extends Controller
             #VERIFICAR QUE EL VEHICULO ESTE ASIGNADO
             // Log::info("validationsToLoaned ~ vehicle_id: $vehicle_id, user_id: $user_id");
             $lastAssignment  = $this->getLastAssignmentByVehicle($vehicle_id);
-            // Log::info("validationsToLoaned ~ lastAssig: " . json_encode($lastAssignment ));
+            // Log::info("validationsToLoaned ~ lastAssignment: " . json_encode($lastAssignment ));
 
             if (!$lastAssignment) {
                 $response->data["message"] = 'peticion satisfactoria | prestamo no concluido.';
@@ -143,10 +144,11 @@ class VehicleMovementLogController extends Controller
 
             #VERIFICAR QUE SE ENCUENTRE EN EL STATUS CORRECTO
             $responseValidate = $this->validateCorrectStatus($response, $vehicle, $movement);
-            if (!is_bool($response)) return $responseValidate;
+            if (!is_bool($responseValidate)) return $responseValidate;
+
             #VERIFICAR LICENCIA
             $responseValidate = $this->validateLicense($response, $vehicle, $driver);
-            if (!is_bool($response)) return $responseresponseValidate;
+            if (!is_bool($responseValidate)) return $responseValidate;
         } catch (Exception $ex) {
             $msg = "validationsToLoaned ~ Hubo un error al validar el movimiento -> " . $ex->getMessage();
             error_log($msg);
@@ -155,13 +157,13 @@ class VehicleMovementLogController extends Controller
         }
         return true;
     }
-    public function validationsToReturnLoaned(Response $response, Int $vehicle_id, string $movement)
+    public function validationsToReturnLoan(Response $response, Int $vehicle_id, string $movement)
     {
         try {
+            // Log::info("validationsToReturnLoan ~ vehicle_id: $vehicle_id");
             #VERIFICAR QUE EL VEHICULO ESTE ASIGNADO
-            // Log::info("validationsToReturnLoaned ~ vehicle_id: $vehicle_id, user_id: $user_id");
             $lastAssignment  = $this->getLastAssignmentByVehicle($vehicle_id);
-            // Log::info("validationsToReturnLoaned ~ lastAssig: " . json_encode($lastAssignment ));
+            // Log::info("validationsToReturnLoan ~ lastAssignment: " . json_encode($lastAssignment));
 
             if (!$lastAssignment) {
                 $response->data["message"] = 'peticion satisfactoria | devolucion del prestamo no concluida.';
@@ -171,18 +173,19 @@ class VehicleMovementLogController extends Controller
             }
             $vehicle = Vehicle::find($vehicle_id);
             $directorUserId = $lastAssignment->active_user_id;
+            // Log::info("validationsToReturnLoan ~ directorUserId: " . json_encode($directorUserId));
 
             #VERIFICAR QUE EL VEHICULO TENGA UN PRESTAMO VIGENTE
             $lastLoan = $this->getLastLoanByVehicle($vehicle_id);
-            // Log::info("validationsToReturnLoaned ~ lastLoan: " . json_encode($lastLoan));
+            // Log::info("validationsToReturnLoan ~ lastLoan: " . json_encode($lastLoan));
 
-            $driverUserId = $lastLoan->active_user_id;
             if (!$lastLoan) {
                 $response->data["message"] = 'peticion satisfactoria | devolucion del prestamo no concluida.';
                 $response->data["alert_icon"] = "warning";
                 $response->data["alert_text"] = "Devolución del prestamo no completada - El vehículo NO se encuentra en un prestamo vigente.";
                 return $response;
             }
+            $driverUserId = $lastLoan->active_user_id;
 
 
             $userAuth = Auth::user();
@@ -214,12 +217,77 @@ class VehicleMovementLogController extends Controller
                 $vehicle,
                 $movement
             );
-            if (!is_bool($response)) return $responseValidate;
-            // #VERIFICAR LICENCIA
-            // $responseValidate = $this->validateLicense($response, $vehicle, $driver);
-            // if (!is_bool($response)) return $responseresponseValidate;
+            if (!is_bool($responseValidate)) return $responseValidate;
+
+            // #REGRESAMOS A 0(TERMINADO) EL PRESTAMO
+            $lastLoan->valid = false;
+            $lastLoan->save();
         } catch (Exception $ex) {
-            $msg = "validationsToReturnLoaned ~ Hubo un error al validar el movimiento -> " . $ex->getMessage();
+            $msg = "validationsToReturnLoan ~ Hubo un error al validar el movimiento -> " . $ex->getMessage();
+            error_log($msg);
+            Log::error($msg);
+            return  $response->data = ObjResponse::CatchResponse($ex->getMessage());
+        }
+        return true;
+    }
+    public function validationsToReturnAssign(Response $response, Int $vehicle_id, string $movement)
+    {
+        try {
+            // Log::info("validationsToReturnLoan ~ vehicle_id: $vehicle_id");
+            #VERIFICAR QUE EL VEHICULO ESTE ASIGNADO
+            $lastAssignment  = $this->getLastAssignmentByVehicle($vehicle_id);
+            // Log::info("validationsToReturnLoan ~ lastAssignment: " . json_encode($lastAssignment));
+            if (!$lastAssignment) {
+                $response->data["message"] = 'peticion satisfactoria | regresar unidad no concluida.';
+                $response->data["alert_icon"] = "warning";
+                $response->data["alert_text"] = "Regresar unidad no completada - El vehículo NO está asignado a un departamento/director.";
+                return $response;
+            }
+            $vehicle = Vehicle::find($vehicle_id);
+            $directorUserId = $lastAssignment->active_user_id;
+            // Log::info("validationsToReturnLoan ~ directorUserId: " . json_encode($directorUserId));
+
+            #VERIFICAR QUE EL VEHICULO NO TENGA UN PRESTAMO VIGENTE
+            $lastLoan = $this->getLastLoanByVehicle($vehicle_id);
+            // Log::info("validationsToReturnLoan ~ lastLoan: " . json_encode($lastLoan));
+            if ($lastLoan) {
+                $response->data["message"] = 'peticion satisfactoria | regresar unidad no concluida.';
+                $response->data["alert_icon"] = "warning";
+                $response->data["alert_text"] = "Regresar unidad no completada - El vehículo se encuentra en un prestamo vigente.";
+                return $response;
+                // $driverUserId = $lastLoan->active_user_id;
+            }
+
+
+            $userAuth = Auth::user();
+            #VERIFICAR QUE SOLO SuperAdmin, Adminis Patrimonio y el Director asignado PUEDAN REGRESAR LA UNIDAD A PATRIMONIO
+            if ((int)$userAuth->role_id == 5) {
+                if ($userAuth->id != $directorUserId) {
+                    $response->data["message"] = 'peticion satisfactoria | regresar unidad no concluida.';
+                    $response->data["alert_icon"] = "warning";
+                    $response->data["alert_text"] = "Regresar unidad no completada - Esta unidad no esta asignada a ti $userAuth->username.";
+                    return $response;
+                }
+            } elseif (!in_array((int)$userAuth->role_id, [1, 2])) {
+                $response->data["message"] = 'peticion satisfactoria | devolucion del prestamo no concluida.';
+                $response->data["alert_icon"] = "warning";
+                $response->data["alert_text"] = "Regresar unidad no completada - Solo el director asignado a la unidad puede regresar la unidad.";
+                return $response;
+            }
+
+            #VERIFICAR QUE SE ENCUENTRE EN EL STATUS CORRECTO
+            $responseValidate = $this->validateCorrectStatus(
+                $response,
+                $vehicle,
+                $movement
+            );
+            if (!is_bool($responseValidate)) return $responseValidate;
+
+            // #REGRESAMOS A 0(TERMINADO) EL PRESTAMO
+            $lastAssignment->valid = false;
+            $lastAssignment->save();
+        } catch (Exception $ex) {
+            $msg = "validationsToReturnLoan ~ Hubo un error al validar el movimiento -> " . $ex->getMessage();
             error_log($msg);
             Log::error($msg);
             return  $response->data = ObjResponse::CatchResponse($ex->getMessage());
@@ -237,7 +305,7 @@ class VehicleMovementLogController extends Controller
                 } elseif ($vehicle->vehicle_status_id === 3) {
                     $response->data["message"] = 'peticion satisfactoria | vehiculo ya asignado.';
                     $response->data["alert_icon"] = "warning";
-                    $response->data["alert_text"] = "Asignación no completada - El vehículo ya esta asignado";
+                    $response->data["alert_text"] = "Asignación no completada - El vehículo ya esta asignado.";
                 } elseif ($vehicle->vehicle_status_id === 4) {
                     $response->data["message"] = 'peticion satisfactoria | vehiculo ya asignado.';
                     $response->data["alert_icon"] = "warning";
@@ -269,23 +337,44 @@ class VehicleMovementLogController extends Controller
                 }
                 return $response;
             }
-            #SI ESTOY REALIZANDO UNA ASIGNACIÓN, VALIDAR...
+            #SI ESTOY REALIZANDO UNA DEVOLUCION DE PRESTAMO, VALIDAR...
             if ($movement === "ReturnLoan") {
                 if (in_array($vehicle->vehicle_status_id, [4])) {
                     return true;
                 } elseif (in_array($vehicle->vehicle_status_id, [1, 2])) {
                     $response->data["message"] = 'peticion satisfactoria | vehiculo esta asignado pero no prestado.';
                     $response->data["alert_icon"] = "warning";
-                    $response->data["alert_text"] = "Devolución de prestamo no completada - El vehículo ya esta asignado";
+                    $response->data["alert_text"] = "Devolución de prestamo no completada - El vehículo no esta a un departamento/director.";
                 } elseif ($vehicle->vehicle_status_id === 3) {
                     if ($returnLoan) return true;
                     $response->data["message"] = 'peticion satisfactoria | vehiculo esta asignado pero no prestado.';
                     $response->data["alert_icon"] = "warning";
-                    $response->data["alert_text"] = "Devolución de prestamo no completada - El vehículo esta asignado.";
+                    $response->data["alert_text"] = "Devolución de prestamo no completada - El vehículo no esta prestado.";
                 } elseif (in_array($vehicle->vehicle_status_id, [5, 7, 8])) {
                     $response->data["message"] = 'peticion satisfactoria | vehiculo en taller.';
                     $response->data["alert_icon"] = "warning";
                     $response->data["alert_text"] = "Devolución de prestamo no completada - El vehículo se encuentra en el taller";
+                }
+                // Log::info("validateCorrectStatus ~ response: " . json_encode($response));
+                return $response;
+            }
+            #SI ESTOY REALIZANDO UN REGRESO DE UNIDAD, VALIDAR...
+            if ($movement === "ReturnAssign") {
+                if (in_array($vehicle->vehicle_status_id, [3])) {
+                    return true;
+                } elseif (in_array($vehicle->vehicle_status_id, [1, 2])) {
+                    $response->data["message"] = 'peticion satisfactoria | vehiculo esta asignado pero no prestado.';
+                    $response->data["alert_icon"] = "warning";
+                    $response->data["alert_text"] = "Regresar unidad no completada - El vehículo no esta a un departamento/director.";
+                } elseif ($vehicle->vehicle_status_id === 4) {
+                    if ($returnLoan) return true;
+                    $response->data["message"] = 'peticion satisfactoria | vehiculo esta asignado pero no prestado.';
+                    $response->data["alert_icon"] = "warning";
+                    $response->data["alert_text"] = "Regresar unidad no completada - El vehículo esta prestado.";
+                } elseif (in_array($vehicle->vehicle_status_id, [5, 7, 8])) {
+                    $response->data["message"] = 'peticion satisfactoria | vehiculo en taller.';
+                    $response->data["alert_icon"] = "warning";
+                    $response->data["alert_text"] = "Regresar unidad no completada - El vehículo se encuentra en el taller";
                 }
                 // Log::info("validateCorrectStatus ~ response: " . json_encode($response));
                 return $response;
@@ -301,6 +390,7 @@ class VehicleMovementLogController extends Controller
     private function validateLicense(Response $response, $vehicle, $responsible)
     {
         try {
+            // Log::info("validateLicense ~ responsible: " . json_encode($responsible));
             #VERIFICAR QUE SU LICENCIA NO ESTE VENCIDA
             if ($responsible->license_due_date != "") {
                 $today = new DateTime();
@@ -371,7 +461,9 @@ class VehicleMovementLogController extends Controller
             } elseif ($movement === "Loan") {
                 $validate = $this->validationsToLoaned($response, $vehicle_id, $request->active_user_id, $movement);
             } elseif ($movement === "ReturnLoan") {
-                $validate = $this->validationsToReturnLoaned($response, $vehicle_id, $movement);
+                $validate = $this->validationsToReturnLoan($response, $vehicle_id, $movement);
+            } elseif ($movement === "ReturnAssign") {
+                $validate = $this->validationsToReturnAssign($response, $vehicle_id, $movement);
             }
 
             if (!is_bool($validate)) {
@@ -391,14 +483,14 @@ class VehicleMovementLogController extends Controller
             $status = VehicleStatus::find($vehicle_status_id);
 
             $vehicle_movement = new VehicleMovementLog();
-            $vehicle_movement->user_id = $userAuth->id;
+            $vehicle_movement->user_id = $userAuth->id; #Usuario que hace el movimiento
             $vehicle_movement->vehicle_id = $vehicle_id;
             $vehicle_movement->vehicle_status_id = $vehicle_status_id;
             // $vehicle_movement->need_approved = $need_approved;Entregar
-            $vehicle_movement->active_user_id = $request->active_user_id;
+            $vehicle_movement->active_user_id = in_array($movement, ["ReturnLoan", "ReturnAssign"]) ? $userAuth->id : $request->active_user_id;
             $vehicle_movement->km = $request->km;
             $vehicle_movement->comments = $request->comments;
-            if (in_array($vehicle_status_id, [3, 4])) $vehicle_movement->valid = true;
+            if (in_array($movement, ["Assign", "Loan"]) && in_array($vehicle_status_id, [3, 4])) $vehicle_movement->valid = true;
             $vehicle_movement->table_assoc = $request->table_assoc;
             $vehicle_movement->table_assoc_register_id = $request->table_assoc_register_id;
             // var_dump($vehicle_movement);
