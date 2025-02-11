@@ -29,7 +29,6 @@ class ServiceController extends Controller
         try {
             $userAuth = Auth::user();
 
-            echo "id: $userAuth->id";
             $ViewService = new ServiceView();
             if ($status == "ABIERTA") $ViewService = new ServiceOpenedView();
             elseif ($status == "APROBADA") $ViewService = new ServiceApprovedView();
