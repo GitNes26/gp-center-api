@@ -468,6 +468,7 @@ class VehicleMovementLogController extends Controller
 
             if (!is_bool($validate)) {
                 if ($validate->data["alert_icon"] == "warning") {
+                    $validate->data["status_code"] = 200;
                     return response()->json($validate, $validate->data["status_code"]);
                 }
                 Log::info("VALIDATE: " . json_encode($validate));
