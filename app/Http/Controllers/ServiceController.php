@@ -80,6 +80,8 @@ class ServiceController extends Controller
             $folio = $this->getLastFolio();
             $userAuth = Auth::user();
 
+            echo "EL userAuth: $userAuth->id";
+
             $new_service = Service::create([
                 'folio' => (int)$folio + 1,
                 'vehicle_id' => $request->vehicle_id,

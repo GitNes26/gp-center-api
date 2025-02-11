@@ -243,7 +243,7 @@ class MenuController extends Controller
             $response->data["message"] = $id > 0 ? 'peticion satisfactoria | menu editado.' : 'peticion satisfactoria | menu registrado.';
             $response->data["alert_text"] = $id > 0 ? "Menú editado" : "Menú registrado";
         } catch (\Exception $ex) {
-            error_log("Hubo un error al crear o actualizar el menu ->" . $ex->getMessage());
+            error_log("Hubo un error al crear o actualizar el menu -> " . $ex->getMessage());
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
         }
         return response()->json($response, $response->data["status_code"]);

@@ -20,6 +20,7 @@ use App\Http\Controllers\ServiceController;
 // use App\Http\Controllers\SSEController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\VehicleMovementController;
+use App\Http\Controllers\VehicleMovementLogController;
 use App\Http\Controllers\VehiclePlatesController;
 use App\Http\Controllers\VehicleStatusController;
 use App\Http\Controllers\VoucherController;
@@ -172,6 +173,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::controller(VehicleMovementController::class)->group(function () {
         Route::get('/vehicleMovements', 'index');
         Route::get('/vehicleMovements/history/{vehicle_id}', 'history');
+    });
+    Route::controller(VehicleMovementLogController::class)->group(function () {
+        Route::get('/vehicleMovementsLog', 'index');
+        Route::get('/vehicleMovementsLog/{vehicle_id}', 'history');
+        Route::post('/vehicleMovementsLog/{vehicle_status_id}/{vehicle_id}/{movement}', 'registerMovement');
+        // Route::get('/vehicleMovements/history/{vehicle_id}', 'history');
     });
 
 

@@ -148,7 +148,7 @@ class VoucherController extends Controller
             $response->data["alert_text"] = $id > 0 ? "Vale editado" : "Vale registrado";
             $response->data["result"] = $voucher;
         } catch (\Exception $ex) {
-            error_log("Hubo un error al crear o actualizar el vale ->" . $ex->getMessage());
+            error_log("Hubo un error al crear o actualizar el vale -> " . $ex->getMessage());
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
         }
         return response()->json($response, $response->data["status_code"]);

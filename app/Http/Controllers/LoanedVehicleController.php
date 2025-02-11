@@ -174,8 +174,8 @@ class LoanedVehicleController extends Controller
             $response->data["message"] = $id > 0 ? 'peticion satisfactoria | prestamo de vehiculo editada.' : 'peticion satisfactoria | prestamo de vehiculo registrada.';
             $response->data["alert_text"] = $id > 0 ? "Prestamo de vehículo editado" : "Prestamo de vehículo registrado";
         } catch (\Exception $ex) {
-            Log::info("Hubo un error al crear o actualizar el prestamo del vehículo ->" . $ex->getMessage());
-            error_log("Hubo un error al crear o actualizar el prestamo del vehículo ->" . $ex->getMessage());
+            Log::info("Hubo un error al crear o actualizar el prestamo del vehículo -> " . $ex->getMessage());
+            error_log("Hubo un error al crear o actualizar el prestamo del vehículo -> " . $ex->getMessage());
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
         }
         return response()->json($response, $response->data["status_code"]);
@@ -273,7 +273,7 @@ class LoanedVehicleController extends Controller
             $response->data["message"] = $id > 0 ? 'peticion satisfactoria | devolucion de prestamo de vehiculo editada.' : 'peticion satisfactoria | devolucion de prestamo de vehiculo registrada.';
             $response->data["alert_text"] = $id > 0 ? "Devolución de prestamo editado" : "Devolución de prestamo registrado";
         } catch (\Exception $ex) {
-            error_log("Hubo un error al crear o actualizar el devolucion de prestamo del vehículo ->" . $ex->getMessage());
+            error_log("Hubo un error al crear o actualizar el devolucion de prestamo del vehículo -> " . $ex->getMessage());
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
         }
         return response()->json($response, $response->data["status_code"]);
@@ -297,7 +297,7 @@ class LoanedVehicleController extends Controller
             $response->data["result"] = $lastLoan;
             if ($internal === true) return $lastLoan;
         } catch (\Exception $ex) {
-            error_log("Hubo un error al obtener el ultimo prestamo ->" . $ex->getMessage());
+            error_log("Hubo un error al obtener el ultimo prestamo -> " . $ex->getMessage());
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
             if ($internal === true) return null;
         }

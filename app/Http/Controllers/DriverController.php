@@ -119,8 +119,8 @@ class DriverController extends Controller
          $driver->save();
          return $driver;
       } catch (\Exception $ex) {
-         error_log("Hubo un error al crear o actualizar el conductor ->" . $ex->getMessage());
-         echo "Hubo un error al crear o actualizar el conductor ->" . $ex->getMessage();
+         error_log("Hubo un error al crear o actualizar el conductor -> " . $ex->getMessage());
+         echo "Hubo un error al crear o actualizar el conductor -> " . $ex->getMessage();
       }
    }
 

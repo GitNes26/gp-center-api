@@ -142,7 +142,7 @@ class AssignedVehicleController extends Controller
             $response->data["message"] = $id > 0 ? 'peticion satisfactoria | asignacion de vehiculo editada.' : 'peticion satisfactoria | asignacion de vehiculo registrada.';
             $response->data["alert_text"] = $id > 0 ? "Asignación de vehículo editada" : "Asignación de vehículo registrada";
         } catch (\Exception $ex) {
-            error_log("Hubo un error al crear o actualizar el director ->" . $ex->getMessage());
+            error_log("Hubo un error al crear o actualizar el director -> " . $ex->getMessage());
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
         }
         return response()->json($response, $response->data["status_code"]);
@@ -165,7 +165,7 @@ class AssignedVehicleController extends Controller
             $response->data["result"] = $lastAssignment;
             if ($internal === true) return $lastAssignment;
         } catch (\Exception $ex) {
-            error_log("Hubo un error al obtener la ultima asignación ->" . $ex->getMessage());
+            error_log("Hubo un error al obtener la ultima asignación -> " . $ex->getMessage());
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
             if ($internal === true) return null;
         }

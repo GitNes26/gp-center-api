@@ -115,7 +115,7 @@ class VoucherDetailController extends Controller
             $response->data["message"] = $id > 0 ? 'peticion satisfactoria | detalle de vale editado.' : 'peticion satisfactoria | detalle de vale registrado.';
             $response->data["alert_text"] = $id > 0 ? "Detalle de Vale editado" : "Detalle de Vale registrado";
         } catch (\Exception $ex) {
-            error_log("Hubo un error al crear o actualizar el vale ->" . $ex->getMessage());
+            error_log("Hubo un error al crear o actualizar el vale -> " . $ex->getMessage());
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
         }
         return response()->json($response, $response->data["status_code"]);

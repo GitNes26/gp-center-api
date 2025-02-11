@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Vehicle extends Model
+class VehicleMovementLog extends Model
 {
     use HasFactory;
 
@@ -21,25 +21,15 @@ class Vehicle extends Model
      */
     protected $fillable = [
         'id',
-        'stock_number',
-        'brand_id',
-        'model_id',
-        'year',
-        'shelter_to',
-        'registration_date',
-        'description',
-        'acceptable_license_type',
+        'user_id',
         'vehicle_status_id',
-        // 'km',
-        'img_preview',
-        'serial_number',
-        'img_serial_number',
-        'visible_serial_number',
-        'circulation_card',
-        'img_circulation_card',
-        'insurance_policy',
-        'img_insurance_policy',
-        'violated',
+        'vehicle_id',
+        'active_user_id',
+        'km',
+        'comments',
+        'valid',
+        "table_assoc",
+        "table_assoc_register_id",
         'active',
         'deleted_at'
     ];
@@ -57,7 +47,7 @@ class Vehicle extends Model
      * Nombre de la tabla asociada al modelo.
      * @var string
      */
-    protected $table = 'vehicles';
+    protected $table = 'vehicle_movements_log';
 
     /**
      * LlavePrimaria asociada a la tabla.

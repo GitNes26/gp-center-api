@@ -21,6 +21,7 @@ return new class extends Migration
             $table->integer('year');
             $table->date('registration_date')->comment('fecha de alta del vehiculo (no en el sistema, si no en la empresa)');
             $table->foreignId('vehicle_status_id')->constrained('vehicle_status', 'id');
+            // $table->decimal('km', 11, 2)->nullable();
             $table->text('description')->nullable();
             $table->string('acceptable_license_type')->nullable();
             // $table->string('plates')->comment('placas asignadas al carro');
