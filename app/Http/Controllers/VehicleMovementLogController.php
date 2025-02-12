@@ -6,7 +6,9 @@ use App\Models\DirectorView;
 use App\Models\DriverView;
 use App\Models\ObjResponse;
 use App\Models\Vehicle;
+use App\Models\VehicleMovement;
 use App\Models\VehicleMovementLog;
+use App\Models\VehicleMovementLogView;
 use App\Models\VehicleStatus;
 use DateTime;
 use Exception;
@@ -49,12 +51,12 @@ class VehicleMovementLogController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response $response
      */
-    public function history(Response $response, Int $vehicle_id, bool $internal = false)
+    public function history(Response $response, Int $vehicle_id)
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
             $auth = Auth::user();
-            $list = VehicleMovementLog::where('vehicle_id', $vehicle_id)->orderBy('id', 'desc');
+            $list = VehicleMovementLogView::where('vehicle_id', $vehicle_id)->orderBy('id', 'desc');
             if ($auth->role_id > 1) $list = $list->where("active", true);
             $list = $list->get();
             // $result = DB::select('CALL sp_vehicle_history(?)', [$vehicle_id]);
@@ -62,8 +64,11 @@ class VehicleMovementLogController extends Controller
 
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'peticion satisfactoria | historial del vehículo encontrado.';
-            $response->data["result"] = $result;
+            $response->data["result"] = $list;
         } catch (\Exception $ex) {
+            $msg = "history ~ Hubo un error al validar el movimiento -> " . $ex->getMessage();
+            error_log($msg);
+            Log::error($msg);
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
         }
         return response()->json($response, $response->data["status_code"]);
@@ -478,7 +483,13 @@ class VehicleMovementLogController extends Controller
             $vehicleInstance = new VehicleController();
             $vehicleInstance->updateStatus($vehicle_id, $vehicle_status_id);
 
-
+            $active_user = $request->active_user_id;
+            if ($movement === "ReturnLoan") {
+                $lastAssign = $this->getLastAssignmentByVehicle($vehicle_id);
+                $active_user = $lastAssign->active_user_id;
+            } elseif ($movement === "ReturnAssign") {
+                $active_user = null;
+            }
 
             // $vehicle = Vehicle::find($vehicle_id);
             $status = VehicleStatus::find($vehicle_status_id);
@@ -488,7 +499,7 @@ class VehicleMovementLogController extends Controller
             $vehicle_movement->vehicle_id = $vehicle_id;
             $vehicle_movement->vehicle_status_id = $vehicle_status_id;
             // $vehicle_movement->need_approved = $need_approved;Entregar
-            $vehicle_movement->active_user_id = in_array($movement, ["ReturnLoan", "ReturnAssign"]) ? $userAuth->id : $request->active_user_id;
+            $vehicle_movement->active_user_id = $active_user;
             $vehicle_movement->km = $request->km;
             $vehicle_movement->comments = $request->comments;
             if (in_array($movement, ["Assign", "Loan"]) && in_array($vehicle_status_id, [3, 4])) $vehicle_movement->valid = true;
