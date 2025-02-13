@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ServiceController extends Controller
 {
@@ -80,8 +81,9 @@ class ServiceController extends Controller
             $folio = $this->getLastFolio();
             $userAuth = Auth::user();
 
-            echo "EL userAuth: $userAuth->id";
+            Log::info("ServiceController ~ create ~ EL userAuth: $userAuth->id");
 
+            DB::beginTransaction();
             $new_service = Service::create([
                 'folio' => (int)$folio + 1,
                 'vehicle_id' => $request->vehicle_id,
@@ -95,13 +97,19 @@ class ServiceController extends Controller
                 // 'evidence_img_path' => $request->evidence_img_path,
             ]);
 
+            #ASIGNANDO PARAMETROS PARA EL REGISTRO DE MOVIMIENTO
+            $request->table_assoc = $new_service->getTable();
+            $request->table_assoc_register_id = $new_service->id;
+            $request->comments = "REPORTE: $new_service->pre_diagnosis";
+            // Log::info("EL REQUEST CON LOS DATOS AGREGADOS: " . json_encode($request));
             #PASAR A STATUS "POR APROBAR SERVICIO" DE PARTE DE PATRIMONIO
-            $vehicleMovementInstance = new VehicleMovementController();
-            $vehicleMovementInstance->registerMovement($request->vehicle_id, true, $new_service->getTable(), $new_service->id);
+            $vehicleMovementLogInstance = new VehicleMovementLogController();
+            $vehicleMovementLogInstance->registerMovement($request, $response, 7, $request->vehicle_id, "ApprobServiceByCV");
 
-            #ACTUALIZAR STATUS DEL VEHICULO
-            $vehicleInstance = new VehicleController();
-            $vehicleInstance->updateStatus($request->vehicle_id, 7); //Por Aprobar Servicio
+            // #ACTUALIZAR STATUS DEL VEHICULO
+            // $vehicleInstance = new VehicleController();
+            // $vehicleInstance->updateStatus($request->vehicle_id, 7); //Por Aprobar Servicio
+            DB::commit();
 
 
 
@@ -114,6 +122,10 @@ class ServiceController extends Controller
             $response->data["alert_text"] = "Servicio registrado <br> tu folio es el <b>#$new_service->folio</b>";
             $response->data["result"] = $new_service;
         } catch (\Exception $ex) {
+            DB::rollBack();
+            $msg = "registerMovement ~ Hubo un error al validar el movimiento -> " . $ex->getMessage();
+            error_log($msg);
+            Log::error($msg);
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
         }
         return response()->json($response, $response->data["status_code"]);
@@ -228,7 +240,7 @@ class ServiceController extends Controller
     }
 
     /**
-     * Crear un nuevo servicio.
+     * Cambiar el estatus del servicio.
      *
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response $response
@@ -240,9 +252,13 @@ class ServiceController extends Controller
 
         $response->data = ObjResponse::DefaultResponse();
         try {
+            DB::beginTransaction();
+
             $service = Service::find($id);
-            $vehicleMovementInstance = new VehicleMovementController();
-            $lastMovement = $vehicleMovementInstance->getLastMovementByVehicle($service->vehicle_id);
+            $vehicleMovementLogInstance = new VehicleMovementLogController();
+            $lastMovement = $vehicleMovementLogInstance->getLastMovementByVehicle($service->vehicle_id);
+            Log::info("ServiceController ~ changeStatus ~ EL lastMovement: " . json_encode($lastMovement));
+
             $addMovement = true;
             $vehicle_status_id = 7; // POR APROBAR
 
@@ -253,7 +269,7 @@ class ServiceController extends Controller
             } elseif ($status == "RECHAZADA") {
                 $service->rejected_by = $userAuth->id;
                 $service->rejected_at = $datetime;
-                $vehicle_status_id = $lastMovement->old_vehicle_status_id; // REGRESA AL STATUS ANTERIOR
+                $vehicle_status_id = $lastMovement->vehicle_status_id; // REGRESA AL STATUS ANTERIOR
                 // $vehicle_status_id = 9; // SERVICIO RECHAZADO
             } elseif ($status == "EN REVISIÓN") {
                 $service->mechanic_id = $userAuth->id;
@@ -266,31 +282,46 @@ class ServiceController extends Controller
             } elseif ($status == "RECHAZADA POR CV") {
                 $service->confirmed_by = $userAuth->id;
                 $service->confirmed_at = $datetime;
-                $lastMovement = $vehicleMovementInstance->getLastMovementByVehicle($service->vehicle_id, 2);
-                $vehicle_status_id = $lastMovement->old_vehicle_status_id; // REGRESA AL STATUS ANTERIOR
+                $lastMovement = $vehicleMovementLogInstance->getLastMovementByVehicle($service->vehicle_id, 2);
+                $vehicle_status_id = $lastMovement->vehicle_status_id; // REGRESA AL STATUS ANTERIOR
             } elseif ($status == "CERRADA") {
                 $service->closed_at = $datetime;
                 // $service->reviewed_at = $datetime; // SU columna en teoria es al de updated_at
-                $lastMovement = $vehicleMovementInstance->getLastMovementByVehicle($service->vehicle_id, 3);
-                $vehicle_status_id = $lastMovement->old_vehicle_status_id; // REGRESA AL STATUS ANTERIOR
+                $lastMovement = $vehicleMovementLogInstance->getLastMovementByVehicle($service->vehicle_id, 3);
+                $vehicle_status_id = $lastMovement->vehicle_status_id; // REGRESA AL STATUS ANTERIOR
             }
             $service->status = $status;
             $service->save();
+            Log::info("ServiceController ~ changeStatus ~ EL service: " . json_encode($service));
 
             if ((bool)$addMovement) {
+                #ASIGNANDO PARAMETROS PARA EL REGISTRO DE MOVIMIENTO
+                $request->table_assoc = $service->getTable();
+                $request->table_assoc_register_id = $service->id;
+                $request->km = $lastMovement->km;
+                $request->comments = "CAMBIO DE ESTATUS DEL SERVICIO: $status";
+                // Log::info("EL REQUEST CON LOS DATOS AGREGADOS: " . json_encode($request));
                 #PASAR A STATUS "POR APROBAR SERVICIO" DE PARTE DE PATRIMONIO
-                $vehicleMovementInstance->registerMovement($service->vehicle_id, true, $service->getTable(), $service->id);
+                // $vehicleMovementLogInstance = new VehicleMovementLogController();
+                $vehicleMovementLogInstance->registerMovement($request, $response, $vehicle_status_id, $service->vehicle_id, "ChangeServiceStatus");
+                #PASAR A STATUS "POR APROBAR SERVICIO" DE PARTE DE PATRIMONIO
+                // $vehicleMovementLogInstance->registerMovement($service->vehicle_id, true, $service->getTable(), $service->id);
 
                 #ACTUALIZAR STATUS DEL VEHICULO
-                $vehicleInstance = new VehicleController();
-                $vehicleInstance->updateStatus($service->vehicle_id, $vehicle_status_id);
+                // $vehicleInstance = new VehicleController();
+                // $vehicleInstance->updateStatus($service->vehicle_id, $vehicle_status_id);
             }
+            DB::commit();
 
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'peticion satisfactoria | cambio de estatus.';
             $response->data["alert_text"] = "El estatus cambio a: $status";
             $response->data["result"] = $service;
         } catch (\Exception $ex) {
+            DB::rollBack();
+            $msg = "registerMovement ~ Hubo un error al validar el movimiento -> " . $ex->getMessage();
+            error_log($msg);
+            Log::error($msg);
             $response->data = ObjResponse::CatchResponse($ex->getMessage());
         }
         return response()->json($response, $response->data["status_code"]);

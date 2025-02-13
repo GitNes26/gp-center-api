@@ -30,6 +30,17 @@ class Service extends Model
         'evidence_img_path',
         'mechanic_id',
         'status',
+        'requested_by',
+        'requested_at',
+        'approved_by',
+        'approved_at',
+        'reviewed_at',
+        'rejected_by',
+        'rejected_at',
+        'confirmed_by',
+        'confirmed_at',
+        'request_material',
+        'closed_at',
         'active',
         'deleted_at'
     ];

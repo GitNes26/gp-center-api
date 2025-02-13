@@ -264,7 +264,7 @@ class VehicleMovementLogController extends Controller
             }
 
 
-            $userAuth = Auth::user();
+
             #VERIFICAR QUE SOLO SuperAdmin, Adminis Patrimonio y el Director asignado PUEDAN REGRESAR LA UNIDAD A PATRIMONIO
             if ((int)$userAuth->role_id == 5) {
                 if ($userAuth->id != $directorUserId) {
@@ -299,6 +299,7 @@ class VehicleMovementLogController extends Controller
         }
         return true;
     }
+
     private function validateCorrectStatus(Response $response, $vehicle, string $movement)
     {
         try {
@@ -469,6 +470,8 @@ class VehicleMovementLogController extends Controller
                 $validate = $this->validationsToReturnLoan($response, $vehicle_id, $movement);
             } elseif ($movement === "ReturnAssign") {
                 $validate = $this->validationsToReturnAssign($response, $vehicle_id, $movement);
+            } else {
+                $validate = true;
             }
 
             if (!is_bool($validate)) {
@@ -483,6 +486,7 @@ class VehicleMovementLogController extends Controller
             $vehicleInstance = new VehicleController();
             $vehicleInstance->updateStatus($vehicle_id, $vehicle_status_id);
 
+            #DAR VALOR AL USUARIO QUE SERA RESPONSABLE
             $active_user = $request->active_user_id;
             if ($movement === "ReturnLoan") {
                 $lastAssign = $this->getLastAssignmentByVehicle($vehicle_id);
