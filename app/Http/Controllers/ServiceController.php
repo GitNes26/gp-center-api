@@ -142,20 +142,8 @@ class ServiceController extends Controller
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
-            // $service = Service::where('services.id', $request->id)
-            //     ->join('vehicles', 'services.vehicle_id', '=', 'vehicles.id')
-            //     ->join('brands', 'vehicles.brand_id', '=', 'brands.id')
-            //     ->join('models', 'vehicles.model_id', '=', 'models.id')
-            //     ->join('vehicle_status', 'vehicles.vehicle_status_id', '=', 'vehicle_status.id')
-            //     ->join('vehicle_plates', function ($join) {
-            //         $join->on('vehicle_plates.vehicle_id', '=', 'vehicles.id')
-            //             ->where('vehicle_plates.expired', '=', 0);
-            //     })
-            //     ->join('users', 'services.mechanic_id', '=', 'users.id')
-            //     ->select('services.*', 'vehicles.stock_number', 'vehicles.year', 'vehicles.registration_date', 'vehicles.description', 'brands.brand', 'models.model', 'vehicle_status.vehicle_status', 'vehicle_status.bg_color', 'vehicle_status.letter_black', 'plates', 'initial_date', 'due_date', 'users.username')
-            //     ->orderBy('services.id', 'asc')->first();
             $service = ServiceView::find($request->id);
-            Log::info("ServiceController ~ show ~ EL service: " . json_encode($service));
+            // Log::info("ServiceController ~ show ~ EL service: " . json_encode($service));
 
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'peticion satisfactoria | servicio encontrado.';

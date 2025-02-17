@@ -26,14 +26,14 @@ class Controller extends BaseController
      * 
      * @return string
      */
-    public function ImageUp($request, $requestFile, $dirPath, $id, $posFix, $create, $nameFake)
+    public function ImageUp($request, $requestFileName, $dirPath, $id, $posFix, $create, $nameFake)
     {
         try {
             $dir = public_path($dirPath);
             $img_name = "";
-            if ($request->hasFile($requestFile)) {
+            if ($request->hasFile($requestFileName)) {
                 // return "ImageUp->aqui todo bien 3";
-                $img_file = $request->file($requestFile);
+                $img_file = $request->file($requestFileName);
                 $dir_path = "$dirPath/$id";
                 $destination = "$dir/$id";
                 $img_name = $this->ImgUpload($img_file, $destination, $dir_path, "$id-$posFix");

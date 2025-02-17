@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('department');
             $table->string('description')->nullable();
+            $table->string('img_stamp', 255)->nullable();
             $table->boolean('active')->default(true);
             $table->timestamps();
             $table->dateTime('deleted_at')->nullable();
