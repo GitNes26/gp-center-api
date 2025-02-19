@@ -91,9 +91,12 @@ class Controller extends BaseController
      * 
      * @return ObjRespnse|false
      */
-    public function checkAvailableData($table, $column, $value, $propTitle, $input, $id, $secondTable = null)
+    public function checkAvailableData($table, $column, $value, $propTitle, $input, $id, $secondTable = null, $complementInfo = false)
     {
-        if ($secondTable) {
+        if ($complementInfo) {
+            $query = "SELECT count(*) as duplicate FROM $table WHERE $column='$value'";
+            if ($id != null) $query = "SELECT count(*) as duplicate FROM $table WHERE $column='$value' AND id!=$id";
+        } elseif ($secondTable) {
             $query = "SELECT count(*) as duplicate FROM $table INNER JOIN $secondTable ON rol_id=rols.id WHERE $column='$value' AND active=1;";
             if ($id != null) $query = "SELECT count(*) as duplicate FROM $table t INNER JOIN $secondTable ON t.rol_id=rols.id WHERE t.$column='$value' AND active=1 AND t.id!=$id";
         } else {

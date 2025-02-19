@@ -26,7 +26,8 @@ class DirectorController extends Controller
    {
       $response->data = ObjResponse::DefaultResponse();
       try {
-         $list = DirectorView::all();
+         $auth = Auth::user();
+         $list = $auth->role_id <= 1 ? DirectorView::all() : DirectorView::where('active', true)->get();
 
          $response->data = ObjResponse::CorrectResponse();
          $response->data["message"] = 'peticion satisfactoria | lista de directores.';

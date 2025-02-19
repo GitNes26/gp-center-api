@@ -77,11 +77,11 @@ class UserInfoController extends Controller
     public function validateAvailableData($phone, $license_number, $payroll_number, $id)
     {
         // #VALIDACION DE DATOS REPETIDOS
-        $duplicate = $this->checkAvailableData('directors', 'phone', $phone, 'El número telefónico', 'phone', $id, "users");
+        $duplicate = $this->checkAvailableData('user_info', 'phone', $phone, 'El número telefónico', 'phone', $id, "users", true);
         if ($duplicate["result"] == true) return $duplicate;
-        $duplicate = $checkAvailable->checkAvailableData('directors', 'license_number', $license_number, 'El número de licencia', 'license_number', $id, "users");
+        $duplicate = $this->checkAvailableData('user_info', 'license_number', $license_number, 'El número de licencia', 'license_number', $id, "users", true);
         if ($duplicate["result"] == true) return $duplicate;
-        $duplicate = $checkAvailable->checkAvailableData('directors', 'payroll_number', $payroll_number, 'El empleado (número de nómina) ya ha sido registrado', 'payroll_number', $id, "users");
+        $duplicate = $this->checkAvailableData('user_info', 'payroll_number', $payroll_number, 'El empleado (número de nómina) ya ha sido registrado', 'payroll_number', $id, "users", true);
         if ($duplicate["result"] == true) return $duplicate;
         return array("result" => false);
     }

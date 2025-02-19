@@ -14,37 +14,37 @@ class DirectorView extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'username',
-        'email',
-        'password',
-        'role_id',
-        'active',
-        'id',
-        'user_id',
-        'avatar',
-        'name',
-        'paternal_last_name',
-        'maternal_last_name',
-        'phone',
-        'license_number',
-        'license_type',
-        'license_due_date',
-        'img_license',
-        'payroll_number',
-        'department_id',
-        'department',
-        'community_id',
-        'street',
-        'num_ext',
-        'num_int',
-        'role',
-        'read',
-        'create',
-        'update',
-        'delete',
-        'more_permissions'
-    ];
+    // protected $fillable = [
+    //     'username',
+    //     'email',
+    //     'password',
+    //     'role_id',
+    //     'active',
+    //     'id',
+    //     'user_id',
+    //     'avatar',
+    //     'name',
+    //     'paternal_last_name',
+    //     'maternal_last_name',
+    //     'phone',
+    //     'license_number',
+    //     'license_type',
+    //     'license_due_date',
+    //     'img_license',
+    //     'payroll_number',
+    //     'department_id',
+    //     'department',
+    //     'community_id',
+    //     'street',
+    //     'num_ext',
+    //     'num_int',
+    //     'role',
+    //     'read',
+    //     'create',
+    //     'update',
+    //     'delete',
+    //     'more_permissions'
+    // ];
 
     /**
      * Los atributos que deben ocultarse para la serialización.
@@ -60,7 +60,8 @@ class DirectorView extends Model
      * Nombre de la tabla asociada al modelo.
      * @var string
      */
-    protected $table = 'directors_view';
+    protected $table = 'vw_directors';
+    // protected $table = 'directors_view';
 
     /**
      * LlavePrimaria asociada a la tabla.

@@ -11,6 +11,7 @@ use App\Models\ServiceInReviewedView;
 use App\Models\ServiceOpenedView;
 use App\Models\ServiceRejectedView;
 use App\Models\ServiceView;
+use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -81,7 +82,14 @@ class ServiceController extends Controller
             $folio = $this->getLastFolio();
             $userAuth = Auth::user();
 
-            Log::info("ServiceController ~ create ~ EL userAuth: $userAuth->id");
+
+            $vehicle = Vehicle::find($request->vehicle_id);
+            if (in_array($vehicle->vehicle_status_id, [5, 7, 8])) {
+                $response->data["message"] = 'peticion satisfactoria | solicitud de servicio no concluida.';
+                $response->data["alert_icon"] = "warning";
+                $response->data["alert_text"] = "Solicitud de servicio no completada - El vehículo esta en una solicitud activa.";
+                return response()->json($response);
+            }
 
             DB::beginTransaction();
             $new_service = Service::create([

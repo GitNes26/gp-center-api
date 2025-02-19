@@ -8,6 +8,7 @@ use App\Models\ObjResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class MechanicController extends Controller
 {
@@ -21,7 +22,7 @@ class MechanicController extends Controller
         $response->data = ObjResponse::DefaultResponse();
         try {
             $auth = Auth::user();
-            $list = MechanicView::orderBy('id', 'desc');
+            $list = MechanicView::orderBy('full_name', 'desc');
             if ($auth->role_id > 1) $list = $list->where("active", true);
             $list = $list->get();
 
@@ -45,7 +46,7 @@ class MechanicController extends Controller
         try {
             $list = MechanicView::where('active', true)
                 ->select('id as id', DB::raw("CONCAT(payroll_number,' - ',full_name) as label"))
-                ->orderBy('mechanic', 'asc')->get();
+                ->orderBy('full_name', 'asc')->get();
 
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'peticion satisfactoria | lista de mecanicos.';
@@ -80,6 +81,7 @@ class MechanicController extends Controller
             if (!$mechanic) $mechanic = new Mechanic();
 
             $mechanic->fill($request->all());
+            $mechanic->active = true;
             $mechanic->save();
 
             $avatar = $this->ImageUp($request, "avatar", "GPCenter/mechanics", $mechanic->id, "avatar", $id > 0 ? false : true, "noAvatar");

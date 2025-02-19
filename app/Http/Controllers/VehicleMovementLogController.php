@@ -572,12 +572,15 @@ class VehicleMovementLogController extends Controller
      * @param  \Illuminate\Http\int $vehicle_id - indica el id del vehiculo a rastrear
      * @return \Illuminate\Http\Response $response
      */
-    public function getLastAssignmentByVehicle(int $vehicle_id)
+    public function getLastAssignmentByVehicle(int $vehicle_id, string $column = null, any $value = null)
     {
         try {
             // Query base para obtener el movimiento de ASIGNACIÓN vigente y activa del vehículo
-            $vehicle_movements = VehicleMovementLog::where('vehicle_id', $vehicle_id)
-                ->where('vehicle_status_id', 3)
+            $vehicle_movements = VehicleMovementLog::where('vehicle_id', $vehicle_id);
+            if (!is_null($column)) {
+                $vehicle_movements = VehicleMovementLog::where($column, $value);
+            }
+            $vehicle_movements->where('vehicle_status_id', 3)
                 ->where('valid', 1)
                 ->where('active', 1)
                 ->orderBy('id', 'desc');
@@ -595,11 +598,15 @@ class VehicleMovementLogController extends Controller
      * @param  \Illuminate\Http\int $vehicle_id - indica el id del vehiculo a rastrear
      * @return \Illuminate\Http\Response $response
      */
-    public function getLastLoanByVehicle(int $vehicle_id)
+    public function getLastLoanByVehicle(int $vehicle_id, string $column = null, any $value = null)
     {
         try {
             // Query base para obtener el movimiento de ASIGNACIÓN vigente y activa del vehículo
-            $vehicle_movements = VehicleMovementLog::where('vehicle_id', $vehicle_id)
+            $vehicle_movements = VehicleMovementLog::where('vehicle_id', $vehicle_id);
+            if (!is_null($column)) {
+                $vehicle_movements = VehicleMovementLog::where($column, $value);
+            }
+            $vehicle_movements
                 ->where('vehicle_status_id', 4)
                 ->where('valid', 1)
                 ->where('active', 1)
