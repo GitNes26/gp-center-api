@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('vouchers_settings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users', 'id')->comment("usuario que creo la confioguración");
+            $table->foreignId('user_id')->constrained('users', 'id')->comment("usuario que creo la configuración");
             $table->string('director_from')->comment("Director del departamento de Control Vehicular");
             $table->string('department_from')->comment("Departamento de Control Vehicular");
             $table->string('director_to_1')->comment("Director 1 a quien se dirije el oficio");

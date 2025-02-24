@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\Department;
+use App\Models\Departamento_CP;
 use App\Models\ObjResponse;
-
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
 
-class DepartmentController extends Controller
+class DepartamentoCPController extends Controller
 {
     /**
      * Mostrar lista de departamentos activas.
@@ -21,10 +18,11 @@ class DepartmentController extends Controller
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
-            $list = Department::where('active', true)
-                ->select('departments.*')
-                ->join('department_directors.director_id','=','employees.id')
-                ->orderBy('departments.id', 'asc')->get();
+            $list = Departamento_CP::all();
+            // where('activo', true)
+            // ->select('departamento.*')
+            // ->join('department_directors.director_id','=','employees.id')
+            // ->orderBy('departamento.id', 'asc')->get();
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'Peticion satisfactoria | Lista de departamentos.';
             $response->data["result"] = $list;
@@ -43,9 +41,9 @@ class DepartmentController extends Controller
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
-            $list = Department::where('active', true)
-                ->select('departments.id as id', 'departments.department as label')
-                ->orderBy('departments.department', 'asc')->get();
+            $list = Departamento_CP::where('activo', true)
+                ->select('departamento.id as id', 'departamento.department as label')
+                ->orderBy('departamento.department', 'asc')->get();
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'Peticion satisfactoria | Lista de departamentos';
             $response->data["result"] = $list;
@@ -71,7 +69,7 @@ class DepartmentController extends Controller
                 return response()->json($response);
             }
 
-            $new_department = Department::create([
+            $new_department = Departamento_CP::create([
                 'department' => $request->department,
                 'description' => $request->description,
             ]);
@@ -95,7 +93,7 @@ class DepartmentController extends Controller
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
-            $department = Department::find($request->id);
+            $department = Departamento_CP::find($request->id);
 
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'peticion satisfactoria | departamento encontrado.';
@@ -121,8 +119,8 @@ class DepartmentController extends Controller
                 $response->data = $duplicate;
                 return response()->json($response);
             }
-            
-            $department = Department::find($request->id)
+
+            $department = Departamento_CP::find($request->id)
                 ->update([
                     'department' => $request->department,
                     'description' => $request->description,
@@ -148,9 +146,9 @@ class DepartmentController extends Controller
     {
         $response->data = ObjResponse::DefaultResponse();
         try {
-            Department::find($request->id)
+            Departamento_CP::find($request->id)
                 ->update([
-                    'active' => false,
+                    'activo' => false,
                     'deleted_at' => date('Y-m-d H:i:s'),
                 ]);
             $response->data = ObjResponse::CorrectResponse();
@@ -174,7 +172,7 @@ class DepartmentController extends Controller
 
         $checkAvailable = new UserController();
         // #VALIDACION DE DATOS REPETIDOS
-        $duplicate = $checkAvailable->checkAvailableData('departments', 'department', $department, 'El departamento', 'department', $id, null);
+        $duplicate = $checkAvailable->checkAvailableData('departamento', 'department', $department, 'El departamento', 'department', $id, null);
         if ($duplicate["result"] == true) return $duplicate;
         return array("result" => false);
     }

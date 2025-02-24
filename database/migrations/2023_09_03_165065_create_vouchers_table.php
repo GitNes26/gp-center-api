@@ -19,15 +19,7 @@ return new class extends Migration
             $table->string('internal_folio');
             $table->string('letter_folio', 3)->nullable();
             $table->text('foliated_vouchers')->nullable();
-            // $table->text('vehicle')->nullable();
-            // $table->text('vehicle_plates')->nullable();
-            // $table->integer('requested_amount');
-            // $table->integer('payroll_number')->nullable();
-            // $table->string('department')->nullable();
-            // $table->string('name');
-            // $table->string('paternal_last_name');
-            // $table->string('maternal_last_name');
-            // $table->string('phone');
+
             $table->text('activity');
             $table->enum('voucher_status', ['CREADO', 'ALTA', 'VoBo', 'APROBADA', 'CANCELADA'])->default('ALTA');
             $table->integer('vobo_by')->nullable()->comment('Visto Bueno por');
@@ -43,6 +35,7 @@ return new class extends Migration
             $table->text('canceled_comments')->nullable();
             $table->dateTime('canceled_at')->nullable()->comment("cancelado el");
             $table->integer('requester_external')->nullable()->comment("cuando un usuario crea una solicitud por un solicitador");
+            $table->foreignId("department_director_id")->constrained("department_directors", "id");
 
             $table->boolean('active')->default(true);
             $table->timestamps();

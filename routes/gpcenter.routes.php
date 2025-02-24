@@ -10,6 +10,8 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\DeliveredVehicleController;
+use App\Http\Controllers\DepartamentoCPController;
+use App\Http\Controllers\DepartmentDirectorsController;
 use App\Http\Controllers\DirectorController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\LoanedVehicleController;
@@ -69,19 +71,21 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
     Route::controller(UserController::class)->group(function () {
-        Route::get('/users/role_id/{role_id}', 'index');
+        // Route::get('/users/role_id/{role_id}', 'index');
         Route::get('/users/by/role_id/{role_id}', 'indexByRole');
         Route::get('/users/selectIndex', 'selectIndex');
         Route::get('/users/{id}', 'show');
-        // Route::post('/users', 'create');
+        // Route::post('/users/create', 'createOrUpdate');
         // Route::post('/users/update/{id?}', 'update');
         Route::post('/users/destroy/{id}', 'destroy');
         Route::post('/users/destroyMultiple', 'destroyMultiple');
         Route::get('/users/{id}/DisEnableUser/{active}', 'DisEnableUser');
 
-        // Route::post('/users/create/{role_id}', 'create');
-        Route::post('/users/create/role_id/{role_id}', 'createOrUpdate');
-        Route::post('/users/update/role_id/{role_id}', 'createOrUpdate');
+        Route::get('/users', 'index');
+        Route::post('/users/create/{id?}', 'createOrUpdate');
+        Route::post('/users/update/{id}', 'createOrUpdate');
+        // Route::post('/users/create/role_id/{role_id}', 'createOrUpdate');
+        // Route::post('/users/update/role_id/{role_id}', 'createOrUpdate');
         Route::post('/users/changePasswordAuth', 'changePasswordAuth');
     });
 
@@ -119,6 +123,26 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/departments/create', 'create');
         Route::post('/departments/update/{id?}', 'update');
         Route::post('/departments/destroy/{id}', 'destroy');
+    });
+
+    Route::prefix('cp')->group(function () {
+        Route::prefix('departamentos')->controller(DepartamentoCPController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::get('/selectIndex', 'selectIndex');
+            Route::get('/{id}', 'show');
+            // Route::post('/create', 'create');
+            // Route::post('/update/{id?}', 'update');
+            // Route::post('/destroy/{id}', 'destroy');
+        });
+    });
+
+    Route::controller(DepartmentDirectorsController::class)->group(function () {
+        Route::get('/depDir', 'index');
+        Route::get('/depDir/selectIndex', 'selectIndex');
+        Route::get('/depDir/{id}', 'show');
+        Route::post('/depDir/create', 'create');
+        Route::post('/depDir/update/{id?}', 'update');
+        Route::post('/depDir/destroy/{id}', 'destroy');
     });
 
     Route::controller(BrandController::class)->group(function () {

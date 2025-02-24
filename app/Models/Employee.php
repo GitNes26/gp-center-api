@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserInfo extends Model
+class Employee extends Model
 {
     use HasFactory;
 
@@ -48,11 +48,17 @@ class UserInfo extends Model
      * Nombre de la tabla asociada al modelo.
      * @var string
      */
-    protected $table = 'user_info';
+    protected $table = 'employees';
 
     /**
      * LlavePrimaria asociada a la tabla.
      * @var string
      */
     protected $primaryKey = 'id';
+
+
+    public function departamentos()
+    {
+        return $this->belongsToMany(Departamento_CP::class, 'department_directors', 'director_id', 'department_id');
+    }
 }

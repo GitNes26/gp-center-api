@@ -68,4 +68,9 @@ class DirectorView extends Model
      * @var string
      */
     // protected $primaryKey = 'id';
+
+    public function departamentos()
+    {
+        return $this->belongsToMany(Departamento_CP::class, 'department_directors', 'id', 'department_id');
+    }
 }
