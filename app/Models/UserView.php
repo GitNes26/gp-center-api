@@ -8,25 +8,15 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class UserView extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
+     * Nombre de la tabla asociada al modelo.
+     * @var string
      */
-    protected $fillable = [
-        'username',
-        'email',
-        'password',
-        'department_id',
-        'employee_id',
-        'role_id',
-        'active',
-        'deleted_at'
-    ];
+    protected $table = 'vw_users';
 
     /**
      * The attributes that should be hidden for serialization.
@@ -36,14 +26,5 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
     ];
 }

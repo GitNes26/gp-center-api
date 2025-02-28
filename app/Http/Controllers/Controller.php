@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class Controller extends BaseController
 {
@@ -26,24 +27,29 @@ class Controller extends BaseController
      * 
      * @return string
      */
-    public function ImageUp($request, $requestFileName, $dirPath, $id, $posFix, $create, $nameFake)
+    public function ImageUp($request, $requestFileName, $dirPath, $model, $posFix, $create, $nameFake)
     {
         try {
             $dir = public_path($dirPath);
             $img_name = "";
             if ($request->hasFile($requestFileName)) {
-                // return "ImageUp->aqui todo bien 3";
+
                 $img_file = $request->file($requestFileName);
-                $dir_path = "$dirPath/$id";
-                $destination = "$dir/$id";
-                $img_name = $this->ImgUpload($img_file, $destination, $dir_path, "$id-$posFix");
+                $dir_path = "$dirPath/$model->id";
+                $destination = "$dir/$model->id";
+                $img_name = $this->ImgUpload($img_file, $destination, $dir_path, "$model->id-$posFix");
             } else {
                 if ($create) $img_name = "$dirPath/$nameFake";
             }
-            return $img_name;
+
+            if ($request->hasFile($requestFileName)) {
+                $model->$requestFileName = $img_name;
+                $model->save();
+            }
+            // return $img_name;
         } catch (\Exception $ex) {
             $msg =  "Error al cargar imagen de documentos data: " . $ex->getMessage();
-            error_log("$msg");
+            Log::error($msg);
             return "$msg";
         }
     }
@@ -81,7 +87,7 @@ class Controller extends BaseController
             return "$dir/$imgName";
         } catch (\Error $err) {
             $msg = "error en imgUpload(): " . $err->getMessage();
-            error_log($msg);
+            Log::error($msg);
             return "$msg";
         }
     }
@@ -95,13 +101,13 @@ class Controller extends BaseController
     {
         if ($complementInfo) {
             $query = "SELECT count(*) as duplicate FROM $table WHERE $column='$value'";
-            if ($id != null) $query = "SELECT count(*) as duplicate FROM $table WHERE $column='$value' AND id!=$id";
+            if ($id != null) $query .= " AND id!=$id";
         } elseif ($secondTable) {
             $query = "SELECT count(*) as duplicate FROM $table INNER JOIN $secondTable ON rol_id=rols.id WHERE $column='$value' AND active=1;";
             if ($id != null) $query = "SELECT count(*) as duplicate FROM $table t INNER JOIN $secondTable ON t.rol_id=rols.id WHERE t.$column='$value' AND active=1 AND t.id!=$id";
         } else {
             $query = "SELECT count(*) as duplicate FROM $table WHERE $column='$value' AND active=1";
-            if ($id != null) $query = "SELECT count(*) as duplicate FROM $table WHERE $column='$value' AND active=1 AND id!=$id";
+            if ($id != null) $query .= " AND id!=$id";
         }
         // echo $query;
         $result = DB::select($query)[0];

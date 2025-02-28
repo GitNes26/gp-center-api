@@ -10,14 +10,15 @@ class Employee extends Model
     use HasFactory;
 
     /**
-     * The attributes that are mass assignable.
+     * define qué campos son para asignarse masivamente.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'id',
+        // 'id',
         'user_id',
-        'avatar',
+        'profile_id',
+        // 'avatar',
         'name',
         'paternal_last_name',
         'maternal_last_name',
@@ -25,15 +26,28 @@ class Employee extends Model
         'license_number',
         'license_type',
         'license_due_date',
-        'img_license',
-        'img_firm',
+        // 'img_license',
+        // 'img_firm',
         'payroll_number',
         'department',
         'community_id',
         'street',
         'num_ext',
         'num_int',
+        'active',
+        'deleted_at'
     ];
+    // protected $timestamps=false:
+
+    /** 
+     * define qué campos NO deben asignarse masivamente.
+     */
+    protected $guarded = [
+        // 'avatar',
+        // 'img_license',
+        // 'img_firm',
+    ];
+
 
     /**
      * Los atributos que deben ocultarse para la serialización.

@@ -5,78 +5,29 @@ namespace App\Http\Controllers;
 use App\Models\ObjResponse;
 use App\Models\User;
 use App\Models\Employee;
-use App\Models\EmployeeView;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class EmployeeController extends Controller
 {
-    /**
-     * Mostrar lista de empleados activos del
-     * uniendo con roles.
-     *
-     * @return \Illuminate\Http\Response $response
-     */
-    public function index(Response $response)
-    {
-        $response->data = ObjResponse::DefaultResponse();
-        try {
-            $userAuth = Auth::user();
-            $list = $userAuth->role_id == 1 ? EmployeeView::all() : EmployeeView::where('active', true)->get();
-
-            $response->data = ObjResponse::CorrectResponse();
-            $response->data["message"] = 'peticion satisfactoria | lista de empleados.';
-            $response->data["alert_text"] = "empleados encontrados";
-            $response->data["result"] = $list;
-        } catch (\Exception $ex) {
-            $msg = "EmployeesController ~ index: " . $ex->getMessage();
-            Log::error($msg);
-            $response->data = ObjResponse::CatchResponse($msg);
-        }
-        return response()->json($response, $response->data["status_code"]);
-    }
-
-    /**
-     * Mostrar listado para un selector.
-     *
-     * @return \Illuminate\Http\Response $response
-     */
-    public function selectIndex(Response $response)
-    {
-        $response->data = ObjResponse::DefaultResponse();
-        try {
-            $userAuth = Auth::user();
-            $list = EmployeeView::where('active', true)->select("id as id", DB::raw("CONCAT(payroll_number,' - ',full_name) as label"))->orderBy("full_name", "asc")->get();
-
-            $response->data = ObjResponse::CorrectResponse();
-            $response->data["message"] = 'peticion satisfactoria | lista de empleados.';
-            $response->data["alert_text"] = "empleados encontrados";
-            $response->data["result"] = $list;
-            $response->data["toast"] = false;
-        } catch (\Exception $ex) {
-            $msg = "EmployeesController ~ selectIndex: " . $ex->getMessage();
-            Log::error($msg);
-            $response->data = ObjResponse::CatchResponse($msg);
-        }
-        return response()->json($response, $response->data["status_code"]);
-    }
 
     /**
      * Crear o Actualizar información del usuario.
      *
      * @return \Illuminate\Http\Response $response
      */
-    public function createOrUpdate($id, Request $request)
+    public function createOrUpdate($user_id, Request $request)
     {
         try {
-            $employee = Employee::find($id);
-            if (!$employee) $employee = new Employee();
+            $employee = Employee::where('user_id', $user_id)->first();
             Log::info("EmployeeController ~ createOrUpdate ~ employee:" . $employee);
+            $id = null;
+            if ($employee) $id = $employee->id;
+            else $employee = new Employee();
 
-            $duplicate = $this->validateAvailableData($request->phone, $request->license_number, $request->payroll_number, $employeeid);
+            $duplicate = $this->validateAvailableData($request->phone, $request->license_number, $request->payroll_number, $id);
             if ($duplicate["result"] == true) {
                 return $duplicate;
             }
@@ -103,7 +54,8 @@ class EmployeeController extends Controller
             $employee->save();
             Log::info("EmployeeController ~ employee: " . $employee);
 
-
+            $user = User::find($user_id);
+            Log::info("EmployeeController ~ user: " . $user);
             $dirPath = "GPCenter";
             if (!is_null($request->dir)) $dirPath .= $request->dir;
             Log::info("EmployeeController ~ dirPath: " . $dirPath);
@@ -113,15 +65,11 @@ class EmployeeController extends Controller
             $this->ImageUp($request, "img_license", $dirPath, $employee, "licencia", true, "noLicense");
             $this->ImageUp($request, "img_firm", $dirPath, $employee, "firma", true, "noFirm");
 
-            $response->data = ObjResponse::CorrectResponse();
-            $response->data["message"] = $id > 0 ? "peticion satisfactoria | $request->objName editado." : "peticion satisfactoria | $request->objName registrado.";
-            $response->data["alert_text"] = $id > 0 ? "$request->objName editado" : "$request->objName registrado";
+            return $employee;
         } catch (\Exception $ex) {
-            $msg = "UserController ~ createOrUpdate ~ Hubo un error al crear o actualizar el Employee -> " . $ex->getMessage();
-            Log::error($msg);
-            $response->data = ObjResponse::CatchResponse($msg);
+            error_log("Hubo un error al crear o actualizar el Employee -> " . $ex->getMessage());
+            echo "Hubo un error al crear o actualizar el Employee -> " . $ex->getMessage();
         }
-        return response()->json($response, $response->data["status_code"]);
     }
 
 

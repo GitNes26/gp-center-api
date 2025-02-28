@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
             // $table->foreignId('user_id')->constrained('users', 'id');
+            // profile_id
             $table->foreignId('role_id')->constrained('roles', 'id');
             $table->string('payroll_number')->default('No Aplica');
             $table->text('others_permissions')->nullable();
@@ -35,6 +36,7 @@ return new class extends Migration
             $table->string('street');
             $table->string('num_ext')->default("S/N");
             $table->string('num_int')->nullable()->default("S/N");
+            $table->boolean('active')->default(true);
             $table->timestamps();
             $table->dateTime('deleted_at')->nullable();
         });

@@ -275,64 +275,30 @@ class UserController extends Controller
    {
       $response->data = ObjResponse::DefaultResponse();
       try {
-         $token = $request->bearerToken();
-         //  return $request;
-         // return  "role_id:$role_id -- el user_id: $request->user_id -- email:$request->email --  y el id:$request->id";
+         // $token = $request->bearerToken();
 
+         DB::beginTransaction();
          #SI NO ES ALGUN TIPO DE ADMIN -
-         if (!in_array((int)$role_id, [1, 2, 7])) $id = (int)$request->user_id > 0 ? (int)$request->user_id : null;
-         else $id = (int)$request->id > 0 ? (int)$request->id : null;
+         // if (!in_array((int)$role_id, [1, 2, 7])) $id = (int)$request->user_id > 0 ? (int)$request->user_id : null;
+         // else $id = (int)$request->id > 0 ? (int)$request->id : null;
+         if ((bool)$request->isEmployee) {
+            $controller = new EmployeeController();
+            $id = (int)$request->user_id > 0 ? (int)$request->user_id : null;
+         } else {
+            $id = (int)$request->id > 0 ? (int)$request->id : null;
+         }
+         Log::info("UserController ~ id: " . $id);
 
          if ($id < 1) $id = (int)$request->id;
-         // if ((int)$role_id <= 2 || (int)$role_id >= 7) $id = (int)$request->id > 0 ? (int)$request->id : null;
-         // else $id = (int)$request->user_id > 0 ? (int)$request->user_id : null;
-         $minus = "usuario";
-         $mayus = "Usuario";
          $controller = null;
          $secondTable = null;
-         //  if ($request->role_id == 5) $secondTable="directors";
-         //  if ($request->role_id == 6) $secondTable="drivers";
-         // return "Solicitador de vales: $id";
+         Log::info("UserController ~ id2: " . $id);
 
-
+         #VALIDACIÓN DE CAMPOS EN USER
          $duplicate = $this->validateAvailableData($request->username, $request->email, $id, $secondTable);
          if ($duplicate["result"] == true) {
             $response->data = $duplicate;
             return response()->json($response);
-         }
-         # VALIDACION DE DUPLICADOS
-         if (!$id) {
-            if ($role_id == 5) {
-               $minus = "director";
-               $mayus = "Director";
-               // $controller = new DirectorController();
-               $controller = new EmployeeController();
-               $duplicate = $controller->validateAvailableData($request->phone, $request->license_number, $request->payroll_number, null);
-               if ($duplicate["result"] == true) {
-                  $response->data = $duplicate;
-                  return response()->json($response);
-               }
-            } elseif ($role_id == 6) {
-               $minus = "conductor";
-               $mayus = "Conductor";
-               // $controller = new DriverController();
-               $controller = new EmployeeController();
-               $duplicate = $controller->validateAvailableData($request->phone, $request->license_number, $request->payroll_number, null);
-               if ($duplicate["result"] == true) {
-                  $response->data = $duplicate;
-                  return response()->json($response);
-               }
-            } elseif ($role_id == 8) {
-               $minus = "solicitador de vales";
-               $mayus = "Solicitador de vales";
-               // $controller = new VoucherRequesterController();
-               $controller = new EmployeeController();
-               $duplicate = $controller->validateAvailableData($request->phone, "", $request->payroll_number, null);
-               if ($duplicate["result"] == true) {
-                  $response->data = $duplicate;
-                  return response()->json($response);
-               }
-            }
          }
 
          $message_change_psw = "";
@@ -348,41 +314,11 @@ class UserController extends Controller
             $message_change_psw = "Contraseña actualizada - todas tus sesiones se cerraran para aplicar cambios.";
          }
          $user->role_id = $role_id;
-
+         $user->department_id = $request->department_id;
          $user->save();
+         
          $response->data = ObjResponse::CorrectResponse();
 
-         if ($role_id == 1) {
-            $minus = "super admin";
-            $mayus = "Super Admin";
-         } elseif ($role_id == 2) {
-            $minus = "admin";
-            $mayus = "Admin";
-         } elseif ($role_id == 3) {
-            $minus = "encargado de almacén";
-            $mayus = "Encargado de Almacén";
-         } elseif ($role_id == 4) {
-            $minus = "mecánico";
-            $mayus = "Mecánico";
-         } elseif ($role_id == 5) {
-            $minus = "director";
-            $mayus = "Director";
-            $controller = new EmployeeController();
-            // $controller = new DirectorController();
-         } elseif ($role_id == 6) {
-            $minus = "conductor";
-            $mayus = "Conductor";
-            $controller = new EmployeeController();
-            // $controller = new DriverController();
-         } elseif ($role_id == 7) {
-            $minus = "admin de control vehícular";
-            $mayus = "Admin de Control Vehícular";
-         } elseif ($role_id == 8) {
-            $minus = "solicitador de vales";
-            $mayus = "Solicitador de vales";
-            $controller = new EmployeeController();
-            // $controller = new VoucherRequesterController();
-         }
          if ($controller) {
             $obj = $controller->createOrUpdate($user->id, $request);
 
@@ -391,9 +327,11 @@ class UserController extends Controller
                return response()->json($response);
             }
          }
-         $response->data["message"] = $id > 0 ? "peticion satisfactoria | $minus editado." : "peticion satisfactoria | $minus registrado.";
-         $response->data["alert_text"] = $id > 0 ? "$mayus editado $message_change_psw" : "$mayus registrado";
+         DB::commit();
+         $response->data["message"] = $id > 0 ? "peticion satisfactoria | $request->objName editado." : "peticion satisfactoria | $request->objName registrado.";
+         $response->data["alert_text"] = $id > 0 ? "$request->objName editado $message_change_psw" : "$request->objName registrado";
       } catch (\Exception $ex) {
+         DB::rollBack();
          $msg = "UserController ~ createOrUpdate " . $ex->getMessage();
          Log::error($msg);
          $response->data = ObjResponse::CatchResponse($msg);

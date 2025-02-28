@@ -14,6 +14,7 @@ use App\Http\Controllers\DepartamentoCPController;
 use App\Http\Controllers\DepartmentDirectorsController;
 use App\Http\Controllers\DirectorController;
 use App\Http\Controllers\DriverController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\LoanedVehicleController;
 use App\Http\Controllers\MechanicController;
 use App\Http\Controllers\MenuController;
@@ -82,11 +83,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/users/{id}/DisEnableUser/{active}', 'DisEnableUser');
 
         Route::get('/users', 'index');
-        Route::post('/users/create/{id?}', 'createOrUpdate');
+        Route::post('/users/create', 'createOrUpdate');
         Route::post('/users/update/{id}', 'createOrUpdate');
         // Route::post('/users/create/role_id/{role_id}', 'createOrUpdate');
         // Route::post('/users/update/role_id/{role_id}', 'createOrUpdate');
         Route::post('/users/changePasswordAuth', 'changePasswordAuth');
+    });
+    Route::prefix('employees')->group(function () {
+        Route::get('/', [EmployeeController::class, 'index']);
+        Route::get('/selectIndex', [EmployeeController::class, 'selectIndex']);
+        Route::get('/create/user_id/{user_id}', [EmployeeController::class, 'createOrUpdate']);
     });
 
     Route::controller(DirectorController::class)->group(function () {
@@ -124,7 +130,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/departments/update/{id?}', 'update');
         Route::post('/departments/destroy/{id}', 'destroy');
     });
-
+    Route::controller(DepartmentDirectorsController::class)->group(function () {
+        Route::get('/depDir', 'index');
+        Route::get('/depDir/selectIndex', 'selectIndex');
+        Route::get('/depDir/department/{department_id}', 'show');
+        Route::post('/depDir/create', 'create');
+        Route::post('/depDir/update/{id?}', 'update');
+        Route::post('/depDir/destroy/{id}', 'destroy');
+    });
     Route::prefix('cp')->group(function () {
         Route::prefix('departamentos')->controller(DepartamentoCPController::class)->group(function () {
             Route::get('/', 'index');
@@ -136,14 +149,7 @@ Route::middleware('auth:sanctum')->group(function () {
         });
     });
 
-    Route::controller(DepartmentDirectorsController::class)->group(function () {
-        Route::get('/depDir', 'index');
-        Route::get('/depDir/selectIndex', 'selectIndex');
-        Route::get('/depDir/{id}', 'show');
-        Route::post('/depDir/create', 'create');
-        Route::post('/depDir/update/{id?}', 'update');
-        Route::post('/depDir/destroy/{id}', 'destroy');
-    });
+
 
     Route::controller(BrandController::class)->group(function () {
         Route::get('/brands', 'index');
@@ -194,10 +200,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/vehiclesPlates/history/{vehicle_id}', 'history');
     });
 
-    Route::controller(VehicleMovementController::class)->group(function () {
-        Route::get('/vehicleMovements', 'index');
-        Route::get('/vehicleMovements/history/{vehicle_id}', 'history');
-    });
+    // Route::controller(VehicleMovementController::class)->group(function () {
+    //     Route::get('/vehicleMovements', 'index');
+    //     Route::get('/vehicleMovements/history/{vehicle_id}', 'history');
+    // });
     Route::controller(VehicleMovementLogController::class)->group(function () {
         Route::get('/vehicleMovementsLog', 'index');
         Route::get('/vehicleMovementsLog/history/{vehicle_id}', 'history');
@@ -223,31 +229,31 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/services/{id}/loadMaterial/{request_material}', 'loadMaterial');
     });
 
-    Route::controller(AssignedVehicleController::class)->group(function () {
-        Route::get('/assignedVehicle', 'index');
-        Route::get('/assignedVehicle/{id}', 'show');
-        Route::post('/assignedVehicle/create', 'createOrUpdate');
-        Route::post('/assignedVehicle/update/{id?}', 'createOrUpdate');
-        Route::post('/assignedVehicle/destroy/{id}', 'destroy');
-    });
+    // Route::controller(AssignedVehicleController::class)->group(function () {
+    //     Route::get('/assignedVehicle', 'index');
+    //     Route::get('/assignedVehicle/{id}', 'show');
+    //     Route::post('/assignedVehicle/create', 'createOrUpdate');
+    //     Route::post('/assignedVehicle/update/{id?}', 'createOrUpdate');
+    //     Route::post('/assignedVehicle/destroy/{id}', 'destroy');
+    // });
 
-    Route::controller(LoanedVehicleController::class)->group(function () {
-        Route::get('/loanedVehicle', 'index');
-        Route::get('/loanedVehicle/{id}', 'show');
-        Route::post('/loanedVehicle/create', 'createOrUpdate');
-        Route::post('/loanedVehicle/update/{id?}', 'createOrUpdate');
-        Route::post('/loanedVehicle/destroy/{id}', 'destroy');
+    // Route::controller(LoanedVehicleController::class)->group(function () {
+    //     Route::get('/loanedVehicle', 'index');
+    //     Route::get('/loanedVehicle/{id}', 'show');
+    //     Route::post('/loanedVehicle/create', 'createOrUpdate');
+    //     Route::post('/loanedVehicle/update/{id?}', 'createOrUpdate');
+    //     Route::post('/loanedVehicle/destroy/{id}', 'destroy');
 
-        Route::post('/loanedVehicle/returnLoan', 'returnLoan');
-    });
+    //     Route::post('/loanedVehicle/returnLoan', 'returnLoan');
+    // });
 
-    Route::controller(DeliveredVehicleController::class)->group(function () {
-        Route::get('/deliveredVehicle', 'index');
-        Route::get('/deliveredVehicle/{id}', 'show');
-        Route::post('/deliveredVehicle/create', 'createOrUpdate');
-        Route::post('/deliveredVehicle/update/{id?}', 'createOrUpdate');
-        Route::post('/deliveredVehicle/destroy/{id}', 'destroy');
-    });
+    // Route::controller(DeliveredVehicleController::class)->group(function () {
+    //     Route::get('/deliveredVehicle', 'index');
+    //     Route::get('/deliveredVehicle/{id}', 'show');
+    //     Route::post('/deliveredVehicle/create', 'createOrUpdate');
+    //     Route::post('/deliveredVehicle/update/{id?}', 'createOrUpdate');
+    //     Route::post('/deliveredVehicle/destroy/{id}', 'destroy');
+    // });
 
     Route::controller(VoucherController::class)->group(function () {
         Route::get('/vouchers', 'index');

@@ -6,6 +6,7 @@ use App\Models\Departamento_CP;
 use App\Models\ObjResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class DepartamentoCPController extends Controller
 {
@@ -42,7 +43,7 @@ class DepartamentoCPController extends Controller
         $response->data = ObjResponse::DefaultResponse();
         try {
             $list = Departamento_CP::where('activo', true)
-                ->select('departamento.id as id', 'departamento.department as label')
+                ->select('departamento.id as id', DB::selectRaw("CONCAT(departamento.department,' ','(',departamento.organismo,')' as label"))
                 ->orderBy('departamento.department', 'asc')->get();
             $response->data = ObjResponse::CorrectResponse();
             $response->data["message"] = 'Peticion satisfactoria | Lista de departamentos';
