@@ -92,7 +92,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('employees')->group(function () {
         Route::get('/', [EmployeeController::class, 'index']);
         Route::get('/selectIndex', [EmployeeController::class, 'selectIndex']);
-        Route::get('/create/user_id/{user_id}', [EmployeeController::class, 'createOrUpdate']);
+        Route::post('/create', [EmployeeController::class, 'createOrUpdate']);
+        Route::post('/update/{id}', [EmployeeController::class, 'createOrUpdate']);
+        Route::post('/destroy/{id}', 'destroy');
+        Route::post('/destroyMultiple', 'destroyMultiple');
+        Route::get('/{id}/DisEnableUser/{active}', 'DisEnableUser');
     });
 
     Route::controller(DirectorController::class)->group(function () {

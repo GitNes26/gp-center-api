@@ -312,54 +312,6 @@ class UserController extends Controller
       return response()->json($response, $response->data["status_code"]);
    }
 
-   // /**
-   //  * Crear usuario.
-   //  *
-   //  * @param  \Illuminate\Http\Request $request
-   //  * @return \Illuminate\Http\Response $response
-   //  */
-   // public function create(Request $request, Int $role_id, Response $response)
-   // {
-   //    $response->data = ObjResponse::DefaultResponse();
-   //    try {
-   //       $token = $request->bearerToken();
-
-   //       $duplicate = $this->validateAvailableData($request->username, $request->email, null);
-   //       if ($duplicate["result"] == true) {
-   //          $response->data = $duplicate;
-   //          return response()->json($response);
-   //       }
-
-   //       $new_user = User::create([
-   //          'username' => $request->username,
-   //          'email' => $request->email,
-   //          'password' => Hash::make($request->password),
-   //          'role_id' => $role_id,
-   //       ]);
-
-   //       $response->data = ObjResponse::CorrectResponse();
-   //       $response->data["message"] = 'peticion satisfactoria | usuario registrado.';
-   //       $response->data["alert_text"] = "Usuario registrado";
-
-   //       if ($role_id == 5) {
-   //          // $directorController = new DirectorController();
-   //          $directorController = new EmployeeController();
-   //          $director = $directorController->createOrUpdate($new_user->id, $request);
-
-   //          if ($director["result"] == true) {
-   //             $response->data = $director;
-   //             return response()->json($response);
-   //          }
-
-   //          $response->data["message"] = 'peticion satisfactoria | director registrado.';
-   //          $response->data["alert_text"] = "Director registrado";
-   //       }
-   //    } catch (\Exception $ex) {
-   //       $response->data = ObjResponse::CatchResponse($ex->getMessage());
-   //    }
-   //    return response()->json($response, $response->data["status_code"]);
-   // }
-
    /**
     * Mostrar usuario.
     *
@@ -395,93 +347,6 @@ class UserController extends Controller
       }
       return response()->json($response, $response->data["status_code"]);
    }
-
-   // /**
-   //  * Actualizar usuario.
-   //  *
-   //  * @param  \Illuminate\Http\Request $request
-   //  * @return \Illuminate\Http\Response $response
-   //  */
-   // public function update(Request $request, Response $response)
-   // {
-   //    $response->data = ObjResponse::DefaultResponse();
-   //    try {
-   //       $duplicate = $this->validateAvailableData($request->username, $request->email, $request->id);
-   //       var_dump($duplicate);
-   //       if ($duplicate["result"] == true) {
-   //          $response->data = $duplicate;
-   //          return response()->json($response);
-   //       }
-
-   //       // echo "el id: $request->id";
-   //       if ($request->role_id <= 2) {
-   //          if (strlen($request->password) > 0)
-   //             $new_user = User::find($request->id)
-   //                ->update([
-   //                   'username' => $request->username,
-   //                   'email' => $request->email,
-   //                   'password' => Hash::make($request->password),
-   //                   'role_id' => $request->role_id,
-   //                   'department_id' => 1, //$request->department_id
-   //                ]);
-   //          else
-   //             $new_user = User::find($request->id)
-   //                ->update([
-   //                   'username' => $request->username,
-   //                   'email' => $request->email,
-   //                   'role_id' => $request->role_id,
-   //                   'department_id' => 1, //$request->department_id
-   //                ]);
-   //       } else {
-   //          if (strlen($request->password) > 0)
-   //             $new_user = User::find($request->id)
-   //                ->update([
-   //                   'username' => $request->username,
-   //                   'email' => $request->email,
-   //                   'password' => Hash::make($request->password),
-   //                   'role_id' => $request->role_id,
-   //                   'phone' => $request->phone,
-   //                   'license_number' => $request->license_number,
-   //                   'license_due_date' => $request->license_due_date,
-   //                   'payroll_number' => $request->payroll_number,
-   //                   'department_id' => $request->department_id,
-   //                   'name' => $request->name,
-   //                   'paternal_last_name' => $request->paternal_last_name,
-   //                   'maternal_last_name' => $request->maternal_last_name,
-   //                   'community_id' => $request->community_id,
-   //                   'street' => $request->street,
-   //                   'num_ext' => $request->num_ext,
-   //                   'num_int' => $request->num_int,
-   //                ]);
-   //          else
-   //             $new_user = User::find($request->id)
-   //                ->update([
-   //                   'username' => $request->username,
-   //                   'email' => $request->email,
-   //                   'role_id' => $request->role_id,
-   //                   'phone' => $request->phone,
-   //                   'license_number' => $request->license_number,
-   //                   'license_due_date' => $request->license_due_date,
-   //                   'payroll_number' => $request->payroll_number,
-   //                   'department_id' => $request->department_id,
-   //                   'name' => $request->name,
-   //                   'paternal_last_name' => $request->paternal_last_name,
-   //                   'maternal_last_name' => $request->maternal_last_name,
-   //                   'community_id' => $request->community_id,
-   //                   'street' => $request->street,
-   //                   'num_ext' => $request->num_ext,
-   //                   'num_int' => $request->num_int,
-   //                ]);
-   //       }
-
-   //       $response->data = ObjResponse::CorrectResponse();
-   //       $response->data["message"] = 'peticion satisfactoria | usuario actualizado.';
-   //       $response->data["alert_text"] = "Usuario actualizado";
-   //    } catch (\Exception $ex) {
-   //       $response->data = ObjResponse::CatchResponse($ex->getMessage());
-   //    }
-   //    return response()->json($response, $response->data["status_code"]);
-   // }
 
    /**
     * "Eliminar" (cambiar estado activo=false) usuario.
@@ -559,53 +424,6 @@ class UserController extends Controller
       return response()->json($response, $response->data["status_code"]);
    }
 
-
-   public function ImgUpload($image, $destination, $dir, $imgName)
-   {
-      try {
-         $type = "JPG";
-         $permissions = 0777;
-
-         if (stripos("pdf", $image->getClientOriginalExtension()) !== false) {
-            $type = "PDF";
-            if (file_exists("$dir/$imgName.pdf")) {
-               // Establecer permisos
-               if (chmod("$dir/$imgName.pdf", $permissions)) {
-                  @unlink("$dir/$imgName.pdf");
-                  sleep(2);
-               }
-               $type = "PDF";
-            } elseif (file_exists("$dir/$imgName.PDF")) {
-               // Establecer permisos
-               if (chmod("$dir/$imgName.PDF", $permissions)) {
-                  @unlink("$dir/$imgName.PDF");
-                  sleep(2);
-               }
-               $type = "pdf";
-            }
-         } else {
-            if (file_exists("$dir/$imgName.PNG")) {
-               // Establecer permisos
-               if (chmod("$dir/$imgName.PNG", $permissions)) {
-                  @unlink("$dir/$imgName.PNG");
-               }
-               $type = "JPG";
-            } elseif (file_exists("$dir/$imgName.JPG")) {
-               // Establecer permisos
-               if (chmod("$dir/$imgName.JPG", $permissions)) {
-                  @unlink("$dir/$imgName.JPG");
-               }
-               $type = "PNG";
-            }
-         }
-
-         $imgName = "$imgName.$type";
-         $image->move($destination, $imgName);
-         return "$dir/$imgName";
-      } catch (\Error $err) {
-         error_log("error en imgUpload(): " . $err->getMessage());
-      }
-   }
 
    private function validateAvailableData($username, $email, $id, $secondTable = null)
    {

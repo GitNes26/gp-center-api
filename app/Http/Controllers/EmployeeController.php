@@ -65,25 +65,28 @@ class EmployeeController extends Controller
     }
 
     /**
-     * Crear o Actualizar información del usuario.
-     *
+     * Crear o Actualizar información del empleado.
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
      * @return \Illuminate\Http\Response $response
      */
-    public function createOrUpdate($id, Request $request)
+    public function createOrUpdate(Request $request, Response $response, $id = null)
     {
         try {
-            $employee = Employee::find($id);
-            if (!$employee) $employee = new Employee();
-            Log::info("EmployeeController ~ createOrUpdate ~ employee:" . $employee);
+            $response->data = ObjResponse::DefaultResponse();
+            // $employee = Employee::find($id);
+            // if (!$employee) $employee = new Employee();
+            // Log::info("EmployeeController ~ createOrUpdate ~ employee:" . $employee);
 
-            $duplicate = $this->validateAvailableData($request->phone, $request->license_number, $request->payroll_number, $employeeid);
+            $duplicate = $this->validateAvailableData($request->phone, $request->license_number, $request->payroll_number, $id);
             if ($duplicate["result"] == true) {
-                return $duplicate;
+                $response->data = $duplicate;
+                return response()->json($response);
             }
 
             // $employee->fill($request->all());
 
-            $employee->user_id = $user_id;
+            // $employee->user_id = $user_id;
             $employee->name = $request->name;
             $employee->paternal_last_name = $request->paternal_last_name;
             $employee->maternal_last_name = $request->maternal_last_name;
@@ -109,7 +112,6 @@ class EmployeeController extends Controller
             Log::info("EmployeeController ~ dirPath: " . $dirPath);
 
             $this->ImageUp($request, "avatar", $dirPath, $employee, "avatar", true, "noAvatar");
-            // Log::info("EmployeeController ~ avatar: ".$avatar);
             $this->ImageUp($request, "img_license", $dirPath, $employee, "licencia", true, "noLicense");
             $this->ImageUp($request, "img_firm", $dirPath, $employee, "firma", true, "noFirm");
 
@@ -117,22 +119,98 @@ class EmployeeController extends Controller
             $response->data["message"] = $id > 0 ? "peticion satisfactoria | $request->objName editado." : "peticion satisfactoria | $request->objName registrado.";
             $response->data["alert_text"] = $id > 0 ? "$request->objName editado" : "$request->objName registrado";
         } catch (\Exception $ex) {
-            $msg = "UserController ~ createOrUpdate ~ Hubo un error al crear o actualizar el Employee -> " . $ex->getMessage();
+            $msg = "EmployeeController ~ createOrUpdate ~ Hubo un error al crear o actualizar el Employee -> " . $ex->getMessage();
             Log::error($msg);
             $response->data = ObjResponse::CatchResponse($msg);
         }
         return response()->json($response, $response->data["status_code"]);
     }
 
+    /**
+    * "Eliminar" (cambiar estado activo=false) empleado.
+    *
+    * @param  int $id
+    * @return \Illuminate\Http\Response $response
+    */
+   public function destroy(int $id, Response $response)
+   {
+      $response->data = ObjResponse::DefaultResponse();
+      try {
+         Employee::find($id)
+            ->update([
+               'active' => false,
+               'deleted_at' => date('Y-m-d H:i:s'),
+            ]);
+         $response->data = ObjResponse::CorrectResponse();
+         $response->data["message"] = 'peticion satisfactoria | empleado eliminado.';
+         $response->data["alert_text"] = "Usuario eliminado";
+      } catch (\Exception $ex) {
+         $response->data = ObjResponse::CatchResponse($ex->getMessage());
+      }
+      return response()->json($response, $response->data["status_code"]);
+   }
+
+   /**
+    * Eliminar empleado o empleados.
+    *
+    * @param  int $id
+    * @param  \Illuminate\Http\Request $request
+    * @return \Illuminate\Http\Response $response
+    */
+   public function destroyMultiple(Request $request, Response $response)
+   {
+      $response->data = ObjResponse::DefaultResponse();
+      try {
+         // echo "$request->ids";
+         // $deleteIds = explode(',', $ids);
+         $countDeleted = sizeof($request->ids);
+         Employee::whereIn('id', $request->ids)->update([
+            'active' => false,
+            'deleted_at' => date('Y-m-d H:i:s'),
+         ]);
+         $response->data = ObjResponse::CorrectResponse();
+         $response->data["message"] = $countDeleted == 1 ? 'peticion satisfactoria | empleado eliminado.' : "peticion satisfactoria | empleados eliminados ($countDeleted).";
+         $response->data["alert_text"] = $countDeleted == 1 ? 'Usuario eliminado' : "Usuarios eliminados  ($countDeleted)";
+      } catch (\Exception $ex) {
+         $response->data = ObjResponse::CatchResponse($ex->getMessage());
+      }
+      return response()->json($response, $response->data["status_code"]);
+   }
+
+   /**
+    * "Activar o Desactivar" (cambiar estado activo) empleado.
+    *
+    * @param  int $id
+    * @return \Illuminate\Http\Response $response
+    */
+   public function DisEnableEmployee(Int $id, Int $active, Response $response)
+   {
+      $response->data = ObjResponse::DefaultResponse();
+      try {
+         Employee::where('id', $id)
+            ->update([
+               'active' => (bool)$active
+            ]);
+
+         $description = $active == "0" ? 'desactivado' : 'reactivado';
+         $response->data = ObjResponse::CorrectResponse();
+         $response->data["message"] = "peticion satisfactoria | empleado $description.";
+         $response->data["alert_text"] = "Usuario $description";
+      } catch (\Exception $ex) {
+         $response->data = ObjResponse::CatchResponse($ex->getMessage());
+      }
+      return response()->json($response, $response->data["status_code"]);
+   }
+
 
     public function validateAvailableData($phone, $license_number, $payroll_number, $id)
     {
         // #VALIDACION DE DATOS REPETIDOS
-        $duplicate = $this->checkAvailableData('employees', 'phone', $phone, 'El número telefónico', 'phone', $id, "users", true);
+        $duplicate = $this->checkAvailableData('employees', 'phone', $phone, 'El número telefónico', 'phone', $id, false, false);
         if ($duplicate["result"] == true) return $duplicate;
-        $duplicate = $this->checkAvailableData('employees', 'license_number', $license_number, 'El número de licencia', 'license_number', $id, "users", true);
+        $duplicate = $this->checkAvailableData('employees', 'license_number', $license_number, 'El número de licencia', 'license_number', $id, false, false);
         if ($duplicate["result"] == true) return $duplicate;
-        $duplicate = $this->checkAvailableData('employees', 'payroll_number', $payroll_number, 'El empleado (número de nómina) ya ha sido registrado', 'payroll_number', $id, "users", true);
+        $duplicate = $this->checkAvailableData('employees', 'payroll_number', $payroll_number, 'El empleado (número de nómina) ya ha sido registrado,', 'payroll_number', $id, false, false);
         if ($duplicate["result"] == true) return $duplicate;
         return array("result" => false);
     }

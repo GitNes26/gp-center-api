@@ -17,9 +17,9 @@ return new class extends Migration
             $table->id();
             // $table->foreignId('user_id')->constrained('users', 'id');
             // profile_id
-            $table->foreignId('role_id')->constrained('roles', 'id');
+            // $table->foreignId('role_id')->constrained('roles', 'id');
             $table->string('payroll_number')->default('No Aplica');
-            $table->text('others_permissions')->nullable();
+            // $table->text('others_permissions')->nullable();
             $table->string('avatar')->nullable();
             $table->string('name');
             $table->string('paternal_last_name');
