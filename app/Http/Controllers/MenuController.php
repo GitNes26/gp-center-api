@@ -86,7 +86,7 @@ class MenuController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response $response
      */
-    public function DisEnableMenu(Int $id, Int $active, Response $response)
+    public function disEnableMenu(Int $id, Int $active, Response $response)
     {
         $response->data = ObjResponse::DefaultResponse();
         try {

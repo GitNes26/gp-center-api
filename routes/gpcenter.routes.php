@@ -50,7 +50,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/roles/update/{id?}', 'update');
         Route::post('/roles/destroy/{id}', 'destroy');
 
-        Route::get('/roles/{id}/DisEnableRole/{active}', 'DisEnableRole');
+        Route::get('/roles/{id}/disEnableRole/{active}', 'disEnableRole');
         Route::post('/roles/updatePermissions', 'updatePermissions');
     });
 
@@ -67,7 +67,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/menus/MenusByRole/{pages_read}', 'MenusByRole');
         Route::post('/menus/getIdByUrl', 'getIdByUrl');
-        Route::get('/menus/{id}/DisEnableMenu/{active}', 'DisEnableMenu');
+        Route::get('/menus/{id}/disEnableMenu/{active}', 'disEnableMenu');
     });
 
 
@@ -80,7 +80,7 @@ Route::middleware('auth:sanctum')->group(function () {
         // Route::post('/users/update/{id?}', 'update');
         Route::post('/users/destroy/{id}', 'destroy');
         Route::post('/users/destroyMultiple', 'destroyMultiple');
-        Route::get('/users/{id}/DisEnableUser/{active}', 'DisEnableUser');
+        Route::get('/users/{id}/disEnableUser/{active}', 'disEnableUser');
 
         Route::get('/users', 'index');
         Route::post('/users/create', 'createOrUpdate');
@@ -91,12 +91,13 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::prefix('employees')->group(function () {
         Route::get('/', [EmployeeController::class, 'index']);
+        Route::get('/{id}', [EmployeeController::class, 'show']);
         Route::get('/selectIndex', [EmployeeController::class, 'selectIndex']);
         Route::post('/create', [EmployeeController::class, 'createOrUpdate']);
         Route::post('/update/{id}', [EmployeeController::class, 'createOrUpdate']);
-        Route::post('/destroy/{id}', 'destroy');
-        Route::post('/destroyMultiple', 'destroyMultiple');
-        Route::get('/{id}/DisEnableUser/{active}', 'DisEnableUser');
+        Route::get('/destroy/{id}', [EmployeeController::class, 'destroy']);
+        Route::post('/destroyMultiple', [EmployeeController::class, 'destroyMultiple']);
+        Route::get('/{id}/disEnable/{active}', [EmployeeController::class, 'disEnable']);
     });
 
     Route::controller(DirectorController::class)->group(function () {

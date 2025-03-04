@@ -167,7 +167,7 @@ class RoleController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response $response
      */
-    public function DisEnableRole(Int $id, Int $active, Response $response)
+    public function disEnableRole(Int $id, Int $active, Response $response)
     {
         $response->data = ObjResponse::DefaultResponse();
         try {

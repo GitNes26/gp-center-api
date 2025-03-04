@@ -48,8 +48,8 @@ class DirectorController extends Controller
    {
       $response->data = ObjResponse::DefaultResponse();
       try {
-         $list = DirectorView::select('id', 'username as label')
-            ->orderBy('username', 'asc')->get();
+         $list = DirectorView::select('id', 'full_name as label')
+            ->orderBy('full_name', 'asc')->get();
          $response->data = ObjResponse::CorrectResponse();
          $response->data["message"] = 'peticion satisfactoria | lista de directores.';
          $response->data["alert_text"] = "directores encontrados";
